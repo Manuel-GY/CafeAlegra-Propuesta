@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /carrito.html
+Disallow: /acceder.html
+Disallow: /brand-guide.html
+
+Sitemap: https://cafealegra.cl/sitemap.xml

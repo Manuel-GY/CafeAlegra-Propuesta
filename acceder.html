@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Acceder o crear cuenta · Café Alegra</title>
+<meta name="description" content="Accede a tu cuenta de Café Alegra o regístrate para comprar más rápido.">
+<meta property="og:title" content="Acceder · Café Alegra">
+<meta property="og:description" content="Tu cuenta Café Alegra.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/img/hero-taza.jpg">
+<meta name="theme-color" content="#1b120c">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://cafealegra.cl/acceder.html">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;family=Jost:wght@300;400;500&amp;display=swap">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body data-nav="acceder" data-nopopup>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div id="site-header"></div>
+<main id="main">
+  <section class="section" style="min-height:70vh"><div class="wrap narrow" id="auth" style="max-width:560px">
+    <div class="sec-head" style="margin-bottom:2rem"><span class="eyebrow">Mi cuenta</span><h1 style="font-size:clamp(2.2rem,5vw,3.4rem)">Bienvenido a <em>Café Alegra</em></h1></div>
+    <div class="panel" data-auth-in>
+      <div class="tabs" role="tablist" aria-label="Acceder o registrarse">
+        <button class="tab" role="tab" type="button" data-tab="acceder" aria-selected="true">Acceder</button>
+        <button class="tab" role="tab" type="button" data-tab="registro" aria-selected="false">Registro</button>
+      </div>
+      <div data-pane="acceder">
+        <form class="form" data-auth="acceder" novalidate>
+          <div class="field"><label for="a-email">Email</label><input id="a-email" type="email" autocomplete="email" required><span class="err" aria-live="polite"></span></div>
+          <div class="field"><label for="a-pass">Contraseña</label><input id="a-pass" type="password" autocomplete="current-password" required><span class="err" aria-live="polite"></span></div>
+          <label class="check"><input type="checkbox"> Recuérdame</label>
+          <button class="btn block" type="submit">Acceder</button>
+          <p style="margin:0;font-size:.9rem"><button class="quiz-back" type="button" data-go="reset">¿Has olvidado la contraseña?</button></p>
+        </form>
+        <p class="notice" style="margin-top:1.5rem">Acceso simulado: usa cualquier email y una contraseña de 6 o más caracteres.</p>
+      </div>
+      <div data-pane="registro" hidden>
+        <form class="form" data-auth="registro" novalidate>
+          <div class="field"><label for="r-name">Nombre</label><input id="r-name" name="nombre" autocomplete="name" required><span class="err" aria-live="polite"></span></div>
+          <div class="field"><label for="r-email">Email</label><input id="r-email" type="email" autocomplete="email" required><span class="err" aria-live="polite"></span></div>
+          <div class="field"><label for="r-pass">Contraseña</label><input id="r-pass" type="password" autocomplete="new-password" required><span class="hint">Mínimo 6 caracteres.</span><span class="err" aria-live="polite"></span></div>
+          <label class="check"><input type="checkbox" required> Acepto los <a href="terminos.html">términos y condiciones</a> y la <a href="privacidad.html">política de privacidad</a>.</label><span class="err" aria-live="polite"></span>
+          <button class="btn block" type="submit">Crear cuenta</button>
+        </form>
+      </div>
+      <div data-pane="reset" hidden>
+        <form class="form" data-auth="reset" novalidate>
+          <p>¿Has perdido tu contraseña? Introduce tu dirección de correo electrónico y recibirás un enlace para crear una nueva contraseña.</p>
+          <div class="field"><label for="p-email">Email</label><input id="p-email" type="email" autocomplete="email" required><span class="err" aria-live="polite"></span></div>
+          <button class="btn block" type="submit">Enviar el enlace para restablecer</button>
+          <p class="msg" role="status"></p>
+          <p style="margin:0"><button class="quiz-back" type="button" data-go="acceder">Volver a acceder</button></p>
+        </form>
+      </div>
+    </div>
+    <div class="panel center" data-auth-out hidden>
+      <svg class="i" aria-hidden="true" style="margin:0 auto 1rem;width:2.4rem;height:2.4rem"><use href="#i-user"/></svg>
+      <h2>Hola, <span data-uname></span></h2>
+      <p>Has accedido a tu cuenta (simulada).</p>
+      <div class="acts" style="justify-content:center"><a class="btn" href="tienda.html">Ir a la tienda</a><a class="btn ghost" href="seguimiento.html">Seguir un pedido</a><button class="btn ghost" type="button" data-logout>Cerrar sesión</button></div>
+    </div>
+  </div></section>
+</main>
+<div id="site-footer"></div>
+<script src="assets/js/products.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

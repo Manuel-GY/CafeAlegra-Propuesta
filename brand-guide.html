@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guía de marca · Propuesta de rediseño · Café Alegra</title>
+<meta name="description" content="Identidad visual propuesta para Café Alegra: logotipo, paleta, tipografías, tono de voz, componentes, iconografía y sellos.">
+<meta property="og:title" content="Guía de marca · Café Alegra">
+<meta property="og:description" content="Espresso, oro y espiga de trigo: la identidad de la propuesta.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/img/hero-taza.jpg">
+<meta name="theme-color" content="#1b120c">
+<link rel="canonical" href="https://cafealegra.cl/brand-guide.html">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;family=Jost:wght@300;400;500&amp;display=swap">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body data-nav="marca" data-nopopup>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div id="site-header"></div>
+<main id="main">
+  <section class="page-hero"><div class="wrap">
+    <p class="crumbs"><a href="index.html">Inicio</a><span aria-hidden="true">/</span><span aria-current="page">Guía de marca</span></p>
+    <span class="eyebrow">Propuesta de rediseño · Identidad visual</span>
+    <h1>Espresso, oro y una <em>espiga de trigo</em></h1>
+    <p>La identidad une las dos líneas de Café Alegra, el trigo patrimonial chileno y el arábica de especialidad, en un lenguaje editorial, cálido y sobrio.</p>
+  </div></section>
+
+  <section class="section"><div class="wrap">
+    <div class="sec-head"><span class="eyebrow">01 · Logotipo</span><h2>Marca <em>tipográfica</em></h2><div class="rule"></div><p class="lead" style="margin-inline:auto">Un sello circular con una espiga de trigo (el grano que nos distingue) acompañado del nombre en serif capitular con tracking amplio.</p></div>
+    <div class="grid g2">
+      <div class="spec center" style="display:grid;place-items:center;min-height:260px"><a class="logo" href="index.html" aria-label="Logotipo sobre fondo claro"><svg viewBox="0 0 48 48" aria-hidden="true" style="width:64px;height:64px"><use href="#logo-mark"/></svg><span class="wm"><b style="font-size:2.3rem">CAFÉ ALEGRA</b><small style="font-size:.7rem">Café de trigo · Especialidad</small></span></a></div>
+      <div class="spec center dark" style="display:grid;place-items:center;min-height:260px;background:var(--espresso)"><a class="logo inv" href="index.html" aria-label="Logotipo sobre fondo oscuro"><svg viewBox="0 0 48 48" aria-hidden="true" style="width:64px;height:64px;color:var(--oro-claro)"><use href="#logo-mark"/></svg><span class="wm"><b style="font-size:2.3rem">CAFÉ ALEGRA</b><small style="font-size:.7rem">Café de trigo · Especialidad</small></span></a></div>
+    </div>
+    <div class="grid g2" style="margin-top:1.5rem">
+      <div class="spec"><h3>Sello solo</h3><div style="display:flex;gap:2rem;align-items:center;color:var(--espresso)"><svg viewBox="0 0 48 48" aria-hidden="true" style="width:96px;height:96px"><use href="#logo-mark"/></svg><svg viewBox="0 0 48 48" aria-hidden="true" style="width:48px;height:48px;color:var(--oro-hondo)"><use href="#logo-mark"/></svg><svg viewBox="0 0 48 48" aria-hidden="true" style="width:24px;height:24px"><use href="#logo-mark"/></svg></div><p class="code-b" style="margin-top:1rem">Tamaño mínimo: 24 px (sello) · 120 px de ancho (versión completa). Zona de respeto: la altura de la «C».</p></div>
+      <div class="spec"><h3>Uso correcto</h3><div class="do-dont" style="grid-template-columns:1fr"><div><strong>Sí:</strong> espresso sobre crema, oro claro sobre espresso.</div><div><strong>No:</strong> estirar, rotar, añadir sombras ni usar oro sobre crema para texto pequeño (usar <code>--oro-hondo</code>).</div></div></div>
+    </div>
+  </div></section>
+
+  <section class="section alt"><div class="wrap">
+    <div class="sec-head"><span class="eyebrow">02 · Paleta</span><h2>Color <em>tostado</em></h2><div class="rule"></div><p class="lead" style="margin-inline:auto">Variables CSS definidas en <code>:root</code> de <code>assets/css/styles.css</code>. Los textos cumplen contraste AA.</p></div>
+    <div class="swatches">
+      <div class="sw"><i style="background:#1b120c"></i><div><b>Espresso</b><code>--espresso #1b120c</code><br><small>Texto/fondos oscuros · 17:1 sobre crema</small></div></div>
+      <div class="sw"><i style="background:#4a2f1e"></i><div><b>Moca</b><code>--mocha #4a2f1e</code><br><small>Degradados y detalles</small></div></div>
+      <div class="sw"><i style="background:#f7f1e8"></i><div><b>Crema</b><code>--crema #f7f1e8</code><br><small>Fondo principal</small></div></div>
+      <div class="sw"><i style="background:#efe6d8"></i><div><b>Lino</b><code>--lino #efe6d8</code><br><small>Secciones alternas</small></div></div>
+      <div class="sw"><i style="background:#b98a3e"></i><div><b>Oro</b><code>--oro #b98a3e</code><br><small>Líneas, acentos, botón dorado</small></div></div>
+      <div class="sw"><i style="background:#8a6420"></i><div><b>Oro hondo</b><code>--oro-hondo #8a6420</code><br><small>Texto acento sobre claro · 4.7:1</small></div></div>
+      <div class="sw"><i style="background:#d9b36a"></i><div><b>Oro claro</b><code>--oro-claro #d9b36a</code><br><small>Acento sobre oscuro</small></div></div>
+      <div class="sw"><i style="background:#5f6b3a"></i><div><b>Trigo</b><code>--trigo #5f6b3a</code><br><small>Verde del empaque, éxito</small></div></div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="wrap">
+    <div class="sec-head"><span class="eyebrow">03 · Tipografía</span><h2>Voz <em>editorial</em></h2><div class="rule"></div></div>
+    <div class="grid g2">
+      <div class="spec"><p class="code-b">Titulares · Cormorant Garamond</p><p style="font:500 3.4rem/1 var(--serif);margin:.5rem 0">Sabores que <em>trascienden</em></p><p class="code-b">Fallback: Georgia, Times New Roman, serif. Pesos 400–600 y cursiva para el énfasis.</p></div>
+      <div class="spec"><p class="code-b">Texto e interfaz · Jost</p><p style="font:400 1.1rem/1.7 var(--sans);margin:.8rem 0">Café de trigo sin cafeína y café de especialidad de Guatemala, Bolivia y Chile. Tostado con dedicación, enviado a todo el país.</p><p style="font:500 .75rem var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--oro-hondo)">Eyebrow · mayúsculas con tracking .22em</p><p class="code-b">Fallback: system-ui, Segoe UI, Roboto, Arial.</p></div>
+    </div>
+  </div></section>
+
+  <section class="section dark"><div class="wrap">
+    <div class="sec-head"><span class="eyebrow">04 · Tono de voz</span><h2>Cálido, <em>cercano</em>, experto</h2><div class="rule"></div></div>
+    <div class="feat">
+      <div class="it"><h3>Cercano</h3><p>Hablamos de tú, con frases cortas. «¡Qué alegría! Ya tienes tu primer código.»</p></div>
+      <div class="it"><h3>Sensorial</h3><p>Describimos aromas, texturas y momentos, no solo características.</p></div>
+      <div class="it"><h3>Honesto</h3><p>Decimos qué es cada café: sin cafeína, arábica, con o sin lactosa. Sin promesas médicas.</p></div>
+      <div class="it"><h3>Con raíz</h3><p>Orgullo por la VI Región y el patrimonio del trigo chileno.</p></div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="wrap">
+    <div class="sec-head"><span class="eyebrow">05 · Componentes</span><h2>Piezas <em>reutilizables</em></h2><div class="rule"></div></div>
+    <h3>Botones</h3>
+    <div class="acts" style="margin:1rem 0 3rem"><button class="btn" type="button">Principal</button><button class="btn ghost" type="button">Secundario</button><button class="btn gold" type="button">Dorado</button><span class="dark" style="padding:.6rem"><button class="btn light" type="button">Sobre oscuro</button></span><a class="link" href="tienda.html">Enlace editorial</a></div>
+    <div class="grid g2" style="align-items:start">
+      <div><h3>Tarjeta de producto</h3><div class="grid" style="max-width:300px" data-grid data-ids="trigo-nuez-caramelo"></div></div>
+      <div><h3>Formulario</h3><form class="form panel" onsubmit="return false"><div class="field"><label for="g-n">Nombre</label><input id="g-n" placeholder="Tu nombre"><span class="hint">Texto de ayuda en tono suave.</span></div><div class="field"><label for="g-e">Email</label><input id="g-e" type="email" aria-invalid="true" value="correo-invalido"><span class="err">Ingresa un email válido.</span></div><div class="filters" style="margin:0"><button class="chip" type="button" aria-pressed="true">Chip activo</button><button class="chip" type="button" aria-pressed="false">Chip</button></div><p class="notice ok">Mensaje de confirmación.</p></form></div>
+    </div>
+  </div></section>
+
+  <section class="section alt"><div class="wrap">
+    <div class="sec-head"><span class="eyebrow">06 · Iconografía y sellos</span><h2>Trazo fino, <em>1.5 px</em></h2><div class="rule"></div><p class="lead" style="margin-inline:auto">Íconos SVG de 24 px, trazo redondeado, <code>currentColor</code>. Sprite inyectado por <code>main.js</code>.</p></div>
+    <div class="icon-grid" id="icons"></div>
+    <h3 style="margin-top:3rem">Sellos</h3>
+    <div class="seals" style="margin-top:1rem"><span class="seal"><span class="disc"><svg class="i" aria-hidden="true"><use href="#i-nocaf"/></svg></span>Sin cafeína</span><span class="seal"><span class="disc"><svg class="i" aria-hidden="true"><use href="#i-vegan"/></svg></span>Vegano</span><span class="seal"><span class="disc"><svg class="i" aria-hidden="true"><use href="#i-nosugar"/></svg></span>Sin azúcar</span></div>
+  </div></section>
+
+  <section class="section"><div class="wrap narrow">
+    <div class="sec-head"><span class="eyebrow">07 · Movimiento y accesibilidad</span><h2>Sutil y <em>respetuoso</em></h2><div class="rule"></div></div>
+    <ul class="prose"><li>Aparición con desvanecido y desplazamiento de 26 px (0.9 s); hover con zoom lento de imagen y subrayado dorado.</li><li><code>prefers-reduced-motion</code> desactiva animaciones y transiciones.</li><li>Foco visible con contorno dorado, enlace «Saltar al contenido», <code>aria-label</code> en íconos, textos alternativos y contraste AA.</li><li>Móvil primero: menú hamburguesa, grillas fluidas y botones táctiles de al menos 44 px.</li></ul>
+  </div></section>
+</main>
+<div id="site-footer"></div>
+<script src="assets/js/products.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+(function(){var g=document.getElementById("icons");Object.keys(window.CA_ICONS).forEach(function(k){g.insertAdjacentHTML("beforeend",'<div>'+window.ca_icon(k)+k+'</div>');});})();
+</script>
+</body>
+</html>
