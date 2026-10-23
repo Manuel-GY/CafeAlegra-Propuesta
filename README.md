@@ -1,10 +1,9 @@
 # Café Alegra · Rediseño web
 
-Demo y respuestas a la contrapropuesta del cliente para el rediseño del sitio de **Café Alegra**.
+Demo del rediseño del sitio de **Café Alegra**.
 
 ## Contenido
 
-- `Respuestas_Contrapropuesta_Cafe_Alegra.pdf`: respuestas a los 14 puntos de alcance y a las aclaraciones generales.
 - Demo del sitio: 21 páginas HTML estáticas (inicio, tienda, café de trigo, café de especialidad, ficha de producto, packs, set descubrimiento, nosotros, café para tu negocio, blog, cobertura, contacto, seguimiento, acceso, carrito, complementos, términos, privacidad, 404 y guía de marca).
 
 ## Principios del proyecto
