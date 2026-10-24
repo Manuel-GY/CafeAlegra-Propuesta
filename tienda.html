@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Nuestra tienda · Café Alegra</title>
-<meta name="description" content="Toda la tienda de Café Alegra: café de trigo sin cafeína, café de especialidad, packs, set de descubrimiento y cafeteras.">
+<meta name="description" content="Cafés de origen de Guatemala, Bolivia y Colombia en 250 g, y ensambles Praliné en 100 g y 250 g. Precios minoristas con IVA incluido.">
 <meta property="og:title" content="Nuestra tienda · Café Alegra">
-<meta property="og:description" content="Café de trigo, café de especialidad, packs y complementos cafeteros.">
+<meta property="og:description" content="Explora los cafés de origen y ensambles Praliné del catálogo minorista de Café Alegra.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="assets/img/hero-taza.jpg">
 <meta name="theme-color" content="#1b120c">
@@ -24,20 +24,21 @@
     <p class="crumbs"><a href="index.html">Inicio</a><span aria-hidden="true">/</span><span aria-current="page">Nuestra tienda</span></p>
     <span class="eyebrow">Nuestra tienda</span>
     <h1>Un café para compartir en <em>toda ocasión</em></h1>
-    <p>Descubre el café de especialidad y el café de trigo, para beber sin culpa.</p>
+    <p>Cafés de origen y ensambles Praliné del catálogo minorista actualizado. Precios en pesos chilenos, IVA incluido, sin descuentos añadidos.</p>
   </div></section>
 
   <section class="section" style="padding-top:3rem"><div class="wrap">
     <div class="cats reveal" style="margin-bottom:4rem">
-      <a class="cat" href="cafe-de-trigo.html" style="min-height:220px"><img src="assets/img/trigo-trufas.webp" alt="" loading="lazy"><div><span>Sin cafeína</span><h3>Café de trigo</h3></div></a>
-      <a class="cat" href="cafe-de-especialidad.html" style="min-height:220px"><img src="assets/img/esp-nuez.webp" alt="" loading="lazy"><div><span>Arábica</span><h3>Café de especialidad</h3></div></a>
-      <a class="cat" href="packs.html" style="min-height:220px"><img src="assets/img/pack-pralines-2x100.webp" alt="" loading="lazy"><div><span>Café + cafetera</span><h3>Packs</h3></div></a>
-      <a class="cat" href="complementos.html" style="min-height:220px"><img src="assets/img/cafetera-francesa-cobre.webp" alt="" loading="lazy"><div><span>Accesorios</span><h3>Complementos</h3></div></a>
+      <a class="cat" href="cafe-de-especialidad.html#origenes" style="min-height:220px"><img src="assets/img/catalogo-guatemala.png" alt="" loading="lazy"><div><span>Guatemala · Bolivia · Colombia</span><h3>Cafés de origen</h3></div></a>
+      <a class="cat" href="cafe-de-especialidad.html#sabores-de-autor" style="min-height:220px"><img src="assets/img/catalogo-nuez.png" alt="" loading="lazy"><div><span>100 g · 250 g</span><h3>Ensambles Praliné</h3></div></a>
     </div>
     <h2 style="font-size:2rem" id="all">Todos los productos</h2>
-    <div class="filters" data-filter-bar role="group" aria-label="Filtrar por categoría">
-      <div class="sel"><label class="sr-only" for="sort">Ordenar por</label>
-        <select id="sort" data-sort><option value="def">Destacados</option><option value="asc">Precio: de menor a mayor</option><option value="desc">Precio: de mayor a menor</option></select></div>
+    <div class="filters" data-filter-bar role="group" aria-label="Filtrar productos">
+      <div class="sel"><label class="sr-only" for="filter-sub">Sabor u origen</label><select id="filter-sub" data-filter-sub><option value="all">Todos los sabores y orígenes</option></select></div>
+      <div class="sel"><label class="sr-only" for="filter-size">Formato</label><select id="filter-size" data-filter-size><option value="all">Todos los formatos</option></select></div>
+      <div class="sel"><label class="sr-only" for="filter-grind">Molienda</label><select id="filter-grind" data-filter-grind><option value="all">Grano o molido</option></select></div>
+      <div class="sel"><label class="sr-only" for="filter-price">Precio máximo</label><select id="filter-price" data-filter-price><option value="all">Cualquier precio</option><option value="10000">Hasta $10.000</option><option value="20000">Hasta $20.000</option><option value="40000">Hasta $40.000</option></select></div>
+      <div class="sel"><label class="sr-only" for="sort">Ordenar por</label><select id="sort" data-sort><option value="def">Destacados</option><option value="asc">Precio: de menor a mayor</option><option value="desc">Precio: de mayor a menor</option></select></div>
     </div>
     <p class="count-txt" data-count aria-live="polite"></p>
     <div class="grid g4" data-grid data-filter="cat"></div>

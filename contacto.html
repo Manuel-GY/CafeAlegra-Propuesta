@@ -23,34 +23,38 @@
   <section class="page-hero"><div class="wrap">
     <p class="crumbs"><a href="index.html">Inicio</a><span aria-hidden="true">/</span><span aria-current="page">Atención al cliente</span></p>
     <span class="eyebrow">Atención al cliente</span>
-    <h1>Todo consumidor merece una atención <em>personalizada</em></h1>
-    <p>Nuestro equipo está disponible para resolver tus dudas, gestionar tus consultas y ofrecerte asistencia.</p>
+    <h1>¿En qué podemos <em>ayudarte</em>?</h1>
+    <p>Elige el canal según el tipo de consulta.</p>
   </div></section>
 
-  <section class="section"><div class="wrap split" style="align-items:start">
+  <section class="section alt"><div class="wrap grid g2">
+    <article class="panel"><span class="eyebrow">Soy cliente</span><h2>Pedidos y <em>envíos</em></h2><p>Para consultas sobre pedidos, despachos o productos, escríbenos por WhatsApp o deja tu mensaje al equipo de atención.</p><div class="acts"><a class="btn" href="#atencion-clientes">Contactar a atención</a><a class="btn ghost" href="seguimiento.html">Seguir un pedido</a></div></article>
+    <article class="panel"><span class="eyebrow">Consulta comercial</span><h2>Quiero vender Café <em>Alegra</em></h2><p>Si representas una cafetería, hotel, restaurante, empresa o tienda, solicita el catálogo mayorista por el canal comercial.</p><div class="acts"><a class="btn" href="cafe-para-tu-negocio.html#contacto-b2b">Solicitar catálogo mayorista</a></div></article>
+  </div></section>
+
+  <section class="section" id="atencion-clientes"><div class="wrap split" style="align-items:start">
     <div class="reveal">
-      <h2>Póngase en <em>contacto</em></h2>
+      <span class="eyebrow">Soy cliente</span><h2>Atención al <em>cliente</em></h2>
       <ul class="contact-list">
         <li><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg><div><b>Teléfono y WhatsApp</b><br><a href="tel:+56977942117">+56 9 7794 2117</a></div></li>
         <li><svg class="i" aria-hidden="true"><use href="#i-mail"/></svg><div><b>Email</b><br><a href="mailto:contacto@cafealegra.cl">contacto@cafealegra.cl</a></div></li>
         <li><svg class="i" aria-hidden="true"><use href="#i-clock"/></svg><div><b>Horarios</b><br>Lunes a viernes: 09:00 – 18:00 hrs.<br>Sábado y domingo: 09:00 – 13:00 hrs.</div></li>
         <li><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg><div><b>Ubicación</b><br>Rancagua, VI Región, Chile</div></li>
       </ul>
-      <div class="feat" style="margin-top:2.5rem;grid-template-columns:1fr 1fr"><div class="it"><h3>Respuesta rápida</h3><p>Resolvemos tus inquietudes de manera ágil.</p></div><div class="it"><h3>Soporte confiable</h3><p>Cuenta con nosotros para cualquier duda.</p></div></div>
       <div class="acts"><a class="btn" href="https://wa.me/56977942117" target="_blank" rel="noopener"><svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>Escríbenos al WhatsApp</a></div>
-      <p style="color:var(--suave);font-size:.9rem;margin-top:.8rem">Tiempo promedio de respuesta: 15 minutos por WhatsApp.</p>
     </div>
     <div class="panel reveal">
-      <h2 style="font-size:2rem">Solicita una <em>llamada</em></h2>
-      <p style="color:var(--suave)">Tiempo promedio de respuesta: 5 minutos, considerando nuestro horario de atención.</p>
+      <h2 style="font-size:2rem">Enviar una <em>consulta</em></h2>
+      <p style="color:var(--suave)">Para pedidos, productos y despacho. Las consultas comerciales tienen su formulario separado.</p>
       <form class="form" data-form="contacto" novalidate>
         <div class="field"><label for="c-n">Nombre</label><input id="c-n" name="nombre" autocomplete="name" required><span class="err" aria-live="polite"></span></div>
         <div class="row2"><div class="field"><label for="c-e">Email</label><input id="c-e" name="email" type="email" autocomplete="email" required><span class="err" aria-live="polite"></span></div>
         <div class="field"><label for="c-t">Teléfono</label><input id="c-t" name="tel" type="tel" autocomplete="tel" required><span class="err" aria-live="polite"></span></div></div>
         <div class="field"><label for="c-m">¿En qué podemos ayudarte?</label><textarea id="c-m" name="mensaje" required minlength="10"></textarea><span class="err" aria-live="polite"></span></div>
-        <button class="btn" type="submit">Solicitar llamada</button>
+        <button class="btn" type="submit">Enviar consulta</button>
         <p class="msg" role="status"></p>
       </form>
+      <p class="notice" style="margin-top:1rem">Formulario de demostración: no envía datos. En el sitio real se conectará al correo de atención al cliente.</p>
     </div>
   </div></section>
 </main>

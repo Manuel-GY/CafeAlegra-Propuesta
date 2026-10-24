@@ -9,6 +9,10 @@
     set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   };
   var money = window.money, P = window.PRODUCTS || [], find = window.findProduct;
+  var pendingCatalogPages = ["cafe-de-trigo.html", "packs.html", "complementos.html", "set-descubrimiento.html"];
+  if (pendingCatalogPages.indexOf(location.pathname.split("/").pop()) !== -1) {
+    $("#main").innerHTML = '<section class="section"><div class="wrap"><h1>Catálogo pendiente</h1><p class="lead">Esta línea no aparece en el catálogo minorista enviado. No se ofrecen productos, precios ni promociones sin respaldo del cliente.</p><a class="btn" href="tienda.html">Ver productos del catálogo actualizado</a></div></section>';
+  }
 
   /* ---------- Iconos ---------- */
   var ICONS = {
@@ -84,14 +88,14 @@
   ];
   var cur = document.body.getAttribute("data-nav") || "";
   var logo = function (inv) {
-    return '<a class="logo' + (inv ? " inv" : "") + '" href="index.html" aria-label="Café Alegra, inicio"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#logo-mark"/></svg><span class="wm"><b>CAFÉ ALEGRA</b><small>Café de trigo · Especialidad</small></span></a>';
+    return '<a class="logo' + (inv ? " inv" : "") + '" href="index.html" aria-label="Café Alegra, inicio"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#logo-mark"/></svg><span class="wm"><b>CAFÉ ALEGRA</b><small>Tostaduría artesanal · Especialidad</small></span></a>';
   };
   window.ca_logo = logo;
   var hdr = $("#site-header");
   if (hdr) {
     var user = store.get("ca_user", null);
     hdr.outerHTML =
-      '<div class="topbar">Envío gratis desde ' + money(window.FREE_SHIP) + ' <a href="cobertura.html">Ver cobertura</a></div>' +
+      '<div class="topbar">Catálogo minorista · Precios con IVA incluido · Demo sin pagos reales</div>' +
       '<header class="site-header"><div class="wrap bar">' + logo(false) +
       '<nav class="nav" id="nav" aria-label="Principal"><button class="ic-btn nav-close" type="button" data-nav-close aria-label="Cerrar menú">' + ic("close") + '</button><div class="nav-brand only-mobile">' + logo(false) + '</div><ul>' +
       NAV.map(function (n) { return '<li><a href="' + n[1] + '"' + (cur === n[0] ? ' aria-current="page"' : "") + ">" + n[2] + "</a></li>"; }).join("") +
@@ -107,12 +111,12 @@
   if (ftr) {
     ftr.outerHTML =
       '<footer class="site-footer"><div class="wrap"><div class="fgrid"><div>' + logo(true) +
-      '<p style="margin-top:1.4rem;max-width:34ch">Sabores que trascienden en el tiempo. Café de trigo sin cafeína y café de especialidad de Guatemala y Bolivia, desde la VI Región de Chile.</p>' +
-      '<div class="social"><a href="https://instagram.com/cafe.alegra" target="_blank" rel="noopener" aria-label="Instagram de Café Alegra">' + ic("instagram") + '</a><a href="https://facebook.com/cafealegrachile" target="_blank" rel="noopener" aria-label="Facebook de Café Alegra">' + ic("facebook") + "</a></div></div>" +
-      '<div><h4>Tienda</h4><ul><li><a href="cafe-de-trigo.html">Café de trigo</a></li><li><a href="cafe-de-especialidad.html">Café de especialidad</a></li><li><a href="packs.html">Packs</a></li><li><a href="set-descubrimiento.html">Set de descubrimiento</a></li><li><a href="complementos.html">Complementos</a></li></ul></div>' +
+      '<p style="margin-top:1.4rem;max-width:34ch">Tostaduría artesanal de Rancagua. Cafés de origen de Guatemala, Bolivia y Colombia, y ensambles Praliné.</p>' +
+      '<div class="social" role="group" aria-label="Redes sociales pendientes de confirmar"><span class="social-pending">' + ic("instagram") + ' Instagram</span><span class="social-pending">' + ic("facebook") + ' Facebook</span></div><p class="sm">Enlaces a redes sociales próximamente.</p></div>' +
+      '<div><h4>Tienda</h4><ul><li><a href="cafe-de-especialidad.html#origenes">Cafés de origen</a></li><li><a href="cafe-de-especialidad.html#sabores-de-autor">Ensambles Praliné</a></li></ul></div>' +
       '<div><h4>Café Alegra</h4><ul><li><a href="nosotros.html">Nosotros</a></li><li><a href="cafe-para-tu-negocio.html">Café para tu negocio</a></li><li><a href="blog.html">Blog</a></li><li><a href="cobertura.html">Cobertura y envíos</a></li><li><a href="brand-guide.html">Guía de marca</a></li></ul></div>' +
       '<div><h4>Ayuda</h4><ul><li><a href="contacto.html">Atención al cliente</a></li><li><a href="seguimiento.html">Seguimiento de pedidos</a></li><li><a href="privacidad.html">Política de privacidad</a></li><li><a href="terminos.html">Términos y condiciones</a></li><li><a href="https://wa.me/56977942117" target="_blank" rel="noopener">WhatsApp +56 9 7794 2117</a></li></ul></div></div>' +
-      '<div class="legal"><span>© ' + new Date().getFullYear() + ' Café Alegra · Rancagua, VI Región, Chile · contacto@cafealegra.cl</span><span>Propuesta de rediseño: demostración navegable, sin pagos reales.</span></div></div></footer>';
+      '<div class="legal"><span>© ' + new Date().getFullYear() + ' Café Alegra · Rancagua, Chile · cafealegrachile@gmail.com</span><span>Propuesta de rediseño: demostración navegable, sin pagos reales.</span></div></div></footer>';
   }
 
   /* ---------- Menú móvil ---------- */
@@ -122,12 +126,16 @@
     nav.classList.toggle("open", open); scrim.classList.toggle("on", open);
     burger.setAttribute("aria-expanded", open ? "true" : "false");
     document.body.style.overflow = open ? "hidden" : "";
-    if (open) { var f = $("a", nav); f && f.focus(); } else burger.focus();
+    if (open) { var f = $("[data-nav-close]", nav) || $("a", nav); f && f.focus(); }
+    else if (burger.getClientRects().length) burger.focus();
   }
   if (burger) {
     burger.addEventListener("click", function () { navToggle(true); });
     $$("[data-nav-close]").forEach(function (b) { b.addEventListener("click", function () { navToggle(false); }); });
     $$("a", nav).forEach(function (a) { a.addEventListener("click", function () { navToggle(false); }); });
+    window.addEventListener("resize", function () {
+      if (window.innerWidth >= 1024 && nav.classList.contains("open")) navToggle(false);
+    });
   }
 
   /* ---------- Toast ---------- */
@@ -145,11 +153,13 @@
   var scr = document.createElement("div"); scr.className = "scrim";
   var dr = document.createElement("aside");
   dr.className = "drawer"; dr.setAttribute("role", "dialog"); dr.setAttribute("aria-modal", "true"); dr.setAttribute("aria-label", "Carrito de compras"); dr.setAttribute("aria-hidden", "true");
+  dr.setAttribute("inert", "");
   dr.innerHTML = '<header><h2>Tu carrito</h2><button class="ic-btn" type="button" data-drawer-close aria-label="Cerrar carrito">' + ic("close") + '</button></header><div class="body" data-drawer-body></div><footer data-drawer-foot></footer>';
   document.body.appendChild(scr); document.body.appendChild(dr);
   var lastFocus;
   function drawer(open) {
     dr.classList.toggle("open", open); scr.classList.toggle("on", open); dr.setAttribute("aria-hidden", open ? "false" : "true");
+    if (open) dr.removeAttribute("inert"); else dr.setAttribute("inert", "");
     document.body.style.overflow = open ? "hidden" : "";
     if (open) { lastFocus = document.activeElement; renderDrawer(); $("[data-drawer-close]", dr).focus(); }
     else if (lastFocus) lastFocus.focus();
@@ -157,7 +167,7 @@
   function lineHTML(it, compact) {
     var p = find(it.id);
     return '<div class="line"><a href="producto.html?id=' + p.id + '"><img src="assets/img/' + p.img + '" alt="' + p.name + '" loading="lazy"></a><div><a class="nm" href="producto.html?id=' + p.id + '">' + p.name + '</a><div class="meta">' +
-      '<div class="qty" role="group" aria-label="Cantidad de ' + p.name + '"><button type="button" data-q="-1" data-id="' + p.id + '" aria-label="Disminuir cantidad">' + ic("minus") + '</button><output aria-live="polite">' + it.qty + '</output><button type="button" data-q="1" data-id="' + p.id + '" aria-label="Aumentar cantidad">' + ic("plus") + "</button></div>" +
+      '<p class="line-variant">' + p.size + ' · ' + presentation(p) + '</p><div class="qty" role="group" aria-label="Cantidad de ' + p.name + '"><button type="button" data-q="-1" data-id="' + p.id + '" aria-label="Disminuir cantidad">' + ic("minus") + '</button><output aria-live="polite">' + it.qty + '</output><button type="button" data-q="1" data-id="' + p.id + '" aria-label="Aumentar cantidad">' + ic("plus") + "</button></div>" +
       "<strong>" + money(p.price * it.qty) + '</strong></div><button class="rm" type="button" data-rm="' + p.id + '">Quitar</button></div></div>';
   }
   function shipBar(t) {
@@ -182,11 +192,29 @@
     else if (t.dataset.add) { Cart.add(t.dataset.add, 1); toast("Añadido: " + find(t.dataset.add).name + ' <a href="carrito.html">Ver carrito</a>'); }
   });
   scr.addEventListener("click", function () { drawer(false); });
+  function trapFocus(container, e) {
+    var focusable = $$('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])', container)
+      .filter(function (el) { return el.getClientRects().length && !el.closest("[inert]"); });
+    if (!focusable.length) { e.preventDefault(); container.focus(); return; }
+    var first = focusable[0], last = focusable[focusable.length - 1];
+    if (e.shiftKey && (document.activeElement === first || !container.contains(document.activeElement))) {
+      e.preventDefault(); last.focus();
+    } else if (!e.shiftKey && (document.activeElement === last || !container.contains(document.activeElement))) {
+      e.preventDefault(); first.focus();
+    }
+  }
   document.addEventListener("keydown", function (e) {
-    if (e.key !== "Escape") return;
-    if (dr.classList.contains("open")) drawer(false);
-    if (nav && nav.classList.contains("open")) navToggle(false);
-    var m = $(".modal.open"); if (m) closeModal(m);
+    if (e.key === "Escape") {
+      if (dr.classList.contains("open")) drawer(false);
+      if (nav && nav.classList.contains("open")) navToggle(false);
+      var m = $(".modal.open"); if (m) closeModal(m);
+      return;
+    }
+    if (e.key !== "Tab") return;
+    var modal = $(".modal.open");
+    if (modal) trapFocus(modal, e);
+    else if (dr.classList.contains("open")) trapFocus(dr, e);
+    else if (nav && nav.classList.contains("open")) trapFocus(nav, e);
   });
   function updateCount() {
     $$("[data-cart-count]").forEach(function (c) { var n = Cart.count(); c.textContent = n; c.dataset.n = n; });
@@ -204,7 +232,7 @@
     var done = function () { btn.textContent = "¡Cupón copiado!"; };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(done, done); else done();
   }
-  if (!document.body.hasAttribute("data-nopopup")) {
+  if (!document.body.hasAttribute("data-nopopup") && window.COUPON.pct > 0) {
     var pop = document.createElement("div"); pop.className = "modal";
     pop.setAttribute("role", "dialog"); pop.setAttribute("aria-modal", "true"); pop.setAttribute("aria-labelledby", "pop-t");
     pop.innerHTML = '<div class="box"><button class="ic-btn x" type="button" data-pop-close aria-label="Cerrar">' + ic("close") + '</button><span class="eyebrow">Bienvenida</span>' +
@@ -231,6 +259,7 @@
     }
     $$("[data-open-coupon]").forEach(function (b) { b.addEventListener("click", function () { openModal(pop); }); });
   }
+  if (!window.COUPON.pct) $$("[data-open-coupon]").forEach(function (b) { b.remove(); });
 
   /* ---------- Validación de formularios ---------- */
   function validate(form) {
@@ -258,27 +287,52 @@
   function observe(root) { $$(".reveal", root || document).forEach(function (el) { io ? io.observe(el) : el.classList.add("in"); }); }
 
   /* ---------- Tarjeta de producto y grillas ---------- */
-  function card(p) {
+  function presentation(p) { return p.grind === "grano" ? "Grano entero" : "Molienda media"; }
+  function roastProfile(p) {
+    if (!p.roast) return "";
+    return '<section class="roast-profile" aria-label="Nivel de tueste"><span class="roast-kicker">Perfil de tueste</span><h2>Tueste: ' + p.roast.label + '</h2><div class="roast-bar" aria-hidden="true">' +
+      ["suave", "medio", "intenso"].map(function (tone) {
+        return '<span class="roast-stop roast-' + tone + (tone === p.roast.tone ? ' is-selected' : '') + '">' +
+          (tone === p.roast.tone ? '<i class="roast-marker">' + ic("bean") + '</i>' : '') + '</span>';
+      }).join("") + '</div><div class="roast-labels" aria-hidden="true"><span' + (p.roast.tone === "suave" ? ' class="is-selected"' : '') + '>Medio suave</span><span' + (p.roast.tone === "medio" ? ' class="is-selected"' : '') + '>Medio</span><span' + (p.roast.tone === "intenso" ? ' class="is-selected"' : '') + '>Medio intenso</span></div><p>Comparación visual entre los tres tuestes de origen del catálogo; no es una escala técnica.</p></section>';
+  }
+  function references(list) {
+    return list.filter(function (p, i) { return list.findIndex(function (x) { return x.reference === p.reference; }) === i; });
+  }
+  function card(p, variants) {
+    variants = variants || P.filter(function (x) { return x.reference === p.reference; });
+    var prices = variants.map(function (x) { return x.price; });
+    var from = Math.min.apply(null, prices) !== Math.max.apply(null, prices);
     var off = p.was > p.price ? Math.round((1 - p.price / p.was) * 100) : 0;
     return '<article class="prod reveal"><a class="ph" href="producto.html?id=' + p.id + '" tabindex="-1" aria-hidden="true">' +
       (p.notes[0] === "Sin cafeína" ? '<span class="tag">Sin cafeína</span>' : "") + (off ? '<span class="tag sale">-' + off + "%</span>" : "") +
-      '<img src="assets/img/' + p.img + '" alt="" loading="lazy"></a><div class="bd"><span class="k">' + p.sub + " · " + p.size + '</span><h3><a href="producto.html?id=' + p.id + '">' + p.name + '</a></h3><p class="sm">' + p.short + '</p>' +
-      '<div class="price"><span>' + money(p.price) + "</span>" + (off ? '<del><span class="sr-only">Precio original </span>' + money(p.was) + "</del>" : "") + '</div><button class="btn ghost sm" type="button" data-add="' + p.id + '" aria-label="Añadir al carrito: ' + p.name + '">Añadir al carrito</button></div></article>';
+      '<img src="assets/img/' + p.img + '" alt="" loading="lazy"></a><div class="bd"><span class="k">' + p.sub + '</span><h3><a href="producto.html?id=' + p.id + '">' + p.referenceName + '</a></h3><p class="variant-preview">' + variants.map(function (x) { return x.size + " · " + presentation(x); }).join(" / ") + '</p><p class="sm">' + p.short + '</p>' +
+      '<div class="price"><span>' + (from ? "Desde " : "") + money(Math.min.apply(null, prices)) + "</span>" + (off ? '<del><span class="sr-only">Precio original </span>' + money(p.was) + "</del>" : "") + '</div><a class="btn ghost sm" href="producto.html?id=' + p.id + '" aria-label="Elegir presentación: ' + p.referenceName + '">Elegir presentación</a></div></article>';
   }
   window.caCard = card;
   $$("[data-grid]").forEach(function (g) {
     var cat = g.dataset.cat, filter = g.dataset.filter, sortBy = "def", active = "all";
+    var activeSub = "all", activeSize = "all", activeGrind = "all", maxPrice = Infinity;
     var base = g.dataset.ids ? g.dataset.ids.split(",").map(find).filter(Boolean) : P.filter(function (p) { return !cat || p.cat === cat; });
     var bar = g.parentNode.querySelector("[data-filter-bar]");
     var cnt = g.parentNode.querySelector("[data-count]");
     var q = new URLSearchParams(location.search);
     if (filter === "cat" && q.get("cat") && window.CATEGORIES[q.get("cat")]) active = q.get("cat");
     function draw() {
-      var list = base.filter(function (p) { return active === "all" || (filter === "cat" ? p.cat === active : p.sub === active); });
-      if (sortBy === "asc") list = list.slice().sort(function (a, b) { return a.price - b.price; });
-      if (sortBy === "desc") list = list.slice().sort(function (a, b) { return b.price - a.price; });
-      g.innerHTML = list.map(card).join("") || '<p class="empty">No hay productos en esta selección.</p>';
-      if (cnt) cnt.textContent = list.length + (list.length === 1 ? " producto" : " productos");
+      var list = base.filter(function (p) {
+        var matchesCategory = active === "all" || (active === "autor" ? p.collection === "autor" : (active === "packs" ? p.cat === "packs" : p.cat === active));
+        return matchesCategory &&
+          (activeSub === "all" || p.sub === activeSub) &&
+          (activeSize === "all" || p.size === activeSize) &&
+          (activeGrind === "all" || p.grind === activeGrind) &&
+          p.price <= maxPrice;
+      });
+      if (sortBy === "asc" || sortBy === "desc") list = list.slice().sort(function (a, b) { return a.price - b.price; });
+      // Agrupar después de filtrar y ordenar conserva el enlace a una variante coincidente.
+      var grouped = references(list);
+      if (sortBy === "desc") grouped.sort(function (a, b) { return b.price - a.price; });
+      g.innerHTML = grouped.map(function (p) { return card(p, list.filter(function (x) { return x.reference === p.reference; })); }).join("") || '<p class="empty">No hay productos del catálogo minorista en esta selección.</p>';
+      if (cnt) cnt.textContent = grouped.length + (grouped.length === 1 ? " referencia" : " referencias");
       observe(g);
       if (bar) $$("[data-f]", bar).forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.f === active ? "true" : "false"); });
     }
@@ -286,6 +340,29 @@
       var keys = filter === "cat" ? Object.keys(window.CATEGORIES) : base.map(function (p) { return p.sub; }).filter(function (v, i, a) { return a.indexOf(v) === i; });
       bar.insertAdjacentHTML("afterbegin", '<button class="chip" type="button" data-f="all" aria-pressed="true">Todos</button>' + keys.map(function (k) { return '<button class="chip" type="button" data-f="' + k + '" aria-pressed="false">' + (filter === "cat" ? window.CATEGORIES[k].name : k) + "</button>"; }).join(""));
       bar.addEventListener("click", function (e) { var b = e.target.closest("[data-f]"); if (b) { active = b.dataset.f; draw(); } });
+    }
+    if (bar && filter === "cat") {
+      [
+        ["[data-filter-sub]", "sub", "Todos los sabores y orígenes"],
+        ["[data-filter-size]", "size", "Todos los formatos"],
+        ["[data-filter-grind]", "grind", "Grano o molido"]
+      ].forEach(function (config) {
+        var select = $(config[0], bar);
+        if (!select) return;
+        var values = base.map(function (p) { return p[config[1]]; }).filter(function (v, i, a) { return v && a.indexOf(v) === i; });
+        select.insertAdjacentHTML("beforeend", values.map(function (v) { return '<option value="' + v + '">' + (v === "grano" ? "Grano entero" : v === "molido" ? "Molienda media" : v) + "</option>"; }).join(""));
+      });
+      var priceSelect = $("[data-filter-price]", bar);
+      if (priceSelect) priceSelect.addEventListener("change", function () {
+        maxPrice = priceSelect.value === "all" ? Infinity : Number(priceSelect.value);
+        draw();
+      });
+      var subSelect = $("[data-filter-sub]", bar);
+      var sizeSelect = $("[data-filter-size]", bar);
+      var grindSelect = $("[data-filter-grind]", bar);
+      if (subSelect) subSelect.addEventListener("change", function () { activeSub = subSelect.value; draw(); });
+      if (sizeSelect) sizeSelect.addEventListener("change", function () { activeSize = sizeSelect.value; draw(); });
+      if (grindSelect) grindSelect.addEventListener("change", function () { activeGrind = grindSelect.value; draw(); });
     }
     var sel = g.parentNode.querySelector("[data-sort]");
     if (sel) sel.addEventListener("change", function () { sortBy = sel.value; draw(); });
@@ -305,19 +382,47 @@
       var md = $('meta[name="description"]'); if (md) md.setAttribute("content", p.name + " (" + p.size + "). " + p.short);
       var ogt = $('meta[property="og:title"]'); if (ogt) ogt.setAttribute("content", p.name + " · Café Alegra");
       $("[data-crumb]").innerHTML = '<a href="index.html">Inicio</a><span aria-hidden="true">/</span><a href="' + c.page + '">' + c.name + '</a><span aria-hidden="true">/</span><span aria-current="page">' + p.name + "</span>";
-      var seals = "";
-      if (p.q && p.q.caf === 0 || p.cat === "packs" || p.cat === "set") seals = '<div class="seals" style="margin:1.5rem 0"><span class="seal"><span class="disc">' + ic("nocaf") + '</span>Sin cafeína</span><span class="seal"><span class="disc">' + ic("vegan") + '</span>Vegano</span><span class="seal"><span class="disc">' + ic("nosugar") + "</span>Sin azúcar</span></div>";
-      pd.innerHTML = '<div class="pd"><div class="pd-img reveal"><img src="assets/img/' + p.img + '" alt="' + p.name + '"></div><div class="reveal"><span class="eyebrow">' + c.name + " · " + p.sub + "</span><h1>" + p.name + '</h1><p class="lead" style="margin-bottom:1rem">' + p.short + '</p><ul class="notes">' + p.notes.map(function (n) { return "<li>" + n + "</li>"; }).join("") + '</ul><div class="price"><span>' + money(p.price) + "</span>" + (off ? "<del>" + money(p.was) + "</del><small style=\"font:500 .8rem var(--sans);color:var(--oro-hondo)\">-" + off + "%</small>" : "") + "</div>" +
-        '<p style="color:var(--suave);font-size:.9rem;margin-top:.5rem">Formato: ' + p.size + '. Envío gratis desde ' + money(window.FREE_SHIP) + '.</p><div class="buy"><div class="qty" role="group" aria-label="Cantidad"><button type="button" data-pq="-1" aria-label="Disminuir">' + ic("minus") + '</button><output id="pq" aria-live="polite">1</output><button type="button" data-pq="1" aria-label="Aumentar">' + ic("plus") + '</button></div><button class="btn" type="button" id="pd-add">Añadir al carrito</button></div>' + seals +
-        '<details class="acc" open><summary>Descripción</summary><div class="c"><p>' + p.desc + '</p></div></details><details class="acc"><summary>Cómo prepararlo</summary><div class="c"><p>' + p.prep + '</p></div></details><details class="acc"><summary>Envíos y garantía</summary><div class="c"><p>' + window.SHIPPING_NOTE + "</p></div></details></div></div>";
+      var sealIcons = { "Sin cafeína": "nocaf", Vegano: "vegan", "Sin azúcar añadida": "nosugar" };
+      var seals = p.notes.filter(function (note) { return sealIcons[note]; }).map(function (note) {
+        return '<span class="seal"><span class="disc">' + ic(sealIcons[note]) + "</span>" + note + "</span>";
+      }).join("");
+      if (seals) seals = '<div class="seals" style="margin:1.5rem 0">' + seals + "</div>";
+      pd.innerHTML = '<div class="pd"><div class="pd-img reveal"><img src="assets/img/' + p.img + '" alt="' + p.name + '"></div><div class="reveal"><span class="eyebrow">' + c.name + "</span><h1>" + p.name + '</h1><p class="lead" style="margin-bottom:1rem">' + p.short + '</p><ul class="notes">' + p.notes.map(function (n) { return "<li>" + n + "</li>"; }).join("") + '</ul><dl class="product-facts"><div><dt>Formato</dt><dd>' + p.size + '</dd></div><div><dt>Origen o sabor</dt><dd>' + p.sub + '</dd></div>' + (p.grind ? '<div><dt>Presentación</dt><dd>' + (p.grind === "grano" ? "Grano entero" : "Molido") + "</dd></div>" : "") + '</dl><div class="price"><span>' + money(p.price) + "</span>" + (off ? "<del>" + money(p.was) + "</del><small style=\"font:500 .8rem var(--sans);color:var(--oro-hondo)\">-" + off + "%</small>" : "") + "</div>" +
+        '<p style="color:var(--suave);font-size:.9rem;margin-top:.5rem">Envío gratis desde ' + money(window.FREE_SHIP) + '.</p><div class="buy"><div class="qty" role="group" aria-label="Cantidad"><button type="button" data-pq="-1" aria-label="Disminuir">' + ic("minus") + '</button><output id="pq" aria-live="polite">1</output><button type="button" data-pq="1" aria-label="Aumentar">' + ic("plus") + '</button></div><button class="btn" type="button" id="pd-add">Añadir al carrito</button></div>' + seals +
+        '<details class="acc" open><summary>Perfil y descripción</summary><div class="c"><p>' + p.desc + '</p></div></details><details class="acc"><summary>Cómo prepararlo</summary><div class="c"><p>' + p.prep + '</p></div></details><details class="acc"><summary>Envíos</summary><div class="c"><p>' + window.SHIPPING_NOTE + "</p></div></details></div></div>";
+      $("h1", pd).textContent = p.referenceName;
+      $$(".product-facts dd", pd)[2].textContent = presentation(p);
+      var variants = P.filter(function (x) { return x.reference === p.reference; });
+      var isOrigin = p.collection === "origen";
+      $(".product-facts", pd).insertAdjacentHTML("beforebegin",
+        '<fieldset class="variant-picker" id="product-variant" aria-describedby="variant-summary"><legend>' + (isOrigin ? "Presentación" : "Formato · solo molienda media") + '</legend><div class="variant-options">' +
+        variants.map(function (x) { return '<label class="variant-option"><input type="radio" name="product-variant" value="' + x.id + '"' + (x.id === p.id ? " checked" : "") + '><span>' + (isOrigin ? presentation(x) : x.size) + '<b aria-hidden="true"> ✓</b></span></label>'; }).join("") +
+        '</div><p id="variant-summary" role="status" aria-live="polite">' + p.size + ' · ' + presentation(p) + ' · ' + money(p.price) + '</p></fieldset>' +
+        roastProfile(p));
+      $("#product-variant").addEventListener("change", function (e) {
+        p = find(e.target.value);
+        var url = new URL(location.href); url.searchParams.set("id", p.id);
+        history.replaceState(null, "", url);
+        document.title = p.name + " · Café Alegra";
+        if (md) md.setAttribute("content", p.name + " (" + p.size + "). " + p.short);
+        if (ogt) ogt.setAttribute("content", document.title);
+        $('[aria-current="page"]', $("[data-crumb]")).textContent = p.name;
+        $(".notes", pd).innerHTML = p.notes.map(function (n) { return "<li>" + n + "</li>"; }).join("");
+        var facts = $$(".product-facts dd", pd);
+        facts[0].textContent = p.size; facts[2].textContent = presentation(p);
+        $(".pd-img img", pd).alt = p.name;
+        $(".price span", pd).textContent = money(p.price);
+        $("#variant-summary").textContent = p.size + " · " + presentation(p) + " · " + money(p.price);
+      });
       var qn = 1, out = $("#pq");
       $$("[data-pq]", pd).forEach(function (b) { b.addEventListener("click", function () { qn = Math.max(1, Math.min(99, qn + parseInt(b.dataset.pq, 10))); out.textContent = qn; }); });
       $("#pd-add").addEventListener("click", function () { Cart.add(p.id, qn); toast("Añadido: " + p.name + ' <a href="carrito.html">Ver carrito</a>'); });
+      $(".product-facts", pd).insertAdjacentHTML("afterend", '<p class="notice">Fuente: catálogo minorista del cliente, ficha de la página ' + p.sourcePage + ' y precios de la página 11. IVA incluido. La imagen del PDF ilustra el producto y puede mostrar otro formato.</p>');
       var rel = $("[data-related]");
       if (rel) {
-        var r = P.filter(function (x) { return x.cat === p.cat && x.id !== p.id; });
-        if (r.length < 4) r = r.concat(P.filter(function (x) { return x.cat !== p.cat && x.cat !== "complementos"; }));
-        rel.innerHTML = r.slice(0, 4).map(card).join("");
+        var r = P.filter(function (x) { return x.cat === p.cat && x.reference !== p.reference; });
+        if (references(r).length < 4) r = r.concat(P.filter(function (x) { return x.cat !== p.cat && x.cat !== "complementos"; }));
+        rel.innerHTML = references(r).slice(0, 4).map(function (x) { return card(x); }).join("");
       }
     }
   }
@@ -338,7 +443,8 @@
         e.preventDefault();
         var v = $("#cp-in").value.trim().toUpperCase(), m = $("[data-cmsg]");
         m.classList.add("show");
-        if (v === window.COUPON.code) { store.set("ca_coupon", v); document.dispatchEvent(new CustomEvent("cart:change")); }
+        if (!window.COUPON.pct) { m.textContent = "El catálogo minorista no incluye cupones ni descuentos."; m.className = "msg show notice"; }
+        else if (v === window.COUPON.code) { store.set("ca_coupon", v); document.dispatchEvent(new CustomEvent("cart:change")); }
         else { m.textContent = "Ese cupón no es válido. Prueba con " + window.COUPON.code + "."; m.className = "msg show notice"; }
       });
       $("[data-checkout]").addEventListener("click", function () {
@@ -355,8 +461,8 @@
   var qr = $("#quiz-root");
   if (qr) {
     var QS = [
-      { k: "caf", t: "¿Quieres tu café con o sin cafeína?", o: [["0", "Sin cafeína", "Café de trigo"], ["1", "Con cafeína", "Especialidad arábica"], ["x", "Me da igual", "Sorpréndeme"]] },
-      { k: "sabor", t: "¿Qué sabor te seduce más?", o: [["chocolate", "Chocolate", "Mocaccino, trufas"], ["nueces", "Nueces y caramelo", "Praliné cálido"], ["cremoso", "Cremoso y suave", "Tipo capuccino"], ["exotico", "Especiado o frutal", "Cardamomo, maracuyá, pistacho"], ["puro", "Puro y clásico", "Sin aromas añadidos"]] },
+      { k: "caf", t: "¿Quieres tu café con o sin cafeína?", o: [["0", "Sin cafeína", "No disponible en este catálogo"], ["1", "Con cafeína", "Especialidad arábica"], ["x", "Me da igual", "Sorpréndeme"]] },
+      { k: "sabor", t: "¿Qué sabor te seduce más?", o: [["nueces", "Nueces y caramelo", "Avellana o nuez"], ["exotico", "Un ensamble diferente", "Pistacho, amaretto y caramelo"], ["puro", "Café de origen", "Guatemala, Bolivia o Colombia"]] },
       { k: "met", t: "¿Cómo sueles prepararlo?", o: [["prensa", "Prensa francesa", "Molido"], ["italiana", "Cafetera italiana", "Espresso en casa"], ["grano", "Muelo mi grano", "Máxima frescura"], ["practico", "Rápido y práctico", "Listo en minutos"]] },
       { k: "regalo", t: "¿Es para ti o para regalar?", o: [["0", "Para mí", "Un gusto diario"], ["1", "Para regalar", "Presentación especial"]] }
     ];
@@ -366,11 +472,11 @@
       P.forEach(function (p) {
         if (!p.q) return;
         if (ans.caf !== "x" && String(p.q.caf) !== ans.caf) return;
+        if (p.grind !== (ans.met === "grano" ? "grano" : "molido")) return;
         var s = 0;
         if (p.q.sabor === ans.sabor) s += 3;
         if (p.q.met.indexOf(ans.met) > -1) s += 2;
         if (String(p.q.regalo) === ans.regalo) s += 2; else if (ans.regalo === "1" && p.q.regalo) s += 2;
-        if (p.cat === "set" && ans.regalo === "1") s += 1;
         if (s > bs) { bs = s; best = p; }
       });
       return best;
@@ -378,7 +484,12 @@
     var drawQ = function () {
       if (step >= QS.length) {
         var r = recommend();
-        qr.innerHTML = '<span class="eyebrow">Tu café ideal</span><div class="quiz-res" style="margin-top:1rem"><img src="assets/img/' + r.img + '" alt="' + r.name + '"><div><h2 style="font-size:2rem">' + r.name + "</h2><p>" + r.short + " " + r.size + ' · <strong>' + money(r.price) + '</strong></p><div class="acts" style="margin-top:1rem"><a class="btn" href="producto.html?id=' + r.id + '">Ver producto</a><button class="btn ghost" type="button" data-add="' + r.id + '">Añadir al carrito</button></div><p style="margin:1.5rem 0 0"><button class="quiz-back" type="button" data-restart>Repetir el quiz</button></p></div></div>';
+        if (!r) {
+          qr.innerHTML = '<h2>No hay una opción sin cafeína en este catálogo</h2><p>El catálogo disponible incluye cafés de especialidad con cafeína. Consulta al equipo por otras opciones; no recomendamos un producto que no cumpla esta preferencia.</p><div class="acts"><a class="btn" href="https://wa.me/56977942117" target="_blank" rel="noopener">Consultar por WhatsApp</a><button class="btn ghost" type="button" data-restart>Repetir el quiz</button></div>';
+          $("[data-restart]", qr).addEventListener("click", function () { ans = {}; step = 0; drawQ(); });
+          return;
+        }
+        qr.innerHTML = '<span class="eyebrow">Tu café ideal</span><div class="quiz-res" style="margin-top:1rem"><img src="assets/img/' + r.img + '" alt="' + r.name + '"><div><h2 style="font-size:2rem">' + r.name + "</h2><p>" + r.short + " " + r.size + " · " + presentation(r) + ' · <strong>' + money(r.price) + '</strong></p><div class="acts" style="margin-top:1rem"><a class="btn" href="producto.html?id=' + r.id + '">Ver producto</a><button class="btn ghost" type="button" data-add="' + r.id + '">Añadir al carrito</button></div><p style="margin:1.5rem 0 0"><button class="quiz-back" type="button" data-restart>Repetir el quiz</button></p></div></div>';
         $("[data-restart]", qr).addEventListener("click", function () { ans = {}; step = 0; drawQ(); });
         return;
       }

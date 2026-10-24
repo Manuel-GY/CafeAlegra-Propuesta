@@ -1,0 +1,77 @@
+:root {
+	--ca-espresso: #1b120c;
+	--ca-mocha: #4a2f1e;
+	--ca-crema: #f7f1e8;
+	--ca-lino: #efe6d8;
+	--ca-oro: #b98a3e;
+	--ca-oro-claro: #d9b36a;
+	--ca-oro-hondo: #8a6420;
+	--ca-trigo: #5f6b3a;
+	--ca-tinta: #2a1d14;
+	--ca-suave: #6b5a4c;
+	--ca-linea: rgba(42, 29, 20, .14);
+	--ca-serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+	--ca-sans: "Jost", "Helvetica Neue", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+}
+
+body {
+	color: var(--ca-tinta);
+	background-color: var(--ca-crema);
+	font-family: var(--ca-sans);
+}
+
+.elementor-widget-heading .elementor-heading-title,
+.woocommerce .page-title,
+.woocommerce div.product .product_title {
+	color: var(--ca-espresso);
+	font-family: var(--ca-serif);
+	font-weight: 500;
+}
+
+.elementor-widget-text-editor,
+.woocommerce div.product .woocommerce-product-details__short-description {
+	color: var(--ca-tinta);
+	font-family: var(--ca-sans);
+}
+
+.elementor-widget-button .elementor-button,
+.woocommerce a.button,
+.woocommerce button.button,
+.woocommerce input.button,
+.woocommerce #respond input#submit {
+	border: 1px solid var(--ca-espresso);
+	border-radius: 2px;
+	background-color: var(--ca-espresso);
+	color: var(--ca-crema);
+	font-family: var(--ca-sans);
+	transition: background-color .2s ease, border-color .2s ease, color .2s ease;
+}
+
+.elementor-widget-button .elementor-button:hover,
+.woocommerce a.button:hover,
+.woocommerce button.button:hover,
+.woocommerce input.button:hover,
+.woocommerce #respond input#submit:hover {
+	border-color: var(--ca-oro-hondo);
+	background-color: var(--ca-oro-hondo);
+	color: #fff;
+}
+
+.elementor-widget-button .elementor-button:focus-visible,
+.woocommerce a.button:focus-visible,
+.woocommerce button.button:focus-visible,
+.woocommerce input.button:focus-visible,
+.woocommerce #respond input#submit:focus-visible {
+	outline: 2px solid var(--ca-oro-hondo);
+	outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.elementor-widget-button .elementor-button,
+	.woocommerce a.button,
+	.woocommerce button.button,
+	.woocommerce input.button,
+	.woocommerce #respond input#submit {
+		transition: none;
+	}
+}
