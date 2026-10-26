@@ -566,8 +566,8 @@
 (function () {
   var NUM = "56977942117";
   var w = document.createElement("div"); w.className = "wa-bot";
-  w.innerHTML = '<button type="button" class="wa-fab" aria-expanded="false" aria-controls="wa-panel">WhatsApp</button>' +
-    '<form class="wa-panel" id="wa-panel" hidden><strong>Hola, soy el asistente de Café Alegra</strong>' +
+  w.innerHTML = '<button type="button" class="wa-fab" aria-expanded="false" aria-controls="wa-panel" aria-label="Escríbenos por WhatsApp"><svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true"><path fill="#fff" d="M16 3C8.8 3 3 8.8 3 16c0 2.3.6 4.5 1.7 6.4L3 29l6.8-1.8c1.8 1 3.9 1.5 6.2 1.5 7.2 0 13-5.800 13-13S23.200 3 16 3zm0 23.700c-2 0-3.900-.5-5.500-1.500l-.4-.2-4 1 1.100-3.900-.3-.4C5.800 20.100 5.300 18.100 5.300 16 5.300 10.100 10.100 5.300 16 5.300S26.700 10.100 26.700 16 21.900 26.700 16 26.700zm5.900-8c-.3-.2-1.900-.9-2.200-1-.3-.1-.5-.2-.7.200-.2.300-.8 1-1 1.200-.2.200-.4.200-.7.100-.3-.2-1.400-.5-2.600-1.600-1-.9-1.600-1.900-1.800-2.200-.2-.3 0-.5.100-.7l.5-.5c.1-.2.200-.3.300-.5.100-.2 0-.4 0-.5-.1-.2-.7-1.700-1-2.300-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.100-.8.400-.3.300-1 1-1 2.500s1.100 2.900 1.200 3.100c.2.200 2.100 3.300 5.200 4.500 3.100 1.200 3.100.8 3.600.8.600-.1 1.900-.8 2.100-1.500.3-.7.300-1.300.2-1.500-.1-.1-.3-.2-.6-.4z"/></svg><span>¿Hablamos?</span></button>' +
+    '<form class="wa-panel" id="wa-panel" hidden><div class="wa-head"><span class="wa-av">☕</span><div><strong>Café Alegra</strong><small>Te respondemos por WhatsApp</small></div></div><p class="wa-hi">Hola 👋 Cuéntanos qué buscas y seguimos la conversación en WhatsApp.</p>' +
     '<label>¿Cómo te llamas?<input name="n" required autocomplete="given-name"></label>' +
     '<label>¿Qué buscas?<select name="q"><option>Café de especialidad</option><option>Café de higos</option><option>Café de trigo</option><option>Packs</option><option>Complementos</option><option>Café para mi negocio</option><option>Otra consulta</option></select></label>' +
     '<label>Cuéntanos más (opcional)<textarea name="m" rows="2"></textarea></label>' +
