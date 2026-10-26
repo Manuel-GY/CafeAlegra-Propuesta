@@ -468,3 +468,15 @@ body[data-nav="inicio"] :is(#main,#main [id]){scroll-margin-top:6rem}
 .nav-brand .logo .wm b{font-size:1.2rem;letter-spacing:.12em}
 @media(max-width:359px){.nav-brand .logo .wm b{font-size:1rem;letter-spacing:.08em}}
 @media print{.topbar,.site-header,.site-footer,.drawer,.modal{display:none}}
+
+/* Carrusel de marca */
+.brand-car{position:relative;overflow:hidden;background:var(--espresso,#1b120c)}
+.brand-car .track{display:flex;transition:transform .8s ease}
+.brand-car .slide{min-width:100%;position:relative;display:flex;align-items:center;min-height:300px;padding:2rem var(--pad,1.5rem);color:#f7f1e8;background:#2b1b10;overflow:hidden}
+.brand-car .slide img{position:absolute;right:4%;top:8%;height:84%;width:40%;object-fit:contain}
+.brand-car .slide div{position:relative;z-index:1;max-width:560px;margin-left:max(0px,calc((100vw - var(--max,1200px))/2))}
+.brand-car h2{color:#f7f1e8;margin:.3rem 0 .6rem}.brand-car p{color:rgba(247,241,232,.82)}
+.brand-car .dots{position:absolute;bottom:.8rem;left:0;right:0;display:flex;justify-content:center;gap:.5rem}
+.brand-car .dots button{width:10px;height:10px;border-radius:50%;border:0;background:rgba(247,241,232,.4);cursor:pointer;padding:0}
+.brand-car .dots button[aria-current="true"]{background:#e3b878}
+@media(max-width:700px){.brand-car .slide img{opacity:.25;width:60%}}

@@ -554,3 +554,12 @@
 
   observe();
 })();
+
+(function () {
+  var c = document.querySelector("[data-brand-car]"); if (!c) return;
+  var tr = c.querySelector(".track"), n = tr.children.length, i = 0, dots = c.querySelectorAll(".dots button"), t;
+  function go(k) { i = (k + n) % n; tr.style.transform = "translateX(-" + (i * 100) + "%)"; dots.forEach(function (d, j) { d.setAttribute("aria-current", j === i ? "true" : "false"); }); }
+  function play() { clearInterval(t); if (!matchMedia("(prefers-reduced-motion: reduce)").matches) t = setInterval(function () { go(i + 1); }, 5000); }
+  dots.forEach(function (d, j) { d.addEventListener("click", function () { go(j); play(); }); });
+  c.addEventListener("mouseenter", function () { clearInterval(t); }); c.addEventListener("mouseleave", play); play();
+})();
