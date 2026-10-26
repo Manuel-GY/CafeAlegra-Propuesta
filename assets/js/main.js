@@ -171,8 +171,7 @@
       "<strong>" + money(p.price * it.qty) + '</strong></div><button class="rm" type="button" data-rm="' + p.id + '">Quitar</button></div></div>';
   }
   function shipBar(t) {
-    return '<div class="ship">' + (t.net === 0 ? "Envío gratis desde " + money(window.FREE_SHIP) + "." : t.free ? "<strong>¡Tienes envío gratis!</strong> Tu pedido supera " + money(window.FREE_SHIP) + "." : "Te faltan <strong>" + money(t.missing) + "</strong> para el envío gratis.") +
-      '<div class="bar-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + t.pct + '" aria-label="Progreso hacia envío gratis"><div class="bar-fill" style="width:' + t.pct + '%"></div></div></div>';
+    return "";
   }
   function renderDrawer() {
     var items = Cart.items(), t = Cart.totals(), b = $("[data-drawer-body]", dr), f = $("[data-drawer-foot]", dr);
@@ -388,7 +387,7 @@
       }).join("");
       if (seals) seals = '<div class="seals" style="margin:1.5rem 0">' + seals + "</div>";
       pd.innerHTML = '<div class="pd"><div class="pd-img reveal"><img src="assets/img/' + p.img + '" alt="' + p.name + '"></div><div class="reveal"><span class="eyebrow">' + c.name + "</span><h1>" + p.name + '</h1><p class="lead" style="margin-bottom:1rem">' + p.short + '</p><ul class="notes">' + p.notes.map(function (n) { return "<li>" + n + "</li>"; }).join("") + '</ul><dl class="product-facts"><div><dt>Formato</dt><dd>' + p.size + '</dd></div><div><dt>Origen o sabor</dt><dd>' + p.sub + '</dd></div>' + (p.grind ? '<div><dt>Presentación</dt><dd>' + (p.grind === "grano" ? "Grano entero" : "Molido") + "</dd></div>" : "") + '</dl><div class="price"><span>' + money(p.price) + "</span>" + (off ? "<del>" + money(p.was) + "</del><small style=\"font:500 .8rem var(--sans);color:var(--oro-hondo)\">-" + off + "%</small>" : "") + "</div>" +
-        '<p style="color:var(--suave);font-size:.9rem;margin-top:.5rem">Envío gratis desde ' + money(window.FREE_SHIP) + '.</p><div class="buy"><div class="qty" role="group" aria-label="Cantidad"><button type="button" data-pq="-1" aria-label="Disminuir">' + ic("minus") + '</button><output id="pq" aria-live="polite">1</output><button type="button" data-pq="1" aria-label="Aumentar">' + ic("plus") + '</button></div><button class="btn" type="button" id="pd-add">Añadir al carrito</button></div>' + seals +
+        '<div class="buy"><div class="qty" role="group" aria-label="Cantidad"><button type="button" data-pq="-1" aria-label="Disminuir">' + ic("minus") + '</button><output id="pq" aria-live="polite">1</output><button type="button" data-pq="1" aria-label="Aumentar">' + ic("plus") + '</button></div><button class="btn" type="button" id="pd-add">Añadir al carrito</button></div>' + seals +
         '<details class="acc" open><summary>Perfil y descripción</summary><div class="c"><p>' + p.desc + '</p></div></details><details class="acc"><summary>Cómo prepararlo</summary><div class="c"><p>' + p.prep + '</p></div></details><details class="acc"><summary>Envíos</summary><div class="c"><p>' + window.SHIPPING_NOTE + "</p></div></details></div></div>";
       $("h1", pd).textContent = p.referenceName;
       $$(".product-facts dd", pd)[2].textContent = presentation(p);
@@ -438,7 +437,7 @@
       cp.innerHTML = '<div class="cart-wrap"><div>' + shipBar(t) + items.map(function (i) { return lineHTML(i); }).join("") + '<p style="margin-top:1.5rem"><a class="link" href="tienda.html">Seguir comprando</a></p></div>' +
         '<aside class="sum" aria-label="Resumen del pedido"><h2 style="font-size:1.6rem">Resumen</h2><form class="coupon" data-coupon><label class="sr-only" for="cp-in">Código de cupón</label><input id="cp-in" placeholder="Código de cupón" autocomplete="off" value="' + (Cart.coupon() || "") + '"><button class="btn sm ghost" type="submit">Aplicar</button></form><p class="msg" data-cmsg role="status"></p>' +
         '<dl><div class="r"><dt>Subtotal</dt><dd style="margin:0">' + money(t.sub) + "</dd></div>" + (t.disc ? '<div class="r"><dt>Cupón ' + window.COUPON.code + " (-" + window.COUPON.pct + '%)</dt><dd style="margin:0">-' + money(t.disc) + "</dd></div>" : "") +
-        '<div class="r"><dt>Envío</dt><dd style="margin:0">' + (t.free ? "Gratis" : "Se calcula al pagar") + '</dd></div><div class="r t"><dt>Total</dt><dd style="margin:0">' + money(t.net) + '</dd></div></dl><button class="btn block" type="button" data-checkout>Finalizar compra</button><p style="font-size:.8rem;color:var(--suave);margin:1rem 0 0">' + ic("lock") + ' Propuesta de rediseño: el pago es simulado.</p></aside></div>';
+        '<div class="r"><dt>Envío</dt><dd style="margin:0">' + "Se calcula al pagar" + '</dd></div><div class="r t"><dt>Total</dt><dd style="margin:0">' + money(t.net) + '</dd></div></dl><button class="btn block" type="button" data-checkout>Finalizar compra</button><p style="font-size:.8rem;color:var(--suave);margin:1rem 0 0">' + ic("lock") + ' Propuesta de rediseño: el pago es simulado.</p></aside></div>';
       $("[data-coupon]").addEventListener("submit", function (e) {
         e.preventDefault();
         var v = $("#cp-in").value.trim().toUpperCase(), m = $("[data-cmsg]");
