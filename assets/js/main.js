@@ -100,7 +100,7 @@
       '<nav class="nav" id="nav" aria-label="Principal"><button class="ic-btn nav-close" type="button" data-nav-close aria-label="Cerrar menú">' + ic("close") + '</button><div class="nav-brand only-mobile">' + logo(false) + '</div><ul>' +
       NAV.map(function (n) { return '<li><a href="' + n[1] + '"' + (cur === n[0] ? ' aria-current="page"' : "") + ">" + n[2] + "</a></li>"; }).join("") +
       '<li class="only-mobile"><a href="acceder.html"' + (cur === "acceder" ? ' aria-current="page"' : "") + ">Acceder</a></li></ul>" +
-      '<div class="nav-foot only-mobile"><a class="btn gold block" href="https://wa.me/56977942117" target="_blank" rel="noopener">' + ic("whatsapp") + ' WhatsApp</a><p>Despachos a todo Chile<br>Envío gratis desde ' + money(window.FREE_SHIP) + "</p></div></nav>" +
+      '<div class="nav-foot only-mobile"><a class="btn gold block" href="https://wa.me/56977942117" target="_blank" rel="noopener">' + ic("whatsapp") + ' WhatsApp</a><p>Despachos a todo Chile</p></div></nav>" +
       '<div class="actions"><a class="ic-btn" href="acceder.html"' + (cur === "acceder" ? ' aria-current="page"' : "") + ">" + ic("user") + '<span class="lbl" data-user-lbl>' + (user ? "Hola, " + "" : "Acceder") + "</span></a>" +
       '<button class="ic-btn" type="button" data-cart-open aria-label="Abrir carrito" aria-haspopup="dialog">' + ic("cart") + '<span class="count" data-cart-count data-n="0">0</span></button>' +
       '<button class="ic-btn burger" type="button" data-nav-open aria-controls="nav" aria-expanded="false" aria-label="Abrir menú">' + ic("menu") + "</button></div></div></header>" +
