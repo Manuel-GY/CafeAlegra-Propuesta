@@ -563,3 +563,21 @@
   dots.forEach(function (d, j) { d.addEventListener("click", function () { go(j); play(); }); });
   c.addEventListener("mouseenter", function () { clearInterval(t); }); c.addEventListener("mouseleave", play); play();
 })();
+(function () {
+  var NUM = "56977942117";
+  var w = document.createElement("div"); w.className = "wa-bot";
+  w.innerHTML = '<button type="button" class="wa-fab" aria-expanded="false" aria-controls="wa-panel">WhatsApp</button>' +
+    '<form class="wa-panel" id="wa-panel" hidden><strong>Hola, soy el asistente de Café Alegra</strong>' +
+    '<label>¿Cómo te llamas?<input name="n" required autocomplete="given-name"></label>' +
+    '<label>¿Qué buscas?<select name="q"><option>Café de especialidad</option><option>Café de higos</option><option>Café de trigo</option><option>Packs</option><option>Complementos</option><option>Café para mi negocio</option><option>Otra consulta</option></select></label>' +
+    '<label>Cuéntanos más (opcional)<textarea name="m" rows="2"></textarea></label>' +
+    '<button type="submit" class="btn gold block">Continuar en WhatsApp</button></form>';
+  document.body.appendChild(w);
+  var fab = w.querySelector(".wa-fab"), f = w.querySelector("form");
+  fab.addEventListener("click", function () { var o = f.hidden; f.hidden = !o; fab.setAttribute("aria-expanded", o ? "true" : "false"); });
+  f.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var d = new FormData(f), t = "Hola, soy " + d.get("n") + ". Busco: " + d.get("q") + "." + (d.get("m") ? " " + d.get("m") : "");
+    window.open("https://wa.me/" + NUM + "?text=" + encodeURIComponent(t), "_blank", "noopener");
+  });
+})();

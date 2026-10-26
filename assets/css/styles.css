@@ -480,3 +480,10 @@ body[data-nav="inicio"] :is(#main,#main [id]){scroll-margin-top:6rem}
 .brand-car .dots button{width:10px;height:10px;border-radius:50%;border:0;background:rgba(247,241,232,.4);cursor:pointer;padding:0}
 .brand-car .dots button[aria-current="true"]{background:#e3b878}
 @media(max-width:700px){.brand-car .slide img{opacity:.25;width:60%}}
+/* Asistente WhatsApp */
+.wa-bot{position:fixed;right:1rem;bottom:1rem;z-index:60;display:flex;flex-direction:column;align-items:flex-end;gap:.6rem}
+.wa-fab{background:#25d366;color:#fff;border:0;border-radius:999px;padding:.8rem 1.2rem;font:500 .9rem Jost,sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.wa-panel{width:min(320px,calc(100vw - 2rem));background:#fffdf8;color:#2b2118;border-radius:12px;padding:1rem;box-shadow:0 8px 30px rgba(0,0,0,.3);display:grid;gap:.7rem}
+.wa-panel[hidden]{display:none}
+.wa-panel label{display:grid;gap:.25rem;font-size:.85rem}
+.wa-panel input,.wa-panel select,.wa-panel textarea{padding:.5rem;border:1px solid #d8c8b4;border-radius:6px;font:inherit}
