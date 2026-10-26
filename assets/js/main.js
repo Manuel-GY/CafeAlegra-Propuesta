@@ -81,6 +81,7 @@
   /* ---------- Plantillas: header y footer ---------- */
   var NAV = [
     ["tienda", "tienda.html", "Nuestra tienda"],
+    ["tradicion", "cafes-de-tradicion-chilena.html", "Tradición chilena"],
     ["seguimiento", "seguimiento.html", "Seguimiento de pedidos"],
     ["nosotros", "nosotros.html", "Nosotros"],
     ["negocio", "cafe-para-tu-negocio.html", "Café para tu negocio"],
@@ -95,7 +96,7 @@
   if (hdr) {
     var user = store.get("ca_user", null);
     hdr.outerHTML =
-      '<div class="topbar">Catálogo minorista · Precios con IVA incluido · Demo sin pagos reales</div>' +
+      '<div class="topbar">Maqueta para revisión · Precios con IVA incluido · Sin pagos reales</div>' +
       '<header class="site-header"><div class="wrap bar">' + logo(false) +
       '<nav class="nav" id="nav" aria-label="Principal"><button class="ic-btn nav-close" type="button" data-nav-close aria-label="Cerrar menú">' + ic("close") + '</button><div class="nav-brand only-mobile">' + logo(false) + '</div><ul>' +
       NAV.map(function (n) { return '<li><a href="' + n[1] + '"' + (cur === n[0] ? ' aria-current="page"' : "") + ">" + n[2] + "</a></li>"; }).join("") +
@@ -111,9 +112,9 @@
   if (ftr) {
     ftr.outerHTML =
       '<footer class="site-footer"><div class="wrap"><div class="fgrid"><div>' + logo(true) +
-      '<p style="margin-top:1.4rem;max-width:34ch">Tostaduría artesanal de Rancagua. Cafés de origen de Guatemala, Bolivia y Colombia, y ensambles Praliné.</p>' +
+      '<p style="margin-top:1.4rem;max-width:34ch">Tostaduría artesanal de Rancagua. Café de especialidad y cafés de tradición chilena.</p>' +
       '<div class="social" role="group" aria-label="Redes sociales pendientes de confirmar"><span class="social-pending">' + ic("instagram") + ' Instagram</span><span class="social-pending">' + ic("facebook") + ' Facebook</span></div><p class="sm">Enlaces a redes sociales próximamente.</p></div>' +
-      '<div><h4>Tienda</h4><ul><li><a href="cafe-de-especialidad.html#origenes">Cafés de origen</a></li><li><a href="cafe-de-especialidad.html#sabores-de-autor">Ensambles Praliné</a></li></ul></div>' +
+      '<div><h4>Tienda</h4><ul><li><a href="cafe-de-especialidad.html#origenes">Café de especialidad</a></li><li><a href="cafe-de-especialidad.html#sabores-de-autor">Praliné / Sabores de Autor</a></li><li><a href="cafes-de-tradicion-chilena.html#higos">Café de higos</a></li><li><a href="complementos.html">Complementos</a></li></ul></div>' +
       '<div><h4>Café Alegra</h4><ul><li><a href="nosotros.html">Nosotros</a></li><li><a href="cafe-para-tu-negocio.html">Café para tu negocio</a></li><li><a href="blog.html">Blog</a></li><li><a href="cobertura.html">Cobertura y envíos</a></li><li><a href="brand-guide.html">Guía de marca</a></li></ul></div>' +
       '<div><h4>Ayuda</h4><ul><li><a href="contacto.html">Atención al cliente</a></li><li><a href="seguimiento.html">Seguimiento de pedidos</a></li><li><a href="privacidad.html">Política de privacidad</a></li><li><a href="terminos.html">Términos y condiciones</a></li><li><a href="https://wa.me/56977942117" target="_blank" rel="noopener">WhatsApp +56 9 7794 2117</a></li></ul></div></div>' +
       '<div class="legal"><span>© ' + new Date().getFullYear() + ' Café Alegra · Rancagua, Chile · cafealegrachile@gmail.com</span><span>Propuesta de rediseño: demostración navegable, sin pagos reales.</span></div></div></footer>';
@@ -304,7 +305,7 @@
     var from = Math.min.apply(null, prices) !== Math.max.apply(null, prices);
     var off = p.was > p.price ? Math.round((1 - p.price / p.was) * 100) : 0;
     return '<article class="prod reveal"><a class="ph" href="producto.html?id=' + p.id + '" tabindex="-1" aria-hidden="true">' +
-      (p.notes[0] === "Sin cafeína" ? '<span class="tag">Sin cafeína</span>' : "") + (off ? '<span class="tag sale">-' + off + "%</span>" : "") +
+      (p.notes[0] === "Sin cafeína" ? '<span class="tag">Sin cafeína</span>' : "") + ((window.SOLDOUT || []).indexOf(p.reference) > -1 ? '<span class="tag sale">Agotado</span>' : "") + (off ? '<span class="tag sale">-' + off + "%</span>" : "") +
       '<img src="assets/img/' + p.img + '" alt="" loading="lazy"></a><div class="bd"><span class="k">' + p.sub + '</span><h3><a href="producto.html?id=' + p.id + '">' + p.referenceName + '</a></h3><p class="variant-preview">' + variants.map(function (x) { return x.size + " · " + presentation(x); }).join(" / ") + '</p><p class="sm">' + p.short + '</p>' +
       '<div class="price"><span>' + (from ? "Desde " : "") + money(Math.min.apply(null, prices)) + "</span>" + (off ? '<del><span class="sr-only">Precio original </span>' + money(p.was) + "</del>" : "") + '</div><a class="btn ghost sm" href="producto.html?id=' + p.id + '" aria-label="Elegir presentación: ' + p.referenceName + '">Elegir presentación</a></div></article>';
   }

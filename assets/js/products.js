@@ -46,6 +46,8 @@ window.PRODUCTS = ORIGINS.flatMap(function (origin) {
 }));
 window.SHIPPING_NOTE = "El catálogo minorista no especifica tarifas ni plazos de envío. Confirmar condiciones con Café Alegra. El checkout de este demo es simulado.";
 window.FREE_SHIP = 40000;
+// Demostración del estado "Agotado": en el sitio real se activa desde WooCommerce.
+window.SOLDOUT = ["praline-pistacho"];
 window.COUPON = { code: "MIPRIMERCAFE", pct: 0 };
 window.money = n => "$" + Math.round(n).toLocaleString("es-CL");
 window.findProduct = id => window.PRODUCTS.find(p => p.id === id);
