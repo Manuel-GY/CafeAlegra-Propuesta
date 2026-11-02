@@ -1,4 +1,12 @@
 :root {
+  /* Tokens de etiquetas reales Café Alegra */
+  --cobrizo: #9b552b;
+  --pistacho: #507b2e;
+  --avellana-rojo: #9c182f;
+  --cardamomo: #c0ca80;
+  --cafe-huila: #443123;
+  --rojo-huila: #bf1818;
+
 	--ca-espresso: #1b120c;
 	--ca-mocha: #4a2f1e;
 	--ca-crema: #f7f1e8;
@@ -74,4 +82,225 @@ body {
 	.woocommerce #respond input#submit {
 		transition: none;
 	}
+}
+
+
+/* ==========================================================================
+   Plantilla de Categoría: Café de Especialidad (Elementor & WooCommerce)
+   ========================================================================== */
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 99px;
+  background: rgba(217, 179, 106, 0.15);
+  border: 1px solid rgba(217, 179, 106, 0.35);
+  color: var(--ca-oro-claro);
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+.subcat-bar {
+  background: #ffffff;
+  border-bottom: 1px solid var(--ca-linea);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  box-shadow: 0 4px 14px rgba(42, 29, 20, 0.04);
+}
+.subcat-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 0;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.subcat-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1.15rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--ca-espresso);
+  background: rgba(42, 29, 20, 0.04);
+  border: 1px solid rgba(42, 29, 20, 0.09);
+  border-radius: 99px;
+  transition: all 0.25s ease;
+}
+.subcat-link:hover, .subcat-link.is-active {
+  background: var(--cobrizo);
+  border-color: var(--cobrizo);
+  color: #ffffff !important;
+}
+.sec-praline {
+  background: linear-gradient(180deg, rgba(247, 242, 234, 0.7) 0%, rgba(243, 237, 227, 0.85) 100%);
+  border-top: 1px solid var(--ca-linea);
+  border-bottom: 1px solid var(--ca-linea);
+  padding: 4rem 0;
+}
+.palette-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 1.2rem;
+}
+.badge-tag {
+  display: inline-block;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.65rem;
+  border-radius: 3px;
+  font-weight: 600;
+}
+.badge-tag.cobrizo { background: rgba(155, 85, 43, 0.12); color: var(--cobrizo); }
+.badge-tag.pistacho { background: rgba(80, 123, 46, 0.14); color: var(--pistacho); }
+.badge-tag.avellana { background: rgba(156, 24, 47, 0.12); color: var(--avellana-rojo); }
+.badge-tag.cardamomo { background: rgba(192, 202, 128, 0.35); color: #4a5416; }
+
+.pillars-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+@media (min-width: 860px) {
+  .pillars-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.pillar-card {
+  background: #ffffff;
+  border: 1px solid var(--ca-linea);
+  border-radius: 6px;
+  padding: 2.2rem 1.8rem 2rem;
+  text-align: left;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(42, 29, 20, 0.03);
+}
+.pillar-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--cobrizo);
+}
+.pillar-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 36px -8px rgba(27, 18, 12, 0.15);
+}
+.pillar-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--cobrizo);
+  margin-bottom: 0.5rem;
+}
+.pillar-card h3 {
+  font-size: 1.35rem;
+  margin: 0 0 0.6rem;
+  color: var(--ca-espresso);
+  line-height: 1.2;
+}
+.pillar-card p {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--ca-suave);
+  margin: 0;
+}
+.woocommerce span.onsale.sca-badge {
+  background-color: var(--cobrizo);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 2px;
+}
+
+/* Proporción equilibrada para imágenes de producto en catálogo WooCommerce */
+.woocommerce ul.products li.product a img,
+.woocommerce-page ul.products li.product a img,
+.elementor-widget-wc-products ul.products li.product a img {
+  height: 220px !important;
+  max-height: 220px !important;
+  width: auto !important;
+  max-width: 85% !important;
+  object-fit: contain !important;
+  margin: 0 auto 1rem auto !important;
+  display: block !important;
+  filter: drop-shadow(0 10px 16px rgba(42, 29, 20, 0.14));
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.woocommerce ul.products li.product:hover a img,
+.woocommerce-page ul.products li.product:hover a img,
+.elementor-widget-wc-products ul.products li.product:hover a img {
+  transform: translateY(-4px) scale(1.05);
+  filter: drop-shadow(0 14px 22px rgba(42, 29, 20, 0.2));
+}
+
+.grid.g3[data-grid],
+.woocommerce ul.products.columns-3 {
+  max-width: 1040px;
+  margin-inline: auto;
+}
+
+/* Grilla de 3 columnas compacta para WooCommerce */
+.g3, .grid.g3,
+.woocommerce ul.products.columns-3 {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 1.5rem !important;
+  max-width: 1040px !important;
+  margin-inline: auto !important;
+}
+@media (min-width: 620px) {
+  .g3, .grid.g3,
+  .woocommerce ul.products.columns-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+@media (min-width: 940px) {
+  .g3, .grid.g3,
+  .woocommerce ul.products.columns-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Tarjetas compactas tipo boutique en WooCommerce */
+.woocommerce ul.products li.product {
+  border: 1px solid var(--ca-linea) !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+  background: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(42, 29, 20, 0.04) !important;
+  padding: 0 !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s !important;
+}
+.woocommerce ul.products li.product:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 14px 28px -6px rgba(27, 18, 12, 0.14) !important;
+  border-color: rgba(155, 85, 43, 0.35) !important;
+}
+.woocommerce ul.products li.product a.woocommerce-LoopProduct-link {
+  display: block !important;
+  padding: 1.1rem !important;
 }

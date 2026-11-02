@@ -9,7 +9,7 @@
     set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   };
   var money = window.money, P = window.PRODUCTS || [], find = window.findProduct;
-  var pendingCatalogPages = ["cafe-de-trigo.html", "packs.html", "complementos.html", "set-descubrimiento.html"];
+  var pendingCatalogPages = ["packs.html", "set-descubrimiento.html"];
   if (pendingCatalogPages.indexOf(location.pathname.split("/").pop()) !== -1) {
     $("#main").innerHTML = '<section class="section"><div class="wrap"><h1>Catálogo pendiente</h1><p class="lead">Esta línea no aparece en el catálogo minorista enviado. No se ofrecen productos, precios ni promociones sin respaldo del cliente.</p><a class="btn" href="tienda.html">Ver productos del catálogo actualizado</a></div></section>';
   }
@@ -81,10 +81,8 @@
   /* ---------- Plantillas: header y footer ---------- */
   var NAV = [
     ["tienda", "tienda.html", "Nuestra tienda"],
-    ["tradicion", "cafes-de-tradicion-chilena.html", "Tradición chilena"],
-    ["seguimiento", "seguimiento.html", "Seguimiento de pedidos"],
-    ["nosotros", "nosotros.html", "Nosotros"],
     ["negocio", "cafe-para-tu-negocio.html", "Café para tu negocio"],
+    ["seguimiento", "seguimiento.html", "Seguimiento de pedidos"],
     ["contacto", "contacto.html", "Atención al cliente"]
   ];
   var cur = document.body.getAttribute("data-nav") || "";
@@ -114,8 +112,8 @@
       '<footer class="site-footer"><div class="wrap"><div class="fgrid"><div>' + logo(true) +
       '<p style="margin-top:1.4rem;max-width:34ch">Tostaduría artesanal de Rancagua. Café de especialidad y cafés de tradición chilena.</p>' +
       '<div class="social" role="group" aria-label="Redes sociales pendientes de confirmar"><span class="social-pending">' + ic("instagram") + ' Instagram</span><span class="social-pending">' + ic("facebook") + ' Facebook</span></div><p class="sm">Enlaces a redes sociales próximamente.</p></div>' +
-      '<div><h4>Tienda</h4><ul><li><a href="cafe-de-especialidad.html#origenes">Café de especialidad</a></li><li><a href="cafe-de-especialidad.html#sabores-de-autor">Praliné / Sabores de Autor</a></li><li><a href="cafes-de-tradicion-chilena.html#higos">Café de higos</a></li><li><a href="complementos.html">Complementos</a></li></ul></div>' +
-      '<div><h4>Café Alegra</h4><ul><li><a href="nosotros.html">Nosotros</a></li><li><a href="cafe-para-tu-negocio.html">Café para tu negocio</a></li><li><a href="blog.html">Blog</a></li><li><a href="cobertura.html">Cobertura y envíos</a></li><li><a href="brand-guide.html">Guía de marca</a></li></ul></div>' +
+      '<div><h4>Nuestra Tienda</h4><ul><li><a href="cafe-de-especialidad.html">Café de especialidad</a></li><li><a href="cafe-de-especialidad.html#sabores-de-autor">Praliné / Sabores de Autor</a></li><li><a href="cafes-de-tradicion-chilena.html">Cafés de Nuestra Tradición</a></li><li><a href="complementos.html">Complementos cafeteros</a></li></ul></div>' +
+      '<div><h4>Café Alegra</h4><ul><li><a href="index.html">Nuestra Casa de Cafés</a></li><li><a href="cafe-para-tu-negocio.html">Café para tu negocio</a></li><li><a href="cobertura.html">Cobertura y envíos</a></li><li><a href="brand-guide.html">Guía de marca</a></li></ul></div>' +
       '<div><h4>Ayuda</h4><ul><li><a href="contacto.html">Atención al cliente</a></li><li><a href="seguimiento.html">Seguimiento de pedidos</a></li><li><a href="privacidad.html">Política de privacidad</a></li><li><a href="terminos.html">Términos y condiciones</a></li><li><a href="https://wa.me/56977942117" target="_blank" rel="noopener">WhatsApp +56 9 7794 2117</a></li></ul></div></div>' +
       '<div class="legal"><span>© ' + new Date().getFullYear() + ' Café Alegra · Rancagua, Chile · cafealegrachile@gmail.com</span><span>Propuesta de rediseño: demostración navegable, sin pagos reales.</span></div></div></footer>';
   }
@@ -287,7 +285,7 @@
   function observe(root) { $$(".reveal", root || document).forEach(function (el) { io ? io.observe(el) : el.classList.add("in"); }); }
 
   /* ---------- Tarjeta de producto y grillas ---------- */
-  function presentation(p) { return p.grind === "grano" ? "Grano entero" : "Molienda media"; }
+  function presentation(p) { if (!p.grind) return p.size || "Estándar"; return p.grind === "grano" ? "Grano entero" : "Molienda media"; }
   function roastProfile(p) {
     if (!p.roast) return "";
     return '<section class="roast-profile" aria-label="Nivel de tueste"><span class="roast-kicker">Perfil de tueste</span><h2>Tueste: ' + p.roast.label + '</h2><div class="roast-bar" aria-hidden="true">' +
@@ -304,9 +302,18 @@
     var prices = variants.map(function (x) { return x.price; });
     var from = Math.min.apply(null, prices) !== Math.max.apply(null, prices);
     var off = p.was > p.price ? Math.round((1 - p.price / p.was) * 100) : 0;
+    var scaTag = "";
+    if (p.desc && p.desc.indexOf("SCA") > -1) {
+      var scaMatch = p.desc.match(/(\d{2}\s*puntos\s*SCA|\d{2}\s*SCA)/i);
+      if (scaMatch) scaTag = '<span class="tag sca">' + scaMatch[0] + '</span>';
+    }
     return '<article class="prod reveal"><a class="ph" href="producto.html?id=' + p.id + '" tabindex="-1" aria-hidden="true">' +
-      (p.notes[0] === "Sin cafeína" ? '<span class="tag">Sin cafeína</span>' : "") + ((window.SOLDOUT || []).indexOf(p.reference) > -1 ? '<span class="tag sale">Agotado</span>' : "") + (off ? '<span class="tag sale">-' + off + "%</span>" : "") +
-      '<img src="assets/img/' + p.img + '" alt="" loading="lazy"></a><div class="bd"><span class="k">' + p.sub + '</span><h3><a href="producto.html?id=' + p.id + '">' + p.referenceName + '</a></h3><p class="variant-preview">' + variants.map(function (x) { return x.size + " · " + presentation(x); }).join(" / ") + '</p><p class="sm">' + p.short + '</p>' +
+      (p.notes[0] === "Sin cafeína" ? '<span class="tag">Sin cafeína</span>' : (scaTag || "")) + ((window.SOLDOUT || []).indexOf(p.reference) > -1 ? '<span class="tag sale">Agotado</span>' : "") + (off ? '<span class="tag sale">-' + off + "%</span>" : "") +
+      '<img src="assets/img/' + p.img + '" alt="" loading="lazy"></a><div class="bd"><span class="k">' + p.sub + '</span><h3><a href="producto.html?id=' + p.id + '">' + p.referenceName + '</a></h3><p class="variant-preview">' + (function(vars) {
+        var sizes = vars.map(function(v){ return v.size; }).filter(function(v,i,a){ return a.indexOf(v) === i; });
+        var grinds = vars.map(function(v){ return presentation(v); }).filter(Boolean).filter(function(v,i,a){ return a.indexOf(v) === i; });
+        return sizes.join(" y ") + (grinds.length ? " · " + grinds.join(" o ") : "");
+      })(variants) + '</p><p class="sm">' + p.short + '</p>' +
       '<div class="price"><span>' + (from ? "Desde " : "") + money(Math.min.apply(null, prices)) + "</span>" + (off ? '<del><span class="sr-only">Precio original </span>' + money(p.was) + "</del>" : "") + '</div><a class="btn ghost sm" href="producto.html?id=' + p.id + '" aria-label="Elegir presentación: ' + p.referenceName + '">Elegir presentación</a></div></article>';
   }
   window.caCard = card;
@@ -418,6 +425,83 @@
       $$("[data-pq]", pd).forEach(function (b) { b.addEventListener("click", function () { qn = Math.max(1, Math.min(99, qn + parseInt(b.dataset.pq, 10))); out.textContent = qn; }); });
       $("#pd-add").addEventListener("click", function () { Cart.add(p.id, qn); toast("Añadido: " + p.name + ' <a href="carrito.html">Ver carrito</a>'); });
       $(".product-facts", pd).insertAdjacentHTML("afterend", '<p class="notice">Fuente: catálogo minorista del cliente, ficha de la página ' + p.sourcePage + ' y precios de la página 11. IVA incluido. La imagen del PDF ilustra el producto y puede mostrar otro formato.</p>');
+            /* Lógica de "Saber Más" (oculto por defecto, visible por café) */
+      var stories = window.COFFEE_STORIES || {};
+      var storyKey = p.reference;
+      if (!stories[storyKey] && p.cat === "tradicion") storyKey = p.id.indexOf("higo") > -1 ? "cafe-de-higos" : "cafe-de-trigo";
+      var story = stories[storyKey];
+
+      if (story) {
+        var storyHTML = '<div class="saber-mas-wrap" style="margin-top:1.8rem">' +
+          '<button type="button" class="btn ghost block copper-btn" id="btn-toggle-story" aria-expanded="false" aria-controls="box-story" style="border-color:var(--cobrizo);color:var(--cobrizo);font-weight:600">' +
+            ic("star") + ' ¿Quieres saber más? Conoce su historia y origen' +
+          '</button>' +
+          '<div id="box-story" class="box-saber-mas" style="display:none;" aria-hidden="true">' +
+            '<span class="badge-tag cobrizo">' + story.kicker + '</span>' +
+            '<h2 style="font-size:clamp(1.6rem,3.5vw,2.2rem);margin:.4rem 0 .5rem">' + story.title + '</h2>' +
+            '<p class="lead" style="color:var(--espresso);font-weight:500;margin-bottom:1.2rem">' + story.lead + '</p>' +
+            '<p style="font-size:1.02rem;line-height:1.7;color:var(--suave);margin-bottom:1.5rem">' + story.body + '</p>' +
+            '<div class="story-facts"><dl style="margin:0;display:contents">' +
+              story.facts.map(function (f) { return '<div><dt>' + f.k + '</dt><dd>' + f.v + '</dd></div>'; }).join("") +
+            '</dl></div>' +
+            '<div class="acts" style="margin-top:2rem;align-items:center">' +
+              '<a class="btn gold" href="tienda.html">← Regresar a la tienda</a>' +
+              '<button type="button" class="btn ghost sm" id="btn-close-story">Ocultar historia</button>' +
+              '<a class="link" href="' + story.articleUrl + '">Leer artículo completo para SEO</a>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+
+        pd.querySelector(".pd").insertAdjacentHTML("afterend", storyHTML);
+
+      /* Inyección de Schema.org JSON-LD (Product + Offer) para SEO */
+      var existingSchema = document.getElementById("product-schema-jsonld");
+      if (existingSchema) existingSchema.remove();
+      var scriptSchema = document.createElement("script");
+      scriptSchema.id = "product-schema-jsonld";
+      scriptSchema.type = "application/ld+json";
+      var productSchemaData = {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": p.referenceName + " (" + p.size + ")",
+        "image": ["https://cafealegra.cl/assets/img/" + p.img],
+        "description": p.short + " " + p.desc,
+        "sku": "ALEGRA-" + p.id.toUpperCase(),
+        "brand": { "@type": "Brand", "name": "Café Alegra" },
+        "offers": {
+          "@type": "Offer",
+          "url": location.href,
+          "priceCurrency": "CLP",
+          "price": p.price,
+          "priceValidUntil": "2027-12-31",
+          "itemCondition": "https://schema.org/NewCondition",
+          "availability": (window.SOLDOUT || []).indexOf(p.reference) > -1 ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+          "seller": { "@type": "Organization", "name": "Café Alegra" }
+        }
+      };
+      scriptSchema.text = JSON.stringify(productSchemaData, null, 2);
+      document.head.appendChild(scriptSchema);
+
+
+        var btnToggle = $("#btn-toggle-story");
+        var boxStory = $("#box-story");
+        var btnClose = $("#btn-close-story");
+
+        function toggleStory(show) {
+          var isExpanded = show !== undefined ? show : (boxStory.style.display === "none");
+          boxStory.style.display = isExpanded ? "block" : "none";
+          boxStory.setAttribute("aria-hidden", isExpanded ? "false" : "true");
+          btnToggle.setAttribute("aria-expanded", isExpanded ? "true" : "false");
+          btnToggle.innerHTML = isExpanded ? (ic("close") + ' Ocultar historia') : (ic("star") + ' ¿Quieres saber más? Conoce su historia y origen');
+          if (isExpanded) {
+            boxStory.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }
+
+        btnToggle.addEventListener("click", function () { toggleStory(); });
+        btnClose.addEventListener("click", function () { toggleStory(false); btnToggle.scrollIntoView({ behavior: "smooth", block: "center" }); });
+      }
+
       var rel = $("[data-related]");
       if (rel) {
         var r = P.filter(function (x) { return x.cat === p.cat && x.reference !== p.reference; });
