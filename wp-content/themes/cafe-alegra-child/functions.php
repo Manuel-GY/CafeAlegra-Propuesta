@@ -136,3 +136,58 @@ function cafe_alegra_praline_palette_shortcode() {
     return ob_get_clean();
 }
 add_shortcode( 'cafe_alegra_praline_palette', 'cafe_alegra_praline_palette_shortcode' );
+
+/**
+ * Banner de Consentimiento de Cookies Nativo (Fallback para WordPress)
+ * Si no hay plugin de cookies (ej. Complianz / CookieYes) activo, despliega el banner corporativo.
+ */
+function cafe_alegra_render_cookie_consent_banner() {
+    // Si ya existe un plugin especializado de cookies, no duplicar el banner
+    if ( class_exists( 'COMPLIANZ' ) || function_exists( 'cookieyes_init' ) ) {
+        return;
+    }
+    ?>
+    <div id="ca-cookie-banner" class="cookie-banner" role="region" aria-label="Consentimiento de cookies">
+      <div class="wrap cookie-wrap">
+        <div class="cookie-text">
+          <div class="cookie-title"><strong>🍪 Tu privacidad en Café Alegra</strong></div>
+          <p>Utilizamos cookies esenciales para el funcionamiento de la tienda y analíticas para optimizar tu experiencia de compra. Puedes aceptar todas o navegar solo con las necesarias. Conoce más en nuestra <a href="<?php echo esc_url( home_url( '/politica-de-privacidad/' ) ); ?>">Política de privacidad</a>.</p>
+        </div>
+        <div class="cookie-actions">
+          <button type="button" class="btn ghost sm" id="ca-cookie-essential">Solo esenciales</button>
+          <button type="button" class="btn gold sm" id="ca-cookie-accept">Aceptar todas</button>
+        </div>
+      </div>
+    </div>
+    <script>
+    (function() {
+      var STORAGE_KEY = 'ca_cookie_consent';
+      var banner = document.getElementById('ca-cookie-banner');
+      if (!banner) return;
+      var consent = null;
+      try { consent = localStorage.getItem(STORAGE_KEY); } catch(e) {}
+      if (!consent) {
+        setTimeout(function() { banner.classList.add('is-visible'); }, 700);
+      }
+      function setConsent(type) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({ choice: type, timestamp: new Date().toISOString() }));
+          document.cookie = "ca_cookie_consent=" + type + "; path=/; max-age=" + (365*24*60*60);
+        } catch(e) {}
+        banner.classList.remove('is-visible');
+      }
+      var bAcc = document.getElementById('ca-cookie-accept');
+      var bEss = document.getElementById('ca-cookie-essential');
+      if (bAcc) bAcc.addEventListener('click', function() { setConsent('all'); });
+      if (bEss) bEss.addEventListener('click', function() { setConsent('essential'); });
+      document.addEventListener('click', function(e) {
+        if (e.target && e.target.matches('[data-open-cookie-banner]')) {
+          e.preventDefault();
+          banner.classList.add('is-visible');
+        }
+      });
+    })();
+    </script>
+    <?php
+}
+add_action( 'wp_footer', 'cafe_alegra_render_cookie_consent_banner', 100 );

@@ -304,3 +304,95 @@ body {
   display: block !important;
   padding: 1.1rem !important;
 }
+
+/* ==========================================================================
+   Banner de Consentimiento de Cookies (WordPress & Elementor)
+   ========================================================================== */
+.cookie-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99999;
+  background: rgba(27, 18, 12, 0.97);
+  color: var(--ca-crema);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(217, 179, 106, 0.35);
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+  transform: translateY(115%);
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  pointer-events: none;
+}
+.cookie-banner.is-visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+.cookie-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding: 1.2rem 1.5rem;
+  max-width: 1240px;
+  margin: 0 auto;
+  align-items: stretch;
+}
+@media (min-width: 860px) {
+  .cookie-wrap {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+}
+.cookie-text {
+  max-width: 74ch;
+}
+.cookie-title {
+  font-size: 0.95rem;
+  color: var(--ca-oro-claro);
+  margin-bottom: 0.25rem;
+}
+.cookie-text p {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: rgba(247, 241, 232, 0.85);
+  margin: 0;
+}
+.cookie-text a {
+  color: var(--ca-oro-claro);
+  text-decoration: underline;
+}
+.cookie-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+.cookie-actions .btn {
+  white-space: nowrap;
+  font-size: 0.75rem;
+  padding: 0.65rem 1.15rem;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.cookie-actions .btn.ghost {
+  border: 1px solid rgba(247, 241, 232, 0.4);
+  background: transparent;
+  color: var(--ca-crema);
+}
+.cookie-actions .btn.ghost:hover {
+  background: rgba(247, 241, 232, 0.1);
+  border-color: var(--ca-crema);
+}
+.cookie-actions .btn.gold {
+  border: 1px solid var(--ca-oro);
+  background: var(--ca-oro);
+  color: #fff;
+}
+.cookie-actions .btn.gold:hover {
+  background: var(--ca-oro-hondo);
+  border-color: var(--ca-oro-hondo);
+}

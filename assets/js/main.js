@@ -115,7 +115,7 @@
       '<div><h4>Nuestra Tienda</h4><ul><li><a href="cafe-de-especialidad.html">Café de especialidad</a></li><li><a href="cafe-de-especialidad.html#sabores-de-autor">Praliné / Sabores de Autor</a></li><li><a href="cafes-de-tradicion-chilena.html">Cafés de Nuestra Tradición</a></li><li><a href="complementos.html">Complementos cafeteros</a></li></ul></div>' +
       '<div><h4>Café Alegra</h4><ul><li><a href="index.html">Nuestra Casa de Cafés</a></li><li><a href="cafe-para-tu-negocio.html">Café para tu negocio</a></li><li><a href="cobertura.html">Cobertura y envíos</a></li><li><a href="brand-guide.html">Guía de marca</a></li></ul></div>' +
       '<div><h4>Ayuda</h4><ul><li><a href="contacto.html">Atención al cliente</a></li><li><a href="seguimiento.html">Seguimiento de pedidos</a></li><li><a href="privacidad.html">Política de privacidad</a></li><li><a href="terminos.html">Términos y condiciones</a></li><li><a href="https://wa.me/56977942117" target="_blank" rel="noopener">WhatsApp +56 9 7794 2117</a></li></ul></div></div>' +
-      '<div class="legal"><span>© ' + new Date().getFullYear() + ' Café Alegra · Rancagua, Chile · cafealegrachile@gmail.com</span><span>Propuesta de rediseño: demostración navegable, sin pagos reales.</span></div></div></footer>';
+      '<div class="legal"><span>© ' + new Date().getFullYear() + ' Café Alegra · Rancagua, Chile · cafealegrachile@gmail.com</span><button type="button" data-open-cookie-banner style="background:none;border:none;color:inherit;font:inherit;cursor:pointer;text-decoration:underline;padding:0;margin-right:1rem">Preferencias de cookies</button><span>Propuesta de rediseño: demostración navegable, sin pagos reales.</span></div></div></footer>';
   }
 
   /* ---------- Menú móvil ---------- */
@@ -147,6 +147,68 @@
     clearTimeout(toastT); toastT = setTimeout(function () { toastEl.classList.remove("on"); }, 3800);
   }
   window.caToast = toast;
+
+  /* ---------- Banner de Consentimiento de Cookies (GDPR / Chile / WordPress) ---------- */
+  function initCookieConsent() {
+    var STORAGE_KEY = "ca_cookie_consent";
+    var consent = null;
+    try {
+      consent = localStorage.getItem(STORAGE_KEY);
+    } catch (e) {}
+
+    var el = document.createElement("div");
+    el.className = "cookie-banner";
+    el.setAttribute("role", "region");
+    el.setAttribute("aria-label", "Consentimiento de cookies");
+    el.innerHTML =
+      '<div class="wrap cookie-wrap">' +
+        '<div class="cookie-text">' +
+          '<div class="cookie-title"><strong>🍪 Tu privacidad en Café Alegra</strong></div>' +
+          '<p>Utilizamos cookies esenciales para el funcionamiento del carrito de compras y cookies analíticas para mejorar tu experiencia en nuestra tienda. Puedes aceptar todas o navegar solo con las esenciales. Conoce más en nuestra <a href="privacidad.html">Política de privacidad</a>.</p>' +
+        '</div>' +
+        '<div class="cookie-actions">' +
+          '<button type="button" class="btn ghost sm" data-cookie-essential>Solo esenciales</button>' +
+          '<button type="button" class="btn gold sm" data-cookie-accept>Aceptar todas</button>' +
+        '</div>' +
+      '</div>';
+
+    document.body.appendChild(el);
+
+    function showBanner() {
+      setTimeout(function () {
+        el.classList.add("is-visible");
+      }, 700);
+    }
+
+    function setConsent(type) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          choice: type,
+          timestamp: new Date().toISOString()
+        }));
+      } catch (e) {}
+      el.classList.remove("is-visible");
+    }
+
+    if (!consent) {
+      showBanner();
+    }
+
+    var btnAccept = el.querySelector("[data-cookie-accept]");
+    var btnEssential = el.querySelector("[data-cookie-essential]");
+    if (btnAccept) btnAccept.addEventListener("click", function () { setConsent("all"); });
+    if (btnEssential) btnEssential.addEventListener("click", function () { setConsent("essential"); });
+
+    document.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-open-cookie-banner]");
+      if (btn) {
+        e.preventDefault();
+        el.classList.add("is-visible");
+      }
+    });
+  }
+  initCookieConsent();
+
 
   /* ---------- Mini-carrito (drawer) ---------- */
   var scr = document.createElement("div"); scr.className = "scrim";
