@@ -187,8 +187,8 @@ window.PRODUCTS = ORIGINS.flatMap(function (origin) {
     };
   });
 })).concat(COMPLEMENTS);
-window.SHIPPING_NOTE = "El catálogo minorista no especifica tarifas ni plazos de envío. Confirmar condiciones con Café Alegra. El checkout de este demo es simulado.";
-window.FREE_SHIP = 40000;
+window.SHIPPING_NOTE = "Despachos a todo Chile mediante Blue Express. Las tarifas de envío se calculan según región y comuna en el checkout. No aplica despacho gratuito.";
+window.FREE_SHIP = null;
 // Demostración del estado "Agotado": en el sitio real se activa desde WooCommerce.
 window.SOLDOUT = ["praline-pistacho"];
 window.COUPON = { code: "MIPRIMERCAFE", pct: 0 };

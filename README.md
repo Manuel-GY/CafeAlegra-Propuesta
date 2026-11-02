@@ -1,39 +1,39 @@
 # Café Alegra · Propuesta de Rediseño Web y E-commerce
 
-Propuesta integral de rediseño para **Café Alegra** (Tostaduría Artesanal de Rancagua, Chile), estructurada según el documento estratégico acordado con el cliente (*"Plano definitivo de la página web para analizar el jueves con Manuel"*).
+Propuesta estratégica y técnica de rediseño para la tostaduría artesanal **Café Alegra** (Rancagua, Chile), desarrollada por **Manuel** a partir de los requerimientos y acuerdos del documento directriz (*"Plano definitivo de la página web para analizar el jueves con Manuel"*).
 
-Este repositorio contiene la **maqueta navegable completa (HTML5 / CSS3 / Vanilla JS)** y el **tema hijo para WordPress / WooCommerce** (`cafe-alegra-child`) con estilos y hooks compatibles con **Hello Elementor**.
+El proyecto incluye la **maqueta interactiva completa (HTML5 / CSS3 / Vanilla JS)** y el **tema hijo oficial para WordPress y WooCommerce** (`cafe-alegra-child`), estructurado para **Hello Elementor**.
 
 ---
 
 ## 1. Arquitectura de Navegación: Las 4 Puertas Principales
 
-Desde la página de inicio ([`index.html`](index.html)), el cliente accede inmediatamente a los cuatro ejes del negocio sin fricción:
+Desde la página de inicio ([`index.html`](index.html)), el cliente accede directamente a los cuatro ejes comerciales sin fricción:
 
-1. **Nuestra Tienda:** Puerta comercial minorista con arquitectura en 3 categorías estables.
-2. **Café para tu Negocio:** Puerta B2B para cafeterías, restaurantes, oficinas y eventos, con formulario de cotización mayorista y asesoría de calibración de molienda y máquinas.
-3. **Seguimiento de Pedidos:** Enlace directo de rastreo mediante Blue Express con RUT y número de orden.
-4. **Atención al Cliente:** Contacto directo vía WhatsApp (+56 9 7794 2117) y formulario con tiempos de respuesta claros (24 a 48 hrs hábiles).
+1. **Nuestra Tienda:** Puerta comercial minorista con arquitectura simplificada en 3 categorías estables.
+2. **Café para tu Negocio:** Puerta B2B para cafeterías, restaurantes, empresas y oficinas, con formulario de cotización mayorista y asesoría en calibración de equipos.
+3. **Seguimiento de Pedidos:** Enlace directo de rastreo mediante Blue Express con RUT y número de envío.
+4. **Atención al Cliente:** Canal directo vía WhatsApp (+56 9 7794 2117) y formulario con tiempos de respuesta de 24 a 48 hrs hábiles.
 
-> **Integración de Marca:** La sección *"Nuestra Casa de Cafés"* se fusionó orgánicamente dentro del Inicio, presentando la historia de la tostaduría en Rancagua, su rescate campesino y sus sellos de calidad.
+> **Integración de Marca:** La historia institucional (*"Nuestra Casa de Cafés"*) se incorporó al flujo principal del Inicio, destacando el origen en Rancagua, la tostaduría artesanal y el rescate patrimonial campesino.
 
 ---
 
 ## 2. Catálogo Comercial: Tres Categorías Estables
 
-Se eliminó la denominación *"Familias"* para adoptar una arquitectura comercial limpia y duradera:
+Se eliminó la denominación *"Familias"* para establecer una jerarquía de tienda limpia y duradera:
 
 ### A. Café de Especialidad ([`cafe-de-especialidad.html`](cafe-de-especialidad.html))
-- **Cafés de Origen Único (84–85 SCA):** Lotes de altura seleccionados (Guatemala, Bolivia, Colombia). Los países, regiones y microlotes varían por cosecha estacional sin alterar la estructura fija del menú.
-- **Colección Praliné / Sabores de Autor:** Fusión de grano arábica con frutos secos tostados (Avellana Chilena, Nuez, Pistacho) y notas gourmet (Cardamomo).
-- **Packs Variables de Especialidad:** Cajas de degustación y regalo con orígenes rotativos.
+- **Cafés de Origen Único (84–85 SCA):** Lotes de altura (Guatemala, Bolivia, Colombia). Los orígenes, variedades y microlotes varían según la cosecha estacional sin alterar la estructura fija del menú.
+- **Colección Praliné / Sabores de Autor:** Grano arábica fusionado artesanalmente con frutos secos tostados (Avellana Chilena, Nuez, Pistacho) y notas gourmet (Cardamomo).
+- **Packs Variables:** Cajas de degustación y regalo con selecciones rotativas.
 
 ### B. Cafés de Nuestra Tradición ([`cafes-de-tradicion-chilena.html`](cafes-de-tradicion-chilena.html))
-- **Café de Higos (Disponible):** Elaborado con higos seleccionados cortados, deshidratados, tostados y molidos. 0% cafeína.
-- **Café de Trigo (Estructura lista / En reserva):** Rescate patrimonial de la tradición campesina de la VI Región. Habilitado para preventa/reserva según cosecha.
+- **Café de Higos (Disponible):** Higos seleccionados cortados, deshidratados, tostados y molidos. 0% cafeína.
+- **Café de Trigo (Estructura lista / En reserva):** Rescate patrimonial de la tradición campesina de la VI Región. Habilitado para preventa o reserva de cosecha.
 
 ### C. Complementos Cafeteros ([`complementos.html`](complementos.html))
-- Accesorios esenciales para el ritual barista en el hogar: Prensas francesas (acabado cobre), Cafeteras italianas Moka (rojo tradicional), teteras cuello de cisne y filtros reutilizables de acero inoxidable.
+- Accesorios indispensables para el ritual del café en casa: Prensas francesas (acabado cobrizo), Cafeteras italianas Moka (rojo clásico), teteras cuello de cisne y filtros reutilizables de acero inoxidable.
 
 ---
 
@@ -57,10 +57,12 @@ Integrados en las hojas de estilo web ([`assets/css/styles.css`](assets/css/styl
 ## 4. Innovaciones de UX y Fichas de Producto
 
 - **Módulo "¿Quieres saber más?" Interactivo:**
-  Ubicado en la ficha de producto ([`producto.html`](producto.html)), permanece **oculto por defecto** para mantener la compra ágil. Al pulsar el botón, despliega mediante animación suave la historia del territorio, altitud, varietales, método de beneficio (lavado / secado) y notas de cata, acompañado de un botón claro para regresar a la tienda.
+  Ubicado en la ficha de producto ([`producto.html`](producto.html)), permanece **oculto por defecto** para mantener la compra ágil. Al pulsar el botón, despliega la historia del territorio, altitud, varietales, método de beneficio (lavado / secado) y notas de cata, acompañado de un botón claro para regresar a la tienda.
 - **Selector de Presentación:** Radios táctiles accesibles para elegir entre *Grano entero* o *Molienda media* (orígenes) y *100 g* o *250 g* (Praliné), recalculando precios en tiempo real sin recargar página.
-- **Tarjetas de Producto Compactas:** Diseño armonioso en 3 columnas (`grid g3`), con miniaturas de 200px de altura y bolsas de café a escala natural con sombra suspendida.
-- **Barra de Despacho Dinámica:** Calculador interactivo de envío gratis con barra de progreso dorada en el mini-carrito.
+- **Tarjetas de Catálogo Boutique:** Grilla de 3 columnas (`grid g3`) compacta y balanceada (~300px de ancho × ~420px de alto), con la bolsa a escala natural sobre pedestal degradado suave.
+- **Banner Principal (Hero) Armónico:** Altura equilibrada (`clamp(440px, 64vh, 580px)`) para permitir visibilidad inmediata de la barra de confianza y de las categorías comerciales al cargar la página.
+- **Consentimiento de Cookies (GDPR / Chile):** Barra inferior fija con opciones *"Aceptar todas"* y *"Solo esenciales"*, persistencia en `localStorage` y botón de preferencias en el footer, 100% compatible con WordPress.
+- **Política de Despacho:** Envíos a todo Chile vía **Blue Express**, calculados según región y comuna en el checkout. **No aplica despacho gratuito** (definición comercial del cliente).
 
 ---
 
@@ -85,31 +87,31 @@ El tema hijo [`wp-content/themes/cafe-alegra-child`](wp-content/themes/cafe-aleg
   - Soporte para WooCommerce y temas hijos.
   - Hook `woocommerce_single_product_summary` para renderizar automáticamente la historia y notas desde campos personalizados (ACF).
   - Shortcodes listos para Elementor: `[cafe_alegra_subcat_nav]`, `[cafe_alegra_quality_pillars]`, `[cafe_alegra_praline_palette]`.
+  - Hook nativo de consentimiento de cookies `cafe_alegra_render_cookie_consent_banner` (con detección automática de plugins como Complianz o CookieYes).
 - **`GUIA-ELEMENTOR-ESPECIALIDAD.md`:** Manual paso a paso para maquetar contenedores en Elementor Pro.
 
 ---
 
-## 7. Lo que Falta para Pasar a Producción (Checklist de Entrega)
+## 7. Lo que Falta para Pasar a Producción (Checklist de Manuel con su Cliente)
 
-Para el paso definitivo al sitio en vivo en WordPress / WooCommerce, se requiere completar los siguientes puntos con el cliente:
+Puntos clave que Manuel debe coordinar y definir con Café Alegra antes del lanzamiento en producción:
 
 ### 1. Acceso al Entorno de Staging
-- [ ] Obtener credenciales de WP-Admin y acceso SFTP/cPanel del servidor de pruebas de Café Alegra para montar y verificar el tema hijo sin alterar la tienda activa.
+- [ ] Solicitar a Café Alegra las credenciales de WP-Admin y acceso SFTP/cPanel del servidor de pruebas para activar el tema hijo sin tocar la tienda activa.
 
 ### 2. Catálogo y Fotografía de Café de Higos
-- [ ] Definir los gramajes finales de venta (ej. 250 g / 500 g).
+- [ ] Definir los gramajes finales de venta con el cliente (ej. 250 g / 500 g).
 - [ ] Fijar los precios con IVA incluido.
-- [ ] Tomar y procesar la fotografía oficial de la bolsa / packshot de Café de Higos para sustituir la imagen provisional.
+- [ ] Recibir la fotografía oficial de la bolsa / packshot de Café de Higos para reemplazar la imagen temporal.
 
 ### 3. Definición Comercial de Café de Trigo
-- [ ] Confirmar fecha estimada de cosecha para habilitar el botón de *"Reserva de Cosecha / Pre-orden"* o mantenerlo como ficha patrimonial informativa.
+- [ ] Confirmar con Café Alegra la fecha estimada de cosecha para definir si se habilita el botón de *"Reserva de Cosecha / Pre-orden"* o si se mantiene temporalmente como ficha informativa de patrimonio.
 
-### 4. Configuración de Despacho (Blue Express)
-- [ ] Ingresar la matriz oficial de costos de envío por región/comuna en las zonas de envío de WooCommerce.
-- [ ] Confirmar el monto mínimo para envío gratuito (propuesta fijada en $40.000 CLP en el demo).
+### 4. Matriz de Tarifas Blue Express
+- [ ] Cargar la tabla oficial de costos de despacho por región y comuna en WooCommerce Shipping (pagadas por el comprador en el checkout; no aplica despacho gratuito).
 
 ### 5. Pasarela de Pagos (Transbank Webpay Plus)
-- [ ] Verificar la vigencia del plugin de Webpay Plus en WooCommerce y realizar una transacción de prueba en modo staging.
+- [ ] Probar una transacción simulada con Webpay Plus en el staging de WooCommerce.
 
 ### 6. Campos Personalizados ACF en WooCommerce
 - [ ] Crear el grupo de campos para productos con los slugs:
@@ -117,9 +119,8 @@ Para el paso definitivo al sitio en vivo en WordPress / WooCommerce, se requiere
   - `alegra_historia_cuerpo` (Área de texto)
   - `alegra_historia_kicker` (Texto corto)
 
-### 7. Verificación Final en Móvil y Escritorio
-- [ ] Ronda de revisión visual junto a Manuel en el entorno de staging.
-- [ ] Pruebas de velocidad en Google PageSpeed Insights y verificación de indexación en Google Search Console.
+### 7. Reunión de Revisión Final
+- [ ] Revisión visual y funcional de Manuel junto al cliente Café Alegra en móvil y escritorio antes de publicar en el dominio oficial.
 
 ---
 
@@ -143,11 +144,11 @@ CafeAlegra-Propuesta/
 ├── assets/
 │   ├── css/styles.css                   # Sistema de diseño, tokens de color y layout
 │   ├── js/products.js                   # Base de datos local de productos y relatos
-│   ├── js/main.js                       # Lógica de carrito, filtros, navegación y micro-interacciones
+│   ├── js/main.js                       # Lógica de carrito, cookies, filtros y navegación
 │   └── img/                             # Packshots transparentes y recursos gráficos
 └── wp-content/themes/cafe-alegra-child/ # Tema hijo de WordPress
     ├── style.css                        # Cabecera del tema hijo
-    ├── functions.php                    # Hooks ACF, WooCommerce y shortcodes Elementor
+    ├── functions.php                    # Hooks ACF, WooCommerce, cookies y shortcodes
     ├── GUIA-ELEMENTOR-ESPECIALIDAD.md   # Guía paso a paso de armado en Elementor
     └── assets/css/brand.css             # Tokens CSS de marca para WordPress
 ```
