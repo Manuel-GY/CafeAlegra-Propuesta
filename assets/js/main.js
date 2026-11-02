@@ -54,12 +54,27 @@
 
   /* ---------- Carrito ---------- */
   var Cart = {
-    items: function () { return store.get("ca_cart", []).filter(function (i) { return find(i.id); }); },
+    items: function () {
+      return store.get("ca_cart", []).filter(function (i) {
+        var prod = find(i.id);
+        if (!prod) return false;
+        var isSold = (window.SOLDOUT || []).indexOf(prod.reference) > -1 || (window.SOLDOUT || []).indexOf(prod.id) > -1;
+        return !isSold;
+      });
+    },
     save: function (a) { store.set("ca_cart", a); document.dispatchEvent(new CustomEvent("cart:change")); },
     add: function (id, q) {
+      var prod = find(id);
+      if (!prod) return false;
+      var isSold = (window.SOLDOUT || []).indexOf(prod.reference) > -1 || (window.SOLDOUT || []).indexOf(prod.id) > -1;
+      if (isSold) {
+        toast("El producto <strong>" + (prod.referenceName || prod.name) + "</strong> está temporalmente agotado.");
+        return false;
+      }
       var a = Cart.items(), it = a.filter(function (x) { return x.id === id; })[0];
       if (it) it.qty = Math.min(99, it.qty + q); else a.push({ id: id, qty: q });
       Cart.save(a);
+      return true;
     },
     set: function (id, q) {
       var a = Cart.items();
@@ -251,7 +266,7 @@
     else if (t.hasAttribute("data-drawer-close")) drawer(false);
     else if (t.dataset.q) { var it = Cart.items().filter(function (x) { return x.id === t.dataset.id; })[0]; Cart.set(t.dataset.id, (it ? it.qty : 0) + parseInt(t.dataset.q, 10)); }
     else if (t.dataset.rm) Cart.set(t.dataset.rm, 0);
-    else if (t.dataset.add) { Cart.add(t.dataset.add, 1); toast("Añadido: " + find(t.dataset.add).name + ' <a href="carrito.html">Ver carrito</a>'); }
+    else if (t.dataset.add) { if (Cart.add(t.dataset.add, 1)) toast("Añadido: " + find(t.dataset.add).name + ' <a href="carrito.html">Ver carrito</a>'); }
   });
   scr.addEventListener("click", function () { drawer(false); });
   function trapFocus(container, e) {
@@ -371,14 +386,18 @@
       var scaMatch = p.desc.match(/(\d{2}\s*puntos\s*SCA|\d{2}\s*SCA)/i);
       if (scaMatch) scaTag = '<span class="tag sca">' + scaMatch[0] + '</span>';
     }
+    var isSold = (window.SOLDOUT || []).indexOf(p.reference) > -1 || (window.SOLDOUT || []).indexOf(p.id) > -1;
+    var actionBtn = isSold
+      ? '<a class="btn ghost sm soldout-card-btn" href="producto.html?id=' + p.id + '" aria-label="Ver producto agotado: ' + p.referenceName + '">Ver producto (Agotado)</a>'
+      : '<a class="btn ghost sm" href="producto.html?id=' + p.id + '" aria-label="Elegir presentación: ' + p.referenceName + '">Elegir presentación</a>';
     return '<article class="prod reveal"><a class="ph" href="producto.html?id=' + p.id + '" tabindex="-1" aria-hidden="true">' +
-      (p.notes[0] === "Sin cafeína" ? '<span class="tag">Sin cafeína</span>' : (scaTag || "")) + ((window.SOLDOUT || []).indexOf(p.reference) > -1 ? '<span class="tag sale">Agotado</span>' : "") + (off ? '<span class="tag sale">-' + off + "%</span>" : "") +
+      (p.notes[0] === "Sin cafeína" ? '<span class="tag">Sin cafeína</span>' : (scaTag || "")) + (isSold ? '<span class="tag sale">Agotado</span>' : "") + (off ? '<span class="tag sale">-' + off + "%</span>" : "") +
       '<img src="assets/img/' + p.img + '" alt="" loading="lazy"></a><div class="bd"><span class="k">' + p.sub + '</span><h3><a href="producto.html?id=' + p.id + '">' + p.referenceName + '</a></h3><p class="variant-preview">' + (function(vars) {
         var sizes = vars.map(function(v){ return v.size; }).filter(function(v,i,a){ return a.indexOf(v) === i; });
         var grinds = vars.map(function(v){ return presentation(v); }).filter(Boolean).filter(function(v,i,a){ return a.indexOf(v) === i; });
         return sizes.join(" y ") + (grinds.length ? " · " + grinds.join(" o ") : "");
       })(variants) + '</p><p class="sm">' + p.short + '</p>' +
-      '<div class="price"><span>' + (from ? "Desde " : "") + money(Math.min.apply(null, prices)) + "</span>" + (off ? '<del><span class="sr-only">Precio original </span>' + money(p.was) + "</del>" : "") + '</div><a class="btn ghost sm" href="producto.html?id=' + p.id + '" aria-label="Elegir presentación: ' + p.referenceName + '">Elegir presentación</a></div></article>';
+      '<div class="price"><span>' + (from ? "Desde " : "") + money(Math.min.apply(null, prices)) + "</span>" + (off ? '<del><span class="sr-only">Precio original </span>' + money(p.was) + "</del>" : "") + '</div>' + actionBtn + '</div></article>';
   }
   window.caCard = card;
   $$("[data-grid]").forEach(function (g) {
@@ -459,10 +478,11 @@
       }).join("");
       if (seals) seals = '<div class="seals" style="margin:1.5rem 0">' + seals + "</div>";
       pd.innerHTML = '<div class="pd"><div class="pd-img reveal"><img src="assets/img/' + p.img + '" alt="' + p.name + '"></div><div class="reveal"><span class="eyebrow">' + c.name + "</span><h1>" + p.name + '</h1><p class="lead" style="margin-bottom:1rem">' + p.short + '</p><ul class="notes">' + p.notes.map(function (n) { return "<li>" + n + "</li>"; }).join("") + '</ul><dl class="product-facts"><div><dt>Formato</dt><dd>' + p.size + '</dd></div><div><dt>Origen o sabor</dt><dd>' + p.sub + '</dd></div>' + (p.grind ? '<div><dt>Presentación</dt><dd>' + (p.grind === "grano" ? "Grano entero" : "Molido") + "</dd></div>" : "") + '</dl><div class="price"><span>' + money(p.price) + "</span>" + (off ? "<del>" + money(p.was) + "</del><small style=\"font:500 .8rem var(--sans);color:var(--oro-hondo)\">-" + off + "%</small>" : "") + "</div>" +
-        '<div class="buy"><div class="qty" role="group" aria-label="Cantidad"><button type="button" data-pq="-1" aria-label="Disminuir">' + ic("minus") + '</button><output id="pq" aria-live="polite">1</output><button type="button" data-pq="1" aria-label="Aumentar">' + ic("plus") + '</button></div><button class="btn" type="button" id="pd-add">Añadir al carrito</button></div>' + seals +
+        '<div class="buy" id="pd-buy-container"></div>' + seals +
         '<details class="acc" open><summary>Perfil y descripción</summary><div class="c"><p>' + p.desc + '</p></div></details><details class="acc"><summary>Cómo prepararlo</summary><div class="c"><p>' + p.prep + '</p></div></details><details class="acc"><summary>Envíos</summary><div class="c"><p>' + window.SHIPPING_NOTE + "</p></div></details></div></div>";
       $("h1", pd).textContent = p.referenceName;
-      $$(".product-facts dd", pd)[2].textContent = presentation(p);
+      var factsInit = $$(".product-facts dd", pd);
+      if (factsInit[2]) factsInit[2].textContent = presentation(p);
       var variants = P.filter(function (x) { return x.reference === p.reference; });
       var isOrigin = p.collection === "origen";
       $(".product-facts", pd).insertAdjacentHTML("beforebegin",
@@ -470,6 +490,53 @@
         variants.map(function (x) { return '<label class="variant-option"><input type="radio" name="product-variant" value="' + x.id + '"' + (x.id === p.id ? " checked" : "") + '><span>' + (isOrigin ? presentation(x) : x.size) + '<b aria-hidden="true"> ✓</b></span></label>'; }).join("") +
         '</div><p id="variant-summary" role="status" aria-live="polite">' + p.size + ' · ' + presentation(p) + ' · ' + money(p.price) + '</p></fieldset>' +
         roastProfile(p));
+
+      var qn = 1;
+      function renderBuyArea(currentProduct) {
+        var buyEl = $("#pd-buy-container", pd);
+        if (!buyEl) return;
+        var isSold = (window.SOLDOUT || []).indexOf(currentProduct.reference) > -1 || (window.SOLDOUT || []).indexOf(currentProduct.id) > -1;
+        if (isSold) {
+          buyEl.innerHTML =
+            '<div class="soldout-box">' +
+              '<strong>' + ic("leaf") + ' Producto temporalmente agotado</strong>' +
+              '<p>No contamos con stock de este lote en este momento. Tostamos semanalmente en Rancagua; consulta la fecha de la próxima tostada artesanal.</p>' +
+              '<a class="btn ghost block" href="https://wa.me/56977942117?text=' + encodeURIComponent('Hola Café Alegra, quisiera consultar por la reposición de ' + (currentProduct.referenceName || currentProduct.name)) + '" target="_blank" rel="noopener" style="margin-top:.6rem">' +
+                ic("whatsapp") + ' Consultar reposición por WhatsApp' +
+              '</a>' +
+            '</div>' +
+            '<div style="margin-top:.7rem">' +
+              '<button class="btn block disabled" type="button" disabled aria-disabled="true">Agotado</button>' +
+            '</div>';
+        } else {
+          buyEl.innerHTML =
+            '<div class="qty" role="group" aria-label="Cantidad">' +
+              '<button type="button" data-pq="-1" aria-label="Disminuir">' + ic("minus") + '</button>' +
+              '<output id="pq" aria-live="polite">' + qn + '</output>' +
+              '<button type="button" data-pq="1" aria-label="Aumentar">' + ic("plus") + '</button>' +
+            '</div>' +
+            '<button class="btn" type="button" id="pd-add">Añadir al carrito</button>';
+
+          var out = $("#pq", buyEl);
+          $$("[data-pq]", buyEl).forEach(function (b) {
+            b.addEventListener("click", function () {
+              qn = Math.max(1, Math.min(99, qn + parseInt(b.dataset.pq, 10)));
+              out.textContent = qn;
+            });
+          });
+          var addBtn = $("#pd-add", buyEl);
+          if (addBtn) {
+            addBtn.addEventListener("click", function () {
+              if (Cart.add(currentProduct.id, qn)) {
+                toast("Añadido: " + currentProduct.name + ' <a href="carrito.html">Ver carrito</a>');
+              }
+            });
+          }
+        }
+      }
+
+      renderBuyArea(p);
+
       $("#product-variant").addEventListener("change", function (e) {
         p = find(e.target.value);
         var url = new URL(location.href); url.searchParams.set("id", p.id);
@@ -480,14 +547,13 @@
         $('[aria-current="page"]', $("[data-crumb]")).textContent = p.name;
         $(".notes", pd).innerHTML = p.notes.map(function (n) { return "<li>" + n + "</li>"; }).join("");
         var facts = $$(".product-facts dd", pd);
-        facts[0].textContent = p.size; facts[2].textContent = presentation(p);
+        facts[0].textContent = p.size;
+        if (facts[2]) facts[2].textContent = presentation(p);
         $(".pd-img img", pd).alt = p.name;
         $(".price span", pd).textContent = money(p.price);
         $("#variant-summary").textContent = p.size + " · " + presentation(p) + " · " + money(p.price);
+        renderBuyArea(p);
       });
-      var qn = 1, out = $("#pq");
-      $$("[data-pq]", pd).forEach(function (b) { b.addEventListener("click", function () { qn = Math.max(1, Math.min(99, qn + parseInt(b.dataset.pq, 10))); out.textContent = qn; }); });
-      $("#pd-add").addEventListener("click", function () { Cart.add(p.id, qn); toast("Añadido: " + p.name + ' <a href="carrito.html">Ver carrito</a>'); });
       $(".product-facts", pd).insertAdjacentHTML("afterend", '<p class="notice">Fuente: catálogo minorista del cliente, ficha de la página ' + p.sourcePage + ' y precios de la página 11. IVA incluido. La imagen del PDF ilustra el producto y puede mostrar otro formato.</p>');
             /* Lógica de "Saber Más" (oculto por defecto, visible por café) */
       var stories = window.COFFEE_STORIES || {};
