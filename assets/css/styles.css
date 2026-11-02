@@ -1224,7 +1224,7 @@ body[data-nav="inicio"] :is(#main,#main [id]){scroll-margin-top:6rem}
   display: flex !important;
   align-items: center !important;
   color: var(--crema) !important;
-  background: linear-gradient(115deg, rgba(27, 18, 12, 0.94) 28%, rgba(27, 18, 12, 0.45)), url("../img/hero-taza.jpg") center/cover, var(--espresso) !important;
+  background: linear-gradient(90deg, rgba(27, 18, 12, 0.97) 0%, rgba(27, 18, 12, 0.88) 46%, rgba(27, 18, 12, 0.35) 75%, rgba(27, 18, 12, 0.08) 100%), url("../img/hero-cafe-panoramico.jpg") right center / cover no-repeat, var(--espresso) !important;
   overflow: hidden !important;
 }
 .hero .in {
