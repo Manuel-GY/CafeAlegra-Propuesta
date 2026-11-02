@@ -396,3 +396,20 @@ body {
   background: var(--ca-oro-hondo);
   border-color: var(--ca-oro-hondo);
 }
+
+/* ==========================================================================
+   Logo Real Oficial de Café Alegra y Hero Proporcional (WordPress / Elementor)
+   ========================================================================== */
+.custom-logo-link img,
+.site-header .logo-img {
+  height: 48px !important;
+  width: auto !important;
+  max-width: 48px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+.hero-compact {
+  padding: 3rem 0 !important;
+  min-height: auto !important;
+}

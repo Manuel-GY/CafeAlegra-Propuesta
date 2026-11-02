@@ -87,7 +87,9 @@
   ];
   var cur = document.body.getAttribute("data-nav") || "";
   var logo = function (inv) {
-    return '<a class="logo' + (inv ? " inv" : "") + '" href="index.html" aria-label="Café Alegra, inicio"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#logo-mark"/></svg><span class="wm"><b>CAFÉ ALEGRA</b><small>Tostaduría artesanal · Especialidad</small></span></a>';
+    return '<a class="logo' + (inv ? " inv" : "") + '" href="index.html" aria-label="Café Alegra, inicio">' +
+      '<img src="assets/img/logo-alegra.png" alt="Café Alegra" class="logo-img">' +
+      '<span class="wm"><b>CAFÉ ALEGRA</b><small>Tostaduría artesanal · Especialidad</small></span></a>';
   };
   window.ca_logo = logo;
   var hdr = $("#site-header");
