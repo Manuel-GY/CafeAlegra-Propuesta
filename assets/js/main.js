@@ -633,7 +633,7 @@
             '<div class="acts" style="margin-top:2rem;align-items:center">' +
               '<a class="btn gold" href="tienda.html">← Regresar a la tienda</a>' +
               '<button type="button" class="btn ghost sm" id="btn-close-story">Ocultar historia</button>' +
-              '<a class="link" href="' + story.articleUrl + '">Leer artículo completo para SEO</a>' +
+              '<a class="link" href="' + story.articleUrl + '">Leer la historia completa en el blog</a>' +
             '</div>' +
           '</div>' +
         '</div>';
