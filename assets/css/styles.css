@@ -310,82 +310,96 @@ ul{padding:0;margin:0;list-style:none}
 .feat h3{font-size:1.35rem;margin-bottom:.4rem}.feat p{color:var(--suave);font-size:.95rem;margin:0}
 .dark .feat p{color:rgba(247,241,232,.72)}
 /* ==========================================================================
-   Sección: Nuestra Casa de Cafés (Inicio) - Textura Táctil de Taller
+   Sección: Nuestra Casa de Cafés (Inicio) - Textura Táctil de Taller (Compacto y Proporcional)
    ========================================================================== */
 #casa-de-cafes {
+  padding: clamp(2.2rem, 3.8vw, 3.2rem) 0 !important;
   background-color: #ede2d3;
-  background-image: linear-gradient(rgba(247, 241, 232, 0.90), rgba(237, 226, 211, 0.92)), url('../img/bg-textura-taller.jpg');
+  background-image: linear-gradient(rgba(247, 241, 232, 0.94), rgba(237, 226, 211, 0.95)), url('../img/bg-textura-taller.jpg');
   background-size: cover;
   background-position: center;
   position: relative;
   border-top: 1px solid var(--linea);
   border-bottom: 1px solid var(--linea);
 }
+#casa-de-cafes .sec-head {
+  margin: 0 auto 1.3rem;
+  max-width: 580px;
+}
+#casa-de-cafes .sec-head .eyebrow {
+  margin-bottom: 0.3rem;
+  font-size: 0.72rem;
+}
+#casa-de-cafes .sec-head h2 {
+  font-size: clamp(1.45rem, 2.2vw, 1.95rem);
+  line-height: 1.18;
+  margin-bottom: 0.35rem;
+}
+#casa-de-cafes .sec-head .rule {
+  margin: 0.5rem auto 0.75rem;
+}
+#casa-de-cafes .sec-head .lead {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--suave);
+  max-width: 52ch;
+  margin-bottom: 0;
+}
 .origins {
   display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
-  margin-top: 2.2rem;
+  gap: 1.2rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  margin-top: 1.3rem;
 }
 .origin-card {
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  border: 1px solid rgba(217, 179, 106, 0.3);
+  border: 1px solid rgba(217, 179, 106, 0.28);
   border-radius: 6px;
-  padding: 2.2rem 1.8rem 2rem;
+  padding: 1.4rem 1.3rem 1.25rem;
   text-align: left;
-  box-shadow: 0 8px 24px rgba(42, 29, 20, 0.06);
+  box-shadow: 0 4px 14px rgba(42, 29, 20, 0.05);
   position: relative;
   overflow: hidden;
   transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
 }
 .origin-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 32px rgba(42, 29, 20, 0.12);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 22px rgba(42, 29, 20, 0.1);
 }
-.origin-tueste::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 4px;
-  background: var(--cobrizo);
-}
-.origin-patrimonio::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 4px;
-  background: var(--avellana-rojo);
-}
+.origin-tueste::before,
+.origin-patrimonio::before,
 .origin-praline::before {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 4px;
-  background: var(--pistacho);
+  height: 3px;
 }
+.origin-tueste::before { background: var(--cobrizo); }
+.origin-patrimonio::before { background: var(--avellana-rojo); }
+.origin-praline::before { background: var(--pistacho); }
 .origin-tueste .origin-kicker { color: var(--cobrizo); }
 .origin-patrimonio .origin-kicker { color: var(--avellana-rojo); }
 .origin-praline .origin-kicker { color: var(--pistacho); }
 .origin-kicker {
   display: inline-block;
-  font-size: 0.7rem;
+  font-size: 0.66rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
 }
 .origin-card h3 {
-  font-size: 1.45rem;
+  font-size: 1.2rem;
   line-height: 1.2;
-  margin: 0 0 0.65rem;
+  margin: 0 0 0.45rem;
   color: var(--espresso);
   font-family: var(--serif);
 }
 .origin-card p {
-  font-size: 0.92rem;
-  line-height: 1.6;
+  font-size: 0.86rem;
+  line-height: 1.5;
   color: var(--suave);
   margin: 0;
 }
