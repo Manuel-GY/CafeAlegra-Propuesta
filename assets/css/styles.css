@@ -861,25 +861,6 @@ body[data-nav="inicio"] :is(#main,#main [id]){scroll-margin-top:6rem}
    Página Café de Especialidad: Navegación de Subcategorías, Pilares y Badges
    (100% compatible con WooCommerce y Elementor Pro)
    ========================================================================== */
-.hero-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-top: 1.6rem;
-}
-.hero-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.45rem 0.9rem;
-  border-radius: 99px;
-  background: rgba(217, 179, 106, 0.15);
-  border: 1px solid rgba(217, 179, 106, 0.35);
-  color: var(--oro-claro);
-  font-size: 0.76rem;
-  letter-spacing: 0.05em;
-  font-weight: 500;
-}
 .subcat-bar {
   background: var(--blanco);
   border-bottom: 1px solid var(--linea);

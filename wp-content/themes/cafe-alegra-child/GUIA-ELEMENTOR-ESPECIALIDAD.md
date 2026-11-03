@@ -24,8 +24,6 @@ En **Productos > Categorías**, crear la siguiente estructura jerárquica:
 - **Migas de pan:** Widget *Breadcrumbs* de Yoast/RankMath o WooCommerce.
 - **Kicker:** "Categoría Permanente · 100% Arábica de Altura" (Tipografía: Jost, oro claro `#d9b36a`).
 - **Título H1:** "Café de *Especialidad*" (Tipografía: Cormorant Garamond).
-- **Píldoras de valor:** Widget HTML o shortcode con los badges:
-  `★ 84–85 Puntos SCA` · `☕ 100% Arábica` · `🔥 Tostaduría en Rancagua` · `🚚 Despacho Blue Express`.
 
 ### Contenedor 2: Barra Sticky de Subcategorías
 - **Posición:** Sticky (Top: 0)

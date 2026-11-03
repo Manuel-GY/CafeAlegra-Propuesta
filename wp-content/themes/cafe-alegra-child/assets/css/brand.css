@@ -88,24 +88,6 @@ body {
 /* ==========================================================================
    Plantilla de Categoría: Café de Especialidad (Elementor & WooCommerce)
    ========================================================================== */
-.hero-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-top: 1.5rem;
-}
-.hero-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.45rem 0.9rem;
-  border-radius: 99px;
-  background: rgba(217, 179, 106, 0.15);
-  border: 1px solid rgba(217, 179, 106, 0.35);
-  color: var(--ca-oro-claro);
-  font-size: 0.78rem;
-  font-weight: 500;
-}
 .subcat-bar {
   background: #ffffff;
   border-bottom: 1px solid var(--ca-linea);
