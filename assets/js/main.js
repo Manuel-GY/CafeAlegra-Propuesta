@@ -477,19 +477,44 @@
         return '<span class="seal"><span class="disc">' + ic(sealIcons[note]) + "</span>" + note + "</span>";
       }).join("");
       if (seals) seals = '<div class="seals" style="margin:1.5rem 0">' + seals + "</div>";
-      pd.innerHTML = '<div class="pd"><div class="pd-img reveal"><img src="assets/img/' + p.img + '" alt="' + p.name + '"></div><div class="reveal"><span class="eyebrow">' + c.name + "</span><h1>" + p.name + '</h1><p class="lead" style="margin-bottom:1rem">' + p.short + '</p><ul class="notes">' + p.notes.map(function (n) { return "<li>" + n + "</li>"; }).join("") + '</ul><dl class="product-facts"><div><dt>Formato</dt><dd>' + p.size + '</dd></div><div><dt>Origen o sabor</dt><dd>' + p.sub + '</dd></div>' + (p.grind ? '<div><dt>Presentación</dt><dd>' + (p.grind === "grano" ? "Grano entero" : "Molido") + "</dd></div>" : "") + '</dl><div class="price"><span>' + money(p.price) + "</span>" + (off ? "<del>" + money(p.was) + "</del><small style=\"font:500 .8rem var(--sans);color:var(--oro-hondo)\">-" + off + "%</small>" : "") + "</div>" +
-        '<div class="buy" id="pd-buy-container"></div>' + seals +
-        '<details class="acc" open><summary>Perfil y descripción</summary><div class="c"><p>' + p.desc + '</p></div></details><details class="acc"><summary>Cómo prepararlo</summary><div class="c"><p>' + p.prep + '</p></div></details><details class="acc"><summary>Envíos</summary><div class="c"><p>' + window.SHIPPING_NOTE + "</p></div></details></div></div>";
-      $("h1", pd).textContent = p.referenceName;
-      var factsInit = $$(".product-facts dd", pd);
-      if (factsInit[2]) factsInit[2].textContent = presentation(p);
       var variants = P.filter(function (x) { return x.reference === p.reference; });
       var isOrigin = p.collection === "origen";
-      $(".product-facts", pd).insertAdjacentHTML("beforebegin",
-        '<fieldset class="variant-picker" id="product-variant" aria-describedby="variant-summary"><legend>' + (isOrigin ? "Presentación" : "Formato · solo molienda media") + '</legend><div class="variant-options">' +
-        variants.map(function (x) { return '<label class="variant-option"><input type="radio" name="product-variant" value="' + x.id + '"' + (x.id === p.id ? " checked" : "") + '><span>' + (isOrigin ? presentation(x) : x.size) + '<b aria-hidden="true"> ✓</b></span></label>'; }).join("") +
-        '</div><p id="variant-summary" role="status" aria-live="polite">' + p.size + ' · ' + presentation(p) + ' · ' + money(p.price) + '</p></fieldset>' +
-        roastProfile(p));
+      var variantHTML =
+        '<fieldset class="variant-picker" id="product-variant" aria-describedby="variant-summary">' +
+          '<legend>' + (isOrigin ? "Presentación" : "Formato · solo molienda media") + '</legend>' +
+          '<div class="variant-options">' +
+            variants.map(function (x) { return '<label class="variant-option"><input type="radio" name="product-variant" value="' + x.id + '"' + (x.id === p.id ? " checked" : "") + '><span>' + (isOrigin ? presentation(x) : x.size) + '<b aria-hidden="true"> ✓</b></span></label>'; }).join("") +
+          '</div>' +
+          '<p id="variant-summary" role="status" aria-live="polite">' + p.size + ' · ' + presentation(p) + ' · ' + money(p.price) + '</p>' +
+        '</fieldset>';
+
+      pd.innerHTML =
+        '<div class="pd">' +
+          '<div class="pd-img reveal"><img src="assets/img/' + p.img + '" alt="' + p.name + '"></div>' +
+          '<div class="pd-info reveal">' +
+            '<span class="eyebrow">' + c.name + '</span>' +
+            '<h1>' + p.referenceName + '</h1>' +
+            '<p class="lead">' + p.short + '</p>' +
+            '<div class="price">' +
+              '<span>' + money(p.price) + '</span>' +
+              (off ? '<del>' + money(p.was) + '</del><small class="discount-badge">-' + off + '%</small>' : '') +
+            '</div>' +
+            variantHTML +
+            '<div class="buy" id="pd-buy-container"></div>' +
+            '<ul class="notes">' + p.notes.map(function (n) { return '<li>' + n + '</li>'; }).join('') + '</ul>' +
+            '<div id="pd-roast-container">' + roastProfile(p) + '</div>' +
+            '<dl class="product-facts">' +
+              '<div><dt>Formato</dt><dd id="pd-fact-size">' + p.size + '</dd></div>' +
+              '<div><dt>Origen o sabor</dt><dd>' + p.sub + '</dd></div>' +
+              (p.grind ? '<div><dt>Presentación</dt><dd id="pd-fact-grind">' + presentation(p) + '</dd></div>' : '') +
+            '</dl>' +
+            seals +
+            '<details class="acc" open><summary>Perfil y descripción</summary><div class="c"><p>' + p.desc + '</p></div></details>' +
+            '<details class="acc"><summary>Cómo prepararlo</summary><div class="c"><p>' + p.prep + '</p></div></details>' +
+            '<details class="acc"><summary>Envíos</summary><div class="c"><p>' + window.SHIPPING_NOTE + '</p></div></details>' +
+            '<p class="notice">Fuente: catálogo minorista del cliente, ficha de la página ' + p.sourcePage + ' y precios de la página 11. IVA incluido. La imagen del PDF ilustra el producto y puede mostrar otro formato.</p>' +
+          '</div>' +
+        '</div>';
 
       var qn = 1;
       function renderBuyArea(currentProduct) {
@@ -546,15 +571,13 @@
         if (ogt) ogt.setAttribute("content", document.title);
         $('[aria-current="page"]', $("[data-crumb]")).textContent = p.name;
         $(".notes", pd).innerHTML = p.notes.map(function (n) { return "<li>" + n + "</li>"; }).join("");
-        var facts = $$(".product-facts dd", pd);
-        facts[0].textContent = p.size;
-        if (facts[2]) facts[2].textContent = presentation(p);
+        var factSize = $("#pd-fact-size", pd); if (factSize) factSize.textContent = p.size;
+        var factGrind = $("#pd-fact-grind", pd); if (factGrind) factGrind.textContent = presentation(p);
         $(".pd-img img", pd).alt = p.name;
         $(".price span", pd).textContent = money(p.price);
         $("#variant-summary").textContent = p.size + " · " + presentation(p) + " · " + money(p.price);
         renderBuyArea(p);
       });
-      $(".product-facts", pd).insertAdjacentHTML("afterend", '<p class="notice">Fuente: catálogo minorista del cliente, ficha de la página ' + p.sourcePage + ' y precios de la página 11. IVA incluido. La imagen del PDF ilustra el producto y puede mostrar otro formato.</p>');
             /* Lógica de "Saber Más" (oculto por defecto, visible por café) */
       var stories = window.COFFEE_STORIES || {};
       var storyKey = p.reference;
