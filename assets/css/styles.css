@@ -1390,3 +1390,53 @@ body[data-nav="inicio"] :is(#main,#main [id]){scroll-margin-top:6rem}
   border-color: rgba(156, 24, 47, 0.4) !important;
   color: var(--avellana-rojo) !important;
 }
+
+/* ==========================================================================
+   Cross-Selling en Carrito (Upsell Inteligente)
+   ========================================================================== */
+.cart-upsell {
+  margin: 1.5rem 0 0.5rem;
+  padding: 0.9rem 1rem;
+  background: var(--lino);
+  border: 1px dashed var(--oro-hondo);
+  border-radius: 6px;
+}
+.upsell-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--oro-hondo);
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+}
+.upsell-row {
+  display: grid;
+  grid-template-columns: 46px 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+}
+.upsell-row img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  background: var(--blanco);
+  border-radius: 4px;
+  padding: 2px;
+  border: 1px solid var(--linea);
+}
+.upsell-meta strong {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--espresso);
+  line-height: 1.25;
+}
+.upsell-price {
+  font-size: 0.82rem;
+  color: var(--suave);
+  font-weight: 500;
+}
+.upsell-row .btn.sm {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.75rem;
+}
+

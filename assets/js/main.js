@@ -9,6 +9,15 @@
     set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   };
   var money = window.money, P = window.PRODUCTS || [], find = window.findProduct;
+  function escapeHTML(str) {
+    if (str === null || str === undefined) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
   var pendingCatalogPages = ["packs.html", "set-descubrimiento.html"];
   if (pendingCatalogPages.indexOf(location.pathname.split("/").pop()) !== -1) {
     $("#main").innerHTML = '<section class="section"><div class="wrap"><h1>Catálogo pendiente</h1><p class="lead">Esta línea no aparece en el catálogo minorista enviado. No se ofrecen productos, precios ni promociones sin respaldo del cliente.</p><a class="btn" href="tienda.html">Ver productos del catálogo actualizado</a></div></section>';
@@ -251,13 +260,37 @@
   function shipBar(t) {
     return "";
   }
+  function renderCrossSell(items) {
+    var itemIds = items.map(function (x) { return x.id; });
+    var candidates = (window.PRODUCTS || []).filter(function (p) {
+      var isSold = (window.SOLDOUT || []).indexOf(p.reference) > -1 || (window.SOLDOUT || []).indexOf(p.id) > -1;
+      return !isSold && itemIds.indexOf(p.id) === -1;
+    });
+    if (!candidates.length) return "";
+    var best = candidates.filter(function (p) { return p.cat === "complementos"; })[0] ||
+               candidates.filter(function (p) { return p.size === "100 g"; })[0] ||
+               candidates[0];
+    if (!best) return "";
+
+    return '<div class="cart-upsell">' +
+      '<div class="upsell-label">✨ Completa tu ritual cafetero</div>' +
+      '<div class="upsell-row">' +
+        '<img src="assets/img/' + best.img + '" alt="' + escapeHTML(best.name) + '">' +
+        '<div class="upsell-meta">' +
+          '<strong>' + escapeHTML(best.referenceName || best.name) + '</strong>' +
+          '<span class="upsell-price">' + money(best.price) + '</span>' +
+        '</div>' +
+        '<button type="button" class="btn sm gold" data-add="' + best.id + '" aria-label="Añadir ' + escapeHTML(best.name) + ' por ' + money(best.price) + '">+ Añadir</button>' +
+      '</div>' +
+    '</div>';
+  }
   function renderDrawer() {
     var items = Cart.items(), t = Cart.totals(), b = $("[data-drawer-body]", dr), f = $("[data-drawer-foot]", dr);
     if (!items.length) {
       b.innerHTML = '<div class="cart-empty"><p>Aún no has agregado productos a tu pedido.</p><a class="btn" href="tienda.html">Explorar productos</a></div>'; f.style.display = "none"; return;
     }
     f.style.display = "";
-    b.innerHTML = '<div style="padding-top:1.2rem">' + shipBar(t) + "</div>" + items.map(function (i) { return lineHTML(i, true); }).join("");
+    b.innerHTML = '<div style="padding-top:1.2rem">' + shipBar(t) + "</div>" + items.map(function (i) { return lineHTML(i, true); }).join("") + renderCrossSell(items);
     f.innerHTML = '<div class="tot"><span>Subtotal</span><span>' + money(t.sub) + '</span></div><a class="btn block" href="carrito.html">Ver carrito y pagar</a>';
   }
   document.addEventListener("click", function (e) {
@@ -749,7 +782,7 @@
       if (kind === "seguimiento") {
         var n = $("[name=orden]", f).value.trim(), steps = [["Pedido recibido", "Confirmamos tu pago y preparamos tu café.", 1], ["Tostado y empaque", "Tu café se prepara con dedicación.", 1], ["Entregado a Blue Express", "Tu pedido salió de Rancagua.", 1], ["En reparto", "Llega en 1 a 2 días hábiles.", 0], ["Entregado", "¡A disfrutar!", 0]];
         box.className = "msg show panel";
-        box.innerHTML = '<p class="eyebrow">Pedido ' + n.replace(/</g, "") + '</p><ol class="tl">' + steps.map(function (s) { return '<li class="' + (s[2] ? "done" : "") + '"><b>' + s[0] + "</b><span>" + s[1] + "</span></li>"; }).join("") + '</ol><p class="notice">Estado de demostración: en el sitio real se conecta con el seguimiento de Blue Express.</p>';
+        box.innerHTML = '<p class="eyebrow">Pedido ' + escapeHTML(n) + '</p><ol class="tl">' + steps.map(function (s) { return '<li class="' + (s[2] ? "done" : "") + '"><b>' + escapeHTML(s[0]) + "</b><span>" + escapeHTML(s[1]) + "</span></li>"; }).join("") + '</ol><p class="notice">Estado de demostración: en el sitio real se conecta con el seguimiento de Blue Express.</p>';
         box.setAttribute("tabindex", "-1"); box.focus(); return;
       }
       var texts = { b2b: "¡Gracias! Recibimos tu solicitud. Te contactaremos con información sin compromiso.", contacto: "¡Gracias por escribirnos! Te responderemos a la brevedad, dentro de nuestro horario de atención.", llamada: "¡Listo! Te llamaremos pronto." };
