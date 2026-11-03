@@ -138,6 +138,47 @@ function cafe_alegra_praline_palette_shortcode() {
 add_shortcode( 'cafe_alegra_praline_palette', 'cafe_alegra_praline_palette_shortcode' );
 
 /**
+ * Shortcode: Sección "Nuestra Casa de Cafés" para Elementor o Gutenberg
+ * Uso: [cafe_alegra_casa_cafes]
+ */
+function cafe_alegra_casa_cafes_shortcode( $atts = array() ) {
+    ob_start();
+    ?>
+    <section class="section alt" id="casa-de-cafes" aria-labelledby="h-orig">
+      <div class="wrap">
+        <div class="sec-head">
+          <span class="eyebrow"><?php esc_html_e( 'Nuestra Casa de Cafés · Rancagua', 'cafe-alegra-child' ); ?></span>
+          <h2 id="h-orig"><?php _e( 'El encuentro entre la <em>especialidad</em> y la <em>tradición</em>', 'cafe-alegra-child' ); ?></h2>
+          <div class="rule"></div>
+          <p class="lead" style="margin-inline:auto"><?php esc_html_e( 'Nacimos en la VI Región con el propósito de ofrecer un café auténtico. En nuestra tostaduría artesanal conviven dos mundos que se complementan: la precisión sensorial de los mejores cafetales y el rescate patrimonial de nuestra tierra.', 'cafe-alegra-child' ); ?></p>
+        </div>
+        <div class="origins">
+          <article class="origin-card origin-tueste">
+            <span class="origin-kicker"><?php esc_html_e( 'Tostaduría Artesanal', 'cafe-alegra-child' ); ?></span>
+            <h3><?php esc_html_e( 'Curvas de Tueste', 'cafe-alegra-child' ); ?></h3>
+            <p><?php esc_html_e( 'Seleccionamos granos arábica de altura y cuidamos cada tueste semanal en pequeños lotes en Rancagua para resaltar notas florales, dulces y achocolatadas sin quemar el grano.', 'cafe-alegra-child' ); ?></p>
+          </article>
+
+          <article class="origin-card origin-patrimonio">
+            <span class="origin-kicker"><?php esc_html_e( 'Patrimonio de Chile', 'cafe-alegra-child' ); ?></span>
+            <h3><?php esc_html_e( 'Rescate del Higo y Trigo', 'cafe-alegra-child' ); ?></h3>
+            <p><?php esc_html_e( 'Reinterpretamos bebidas ancestrales chilenas elaboradas a partir de higos y trigo tostado, transformándolas en alternativas nobles 100% libres de cafeína.', 'cafe-alegra-child' ); ?></p>
+          </article>
+
+          <article class="origin-card origin-praline">
+            <span class="origin-kicker"><?php esc_html_e( 'Sabores de Autor', 'cafe-alegra-child' ); ?></span>
+            <h3><?php esc_html_e( 'Colección Praliné', 'cafe-alegra-child' ); ?></h3>
+            <p><?php esc_html_e( 'Una línea pionera con identidad propia: ensambles de café arábica infusionados con avellanas chilenas tostadas, nuez, caramelo dulce y cardamomo aromático.', 'cafe-alegra-child' ); ?></p>
+          </article>
+        </div>
+      </div>
+    </section>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode( 'cafe_alegra_casa_cafes', 'cafe_alegra_casa_cafes_shortcode' );
+
+/**
  * Banner de Consentimiento de Cookies Nativo (Fallback para WordPress)
  * Si no hay plugin de cookies (ej. Complianz / CookieYes) activo, despliega el banner corporativo.
  */

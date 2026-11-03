@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simulador de Vista WordPress & Elementor · Café Alegra</title>
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;family=Jost:wght@300;400;500;600&amp;family=Inter:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="assets/css/styles.css?v=13">
+<style>
+/* Reset & Base para el simulador */
+:root {
+  --wp-bar-bg: #1d2327;
+  --wp-bar-text: #f0f0f1;
+  --wp-blue: #2271b1;
+  --wp-blue-hover: #135e96;
+  --elementor-pink: #92003b;
+  --elementor-dark: #26292c;
+  --elementor-panel-bg: #f7f7f7;
+  --elementor-border: #d5dadf;
+  --elementor-accent: #39b54a;
+  --elementor-blue: #0073aa;
+}
+
+body.sim-wp {
+  margin: 0;
+  padding: 0;
+  background: #f0f0f1;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Barra de control superior del simulador */
+.sim-controls-header {
+  background: #111417;
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 2px solid var(--oro);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+.sim-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.sim-brand svg {
+  width: 22px;
+  height: 22px;
+  fill: #fff;
+}
+.sim-brand h1 {
+  font-size: 0.95rem;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.sim-brand span {
+  font-size: 0.75rem;
+  background: rgba(217,179,106,0.25);
+  color: #e3b878;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  border: 1px solid rgba(217,179,106,0.4);
+}
+.sim-tabs {
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.06);
+  padding: 3px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.sim-tab-btn {
+  background: transparent;
+  color: #c3c4c7;
+  border: none;
+  padding: 0.45rem 1rem;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all 0.2s ease;
+}
+.sim-tab-btn:hover {
+  color: #fff;
+  background: rgba(255,255,255,0.08);
+}
+.sim-tab-btn.is-active {
+  background: var(--wp-blue);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.sim-tab-btn.is-active.elementor-mode {
+  background: var(--elementor-pink);
+}
+
+/* ==========================================================================
+   VISTA 1: FRONTEND WORDPRESS CON WPADMINBAR NATIVA
+   ========================================================================== */
+#view-frontend {
+  display: block;
+}
+.wp-admin-bar-sim {
+  background: var(--wp-bar-bg);
+  color: var(--wp-bar-text);
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  font-size: 13px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  user-select: none;
+  position: relative;
+  z-index: 990;
+}
+.wp-bar-left, .wp-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+.wp-bar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #c3c4c7;
+  text-decoration: none;
+  height: 32px;
+  padding: 0 6px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.wp-bar-item:hover {
+  background: #2c3338;
+  color: #72aee6;
+}
+.wp-bar-item.elementor-cta {
+  background: rgba(146, 0, 59, 0.25);
+  color: #ff99bb;
+  font-weight: 500;
+}
+.wp-bar-item.elementor-cta:hover {
+  background: var(--elementor-pink);
+  color: #fff;
+}
+.wp-logo-icon {
+  width: 16px;
+  height: 16px;
+  fill: #c3c4c7;
+}
+
+/* Header Hello Elementor */
+.wp-theme-header {
+  background: #fff;
+  border-bottom: 1px solid #e2e4e7;
+  padding: 1.2rem 2rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+.wp-header-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.wp-site-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--espresso);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+}
+.wp-site-title span {
+  color: var(--oro-hondo);
+  font-style: italic;
+}
+.wp-theme-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.wp-theme-nav a {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--espresso);
+  transition: color 0.2s;
+}
+.wp-theme-nav a:hover, .wp-theme-nav a.is-current {
+  color: var(--oro-hondo);
+}
+.wp-cart-badge {
+  background: var(--espresso);
+  color: #fff;
+  padding: 0.35rem 0.85rem;
+  border-radius: 99px;
+  font-size: 0.82rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* ==========================================================================
+   VISTA 2: EDITOR VISUAL DE ELEMENTOR (SIMULACIÓN REAL)
+   ========================================================================== */
+#view-elementor {
+  display: none;
+}
+.elementor-editor-layout {
+  display: flex;
+  height: calc(100vh - 54px);
+  overflow: hidden;
+  background: #eaebec;
+}
+
+/* Panel Izquierdo Elementor */
+.elementor-sidebar {
+  width: 320px;
+  min-width: 320px;
+  background: #26292c;
+  color: #eee;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #1e2023;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.15);
+  z-index: 50;
+  font-size: 12px;
+}
+.elementor-sidebar-header {
+  background: #1e2023;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #34383c;
+}
+.elementor-header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #fff;
+}
+.elementor-e-logo {
+  background: var(--elementor-pink);
+  color: #fff;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  font-weight: 700;
+  font-size: 13px;
+}
+.elementor-tabs-nav {
+  display: flex;
+  background: #212427;
+  border-bottom: 1px solid #34383c;
+}
+.elementor-tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 0.7rem 0.5rem;
+  color: #a4afb7;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s;
+  border-bottom: 2px solid transparent;
+}
+.elementor-tab-item:hover {
+  color: #fff;
+}
+.elementor-tab-item.is-active {
+  color: #fff;
+  border-bottom-color: var(--elementor-pink);
+  background: #26292c;
+}
+.elementor-sidebar-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+.elementor-control-section {
+  background: #2e3236;
+  border-radius: 4px;
+  margin-bottom: 0.8rem;
+  overflow: hidden;
+  border: 1px solid #3a3f44;
+}
+.elementor-section-title {
+  padding: 0.75rem 0.9rem;
+  background: #34383c;
+  font-weight: 600;
+  color: #fff;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+.elementor-section-content {
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.elementor-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.elementor-field-label {
+  color: #a4afb7;
+  font-size: 11px;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+}
+.elementor-field-label span {
+  color: #d5dadf;
+}
+.elementor-field-input {
+  background: #1e2023;
+  border: 1px solid #3a3f44;
+  color: #fff;
+  padding: 0.45rem 0.65rem;
+  border-radius: 3px;
+  font-size: 12px;
+  outline: none;
+  font-family: inherit;
+}
+.elementor-field-input:focus {
+  border-color: var(--elementor-blue);
+}
+.elementor-badge-pill {
+  display: inline-block;
+  background: rgba(57, 181, 74, 0.2);
+  color: #39b54a;
+  border: 1px solid rgba(57, 181, 74, 0.4);
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+  font-size: 10px;
+}
+.elementor-sidebar-footer {
+  background: #1e2023;
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #34383c;
+}
+.elementor-update-btn {
+  background: var(--elementor-accent);
+  color: #fff;
+  border: none;
+  padding: 0.55rem 1.4rem;
+  border-radius: 3px;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: opacity 0.2s;
+}
+.elementor-update-btn:hover {
+  opacity: 0.9;
+}
+
+/* Canvas Derecho de Elementor */
+.elementor-canvas-wrap {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+  padding: 1.5rem;
+  background: #d8dade;
+}
+.elementor-canvas-device {
+  background: #fff;
+  max-width: 1260px;
+  margin: 0 auto;
+  box-shadow: 0 4px 25px rgba(0,0,0,0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Indicadores visuales de Elementor (marcos azules) */
+.elementor-section-handle {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--elementor-blue);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 0 0 4px 4px;
+  font-size: 11px;
+  z-index: 100;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  font-family: -apple-system, sans-serif;
+  cursor: pointer;
+}
+.elementor-section-handle span {
+  font-size: 13px;
+  font-weight: bold;
+}
+.elementor-box-highlight {
+  outline: 2px dashed rgba(0, 115, 170, 0.7);
+  outline-offset: -2px;
+  position: relative;
+}
+.elementor-box-highlight::after {
+  content: "Contenedor Elementor · #casa-de-cafes";
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  background: rgba(0, 115, 170, 0.85);
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 2px;
+  font-family: -apple-system, sans-serif;
+  pointer-events: none;
+}
+
+.elementor-card-highlight {
+  outline: 1.5px dashed rgba(146, 0, 59, 0.5);
+  outline-offset: -1px;
+  position: relative;
+}
+.elementor-card-highlight::after {
+  content: "Columna / Widget";
+  position: absolute;
+  bottom: 4px;
+  right: 6px;
+  background: rgba(146, 0, 59, 0.75);
+  color: #fff;
+  font-size: 9px;
+  padding: 1px 4px;
+  border-radius: 2px;
+  font-family: -apple-system, sans-serif;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   VISTA 3: GUÍA TÉCNICA DE WORDPRESS
+   ========================================================================== */
+#view-guide {
+  display: none;
+  max-width: 960px;
+  margin: 2.5rem auto;
+  padding: 0 1.5rem;
+}
+.guide-card {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e4e7;
+  padding: 2.2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+.guide-card h2 {
+  font-size: 1.5rem;
+  color: var(--espresso);
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.guide-code {
+  background: #1e2023;
+  color: #e3b878;
+  padding: 1rem 1.25rem;
+  border-radius: 6px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 0.92rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+  border: 1px solid #33383e;
+}
+.guide-badge {
+  background: var(--oro-hondo);
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* WooCommerce demo products below */
+.wc-demo-shelf {
+  padding: 3rem 0;
+  background: #fff;
+  border-top: 1px solid #eee;
+}
+.wc-shelf-title {
+  text-align: center;
+  font-size: 1.6rem;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  color: var(--espresso);
+  margin-bottom: 2rem;
+}
+.wc-products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+.wc-item {
+  border: 1px solid #eee;
+  padding: 1.2rem;
+  border-radius: 6px;
+  text-align: center;
+  background: #fff;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.wc-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+.wc-item img {
+  max-height: 140px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+}
+.wc-item h4 {
+  font-size: 1.1rem;
+  margin: 0.3rem 0;
+  color: var(--espresso);
+  font-family: 'Cormorant Garamond', serif;
+}
+.wc-item .price {
+  font-weight: 600;
+  color: var(--oro-hondo);
+  margin-bottom: 0.8rem;
+}
+</style>
+</head>
+<body class="sim-wp">
+
+<!-- BARRA DE CONTROL DEL SIMULADOR -->
+<div class="sim-controls-header">
+  <div class="sim-brand">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.8 14.8l-3.2-9.3 2.1-.2 2.1 6.6 2.1-6.6 2.1.2-3.2 9.3h-2zm6.3-2.1c-.8 1.4-2.2 2.4-3.8 2.8l2.9-8.4c1 1.4 1.5 3.3.9 5.6zM3.8 12c0-1.8.6-3.4 1.6-4.7l3.6 10.4C5.8 16.5 3.8 14.5 3.8 12z"/></svg>
+    <h1>Simulador WordPress & Elementor</h1>
+    <span>Tema Hijo: cafe-alegra-child</span>
+  </div>
+
+  <div class="sim-tabs">
+    <button type="button" class="sim-tab-btn is-active" id="tab-btn-frontend" onclick="switchView('frontend')">
+      <span>🌐</span> Vista Frontend (con WP Admin Bar)
+    </button>
+    <button type="button" class="sim-tab-btn elementor-mode" id="tab-btn-elementor" onclick="switchView('elementor')">
+      <span>⚙️</span> Vista Editor Elementor (Backend)
+    </button>
+    <button type="button" class="sim-tab-btn" id="tab-btn-guide" onclick="switchView('guide')">
+      <span>📋</span> Guía Técnica & Shortcodes
+    </button>
+  </div>
+</div>
+
+<!-- =========================================================================
+     VISTA 1: FRONTEND CON BARRA WP-ADMIN (COMO LO VE EL ADMINISTRADOR)
+     ========================================================================= -->
+<div id="view-frontend">
+  <!-- Barra negra oficial de WordPress #wpadminbar -->
+  <div class="wp-admin-bar-sim" id="wpadminbar">
+    <div class="wp-bar-left">
+      <div class="wp-bar-item">
+        <svg class="wp-logo-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.8 14.8l-3.2-9.3 2.1-.2 2.1 6.6 2.1-6.6 2.1.2-3.2 9.3h-2zm6.3-2.1c-.8 1.4-2.2 2.4-3.8 2.8l2.9-8.4c1 1.4 1.5 3.3.9 5.6zM3.8 12c0-1.8.6-3.4 1.6-4.7l3.6 10.4C5.8 16.5 3.8 14.5 3.8 12z"/></svg>
+      </div>
+      <div class="wp-bar-item"><strong>Café Alegra</strong></div>
+      <div class="wp-bar-item"><span>💬</span> 0</div>
+      <div class="wp-bar-item"><span>➕</span> Añadir</div>
+      <div class="wp-bar-item elementor-cta" onclick="switchView('elementor')">
+        <span>✏️</span> <strong>Editar con Elementor</strong>
+      </div>
+      <div class="wp-bar-item">WooCommerce</div>
+    </div>
+    <div class="wp-bar-right">
+      <div class="wp-bar-item">Hola, <strong>Manuel</strong> (Admin)</div>
+    </div>
+  </div>
+
+  <!-- Cabecera del tema Hello Elementor -->
+  <header class="wp-theme-header">
+    <div class="wp-header-wrap">
+      <a href="index.html" class="wp-site-title">Café <span>Alegra</span></a>
+      <nav>
+        <ul class="wp-theme-nav">
+          <li><a href="index.html" class="is-current">Inicio</a></li>
+          <li><a href="tienda.html">Tienda</a></li>
+          <li><a href="cafe-de-especialidad.html">Café de Especialidad</a></li>
+          <li><a href="cafes-de-tradicion-chilena.html">Tradición Chilena</a></li>
+          <li><a href="carrito.html" class="wp-cart-badge">🛒 Carrito (0)</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- SECCIÓN: NUESTRA CASA DE CAFÉS (CON PROPORCIÓN REFINADA) -->
+  <section class="section alt" id="casa-de-cafes" aria-labelledby="h-orig">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Nuestra Casa de Cafés · Rancagua</span>
+        <h2 id="h-orig">El encuentro entre la <em>especialidad</em> y la <em>tradición</em></h2>
+        <div class="rule"></div>
+        <p class="lead" style="margin-inline:auto">Nacimos en la VI Región con el propósito de ofrecer un café auténtico. En nuestra tostaduría artesanal conviven dos mundos que se complementan: la precisión sensorial de los mejores cafetales y el rescate patrimonial de nuestra tierra.</p>
+      </div>
+      <div class="origins">
+        <article class="origin-card origin-tueste">
+          <span class="origin-kicker">Tostaduría Artesanal</span>
+          <h3>Curvas de Tueste</h3>
+          <p>Seleccionamos granos arábica de altura y cuidamos cada tueste semanal en pequeños lotes en Rancagua para resaltar notas florales, dulces y achocolatadas sin quemar el grano.</p>
+        </article>
+
+        <article class="origin-card origin-patrimonio">
+          <span class="origin-kicker">Patrimonio de Chile</span>
+          <h3>Rescate del Higo y Trigo</h3>
+          <p>Reinterpretamos bebidas ancestrales chilenas elaboradas a partir de higos y trigo tostado, transformándolas en alternativas nobles 100% libres de cafeína.</p>
+        </article>
+
+        <article class="origin-card origin-praline">
+          <span class="origin-kicker">Sabores de Autor</span>
+          <h3>Colección Praliné</h3>
+          <p>Una línea pionera con identidad propia: ensambles de café arábica infusionados con avellanas chilenas tostadas, nuez, caramelo dulce y cardamomo aromático.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Muestra de productos WooCommerce contiguos para verificar armonía visual -->
+  <section class="wc-demo-shelf">
+    <div class="wrap">
+      <h3 class="wc-shelf-title">Catálogo Conectado con WooCommerce</h3>
+      <div class="wc-products-grid">
+        <div class="wc-item">
+          <img src="assets/img/cafe-bolivia.png" alt="Bolivia Caranavi" onerror="this.src='assets/img/cafe-generico.png'">
+          <span class="badge-tag cobrizo" style="display:inline-block;font-size:0.65rem;margin-bottom:0.4rem;">Origen Único · 85 SCA</span>
+          <h4>Bolivia Caranavi 250g</h4>
+          <div class="price">$11.900</div>
+          <button class="btn gold sm" style="width:100%;">Añadir al carrito</button>
+        </div>
+        <div class="wc-item">
+          <img src="assets/img/cafe-guatemala.png" alt="Guatemala Huehuetenango" onerror="this.src='assets/img/cafe-generico.png'">
+          <span class="badge-tag cobrizo" style="display:inline-block;font-size:0.65rem;margin-bottom:0.4rem;">Origen Único · 84 SCA</span>
+          <h4>Guatemala Huehuetenango</h4>
+          <div class="price">$10.900</div>
+          <button class="btn gold sm" style="width:100%;">Añadir al carrito</button>
+        </div>
+        <div class="wc-item">
+          <img src="assets/img/cafe-praline-avellana.png" alt="Praliné Avellana" onerror="this.src='assets/img/cafe-generico.png'">
+          <span class="badge-tag avellana" style="display:inline-block;font-size:0.65rem;margin-bottom:0.4rem;">Colección Praliné</span>
+          <h4>Praliné Avellana Chilena</h4>
+          <div class="price">$12.500</div>
+          <button class="btn gold sm" style="width:100%;">Añadir al carrito</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- =========================================================================
+     VISTA 2: EDITOR VISUAL ELEMENTOR (CÓMO SE EDITA EN EL BACKEND)
+     ========================================================================= -->
+<div id="view-elementor">
+  <div class="elementor-editor-layout">
+    
+    <!-- PANEL LATERAL ELEMENTOR -->
+    <aside class="elementor-sidebar">
+      <div class="elementor-sidebar-header">
+        <div class="elementor-header-title">
+          <div class="elementor-e-logo">E</div>
+          <span>Editar Contenedor</span>
+        </div>
+        <span class="elementor-badge-pill">ACTIVO</span>
+      </div>
+
+      <div class="elementor-tabs-nav">
+        <div class="elementor-tab-item is-active">Disposición</div>
+        <div class="elementor-tab-item">Estilo</div>
+        <div class="elementor-tab-item">Avanzado</div>
+      </div>
+
+      <div class="elementor-sidebar-body">
+        
+        <!-- Sección 1: Estructura del Contenedor -->
+        <div class="elementor-control-section">
+          <div class="elementor-section-title">
+            <span>Contenedor Flexbox</span>
+            <span>▾</span>
+          </div>
+          <div class="elementor-section-content">
+            <div class="elementor-field-group">
+              <label class="elementor-field-label">Ancho de contenido <span>En caja</span></label>
+              <input type="text" class="elementor-field-input" value="1200 px" readonly>
+            </div>
+            <div class="elementor-field-group">
+              <label class="elementor-field-label">Dirección <span>Columna (Vertical)</span></label>
+              <input type="text" class="elementor-field-input" value="Column (↓)" readonly>
+            </div>
+            <div class="elementor-field-group">
+              <label class="elementor-field-label">Alineación de elementos <span>Centrado</span></label>
+              <input type="text" class="elementor-field-input" value="Center" readonly>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección 2: Fondo y Textura -->
+        <div class="elementor-control-section">
+          <div class="elementor-section-title">
+            <span>Fondo con Textura Táctil</span>
+            <span>▾</span>
+          </div>
+          <div class="elementor-section-content">
+            <div class="elementor-field-group">
+              <label class="elementor-field-label">Tipo de fondo <span>Clásico / Imagen</span></label>
+              <input type="text" class="elementor-field-input" value="bg-textura-taller.jpg" readonly>
+            </div>
+            <div class="elementor-field-group">
+              <label class="elementor-field-label">Superposición de degradado <span>Lino Cálido</span></label>
+              <input type="text" class="elementor-field-input" value="rgba(247,241,232,0.94) (95%)" readonly>
+            </div>
+            <div class="elementor-field-group">
+              <label class="elementor-field-label">Tamaño de visualización <span>Cover (Ajustado)</span></label>
+              <input type="text" class="elementor-field-input" value="Cover" readonly>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección 3: Avanzado y Clases CSS -->
+        <div class="elementor-control-section">
+          <div class="elementor-section-title">
+            <span>Avanzado (ID y Espaciado)</span>
+            <span>▾</span>
+          </div>
+          <div class="elementor-section-content">
+            <div class="elementor-field-group">
+              <label class="elementor-field-label">ID de CSS</label>
+              <input type="text" class="elementor-field-input" value="casa-de-cafes" readonly>
+            </div>
+            <div class="elementor-field-group">
+              <label class="elementor-field-label">Clases CSS</label>
+              <input type="text" class="elementor-field-input" value="section alt" readonly>
+            </div>
+            <div class="elementor-field-group">
+              <label class="elementor-field-label">Relleno (Padding Vertical) <span>Compacto</span></label>
+              <input type="text" class="elementor-field-input" value="2.8rem arriba / 2.8rem abajo" readonly>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="elementor-sidebar-footer">
+        <span style="color:#888;font-size:11px;">Borrador guardado</span>
+        <button type="button" class="elementor-update-btn">ACTUALIZAR</button>
+      </div>
+    </aside>
+
+    <!-- CANVAS DERECHO (EL SITIO EN VIVO CON LOS MARCADORES AZULES DE ELEMENTOR) -->
+    <div class="elementor-canvas-wrap">
+      <div class="elementor-canvas-device">
+        
+        <!-- Indicador flotante superior de sección Elementor -->
+        <div class="elementor-section-handle">
+          <span>⠿</span> Editar Contenedor: Casa de Cafés
+        </div>
+
+        <!-- Sección con contornos de edición activa -->
+        <div class="elementor-box-highlight">
+          <section class="section alt" id="casa-de-cafes" style="margin:0;">
+            <div class="wrap">
+              
+              <div class="sec-head">
+                <span class="eyebrow">Nuestra Casa de Cafés · Rancagua</span>
+                <h2 id="h-orig">El encuentro entre la <em>especialidad</em> y la <em>tradición</em></h2>
+                <div class="rule"></div>
+                <p class="lead" style="margin-inline:auto">Nacimos en la VI Región con el propósito de ofrecer un café auténtico. En nuestra tostaduría artesanal conviven dos mundos que se complementan: la precisión sensorial de los mejores cafetales y el rescate patrimonial de nuestra tierra.</p>
+              </div>
+
+              <div class="origins">
+                <div class="elementor-card-highlight">
+                  <article class="origin-card origin-tueste">
+                    <span class="origin-kicker">Tostaduría Artesanal</span>
+                    <h3>Curvas de Tueste</h3>
+                    <p>Seleccionamos granos arábica de altura y cuidamos cada tueste semanal en pequeños lotes en Rancagua para resaltar notas florales, dulces y achocolatadas sin quemar el grano.</p>
+                  </article>
+                </div>
+
+                <div class="elementor-card-highlight">
+                  <article class="origin-card origin-patrimonio">
+                    <span class="origin-kicker">Patrimonio de Chile</span>
+                    <h3>Rescate del Higo y Trigo</h3>
+                    <p>Reinterpretamos bebidas ancestrales chilenas elaboradas a partir de higos y trigo tostado, transformándolas en alternativas nobles 100% libres de cafeína.</p>
+                  </article>
+                </div>
+
+                <div class="elementor-card-highlight">
+                  <article class="origin-card origin-praline">
+                    <span class="origin-kicker">Sabores de Autor</span>
+                    <h3>Colección Praliné</h3>
+                    <p>Una línea pionera con identidad propia: ensambles de café arábica infusionados con avellanas chilenas tostadas, nuez, caramelo dulce y cardamomo aromático.</p>
+                  </article>
+                </div>
+              </div>
+
+            </div>
+          </section>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- =========================================================================
+     VISTA 3: GUÍA TÉCNICA Y SHORTCODES PARA WORDPRESS
+     ========================================================================= -->
+<div id="view-guide">
+  <div class="guide-card">
+    <span class="guide-badge">Método Recomendado 1</span>
+    <h2><span>⚡</span> Inserción con 1 Clic: Shortcode Nativo</h2>
+    <p>Para no tener que maquetar a mano las 3 columnas y respetar al 100% las curvas de diseño y tipografías, ya dejamos programado el shortcode oficial en <code>functions.php</code> del tema hijo <code>cafe-alegra-child</code>:</p>
+    
+    <div class="guide-code">[cafe_alegra_casa_cafes]</div>
+    
+    <p><strong>¿Cómo lo usa el cliente o diseñador en WordPress?</strong></p>
+    <ol style="padding-left:1.2rem;line-height:1.7;color:#444;">
+      <li>Abre la página de Inicio con <strong>Elementor</strong>.</li>
+      <li>Arrastra el widget nativo <strong>"Shortcode"</strong> al lugar deseado de la página.</li>
+      <li>Pega <code>[cafe_alegra_casa_cafes]</code> y pulsa <strong>Guardar</strong>.</li>
+      <li>Listo: la sección se renderiza con el fondo táctil, las 3 tarjetas y los estilos optimizados automáticamente.</li>
+    </ol>
+  </div>
+
+  <div class="guide-card">
+    <span class="guide-badge">Método Alternativo 2</span>
+    <h2><span>🎨</span> Maquetación Nativa con Contenedores Elementor</h2>
+    <p>Si prefieren tener cada texto 100% editable directamente en el lienzo visual de Elementor sin shortcodes:</p>
+    <ol style="padding-left:1.2rem;line-height:1.7;color:#444;">
+      <li>Crea un <strong>Contenedor Flexbox</strong> principal.</li>
+      <li>En la pestaña <strong>Avanzado > ID de CSS</strong> escribe: <code>casa-de-cafes</code>.</li>
+      <li>En la pestaña <strong>Avanzado > Clases CSS</strong> escribe: <code>section alt</code>.</li>
+      <li>Crea un sub-contenedor con dirección de <strong>Fila (Row)</strong> y añade 3 contenedores internos con clase <code>origin-card origin-tueste</code>, <code>origin-card origin-patrimonio</code> y <code>origin-card origin-praline</code>.</li>
+      <li>Los estilos se aplicarán automáticamente gracias a la hoja de estilo <code>brand.css</code> ya enlazada en el tema hijo.</li>
+    </ol>
+  </div>
+
+  <div class="guide-card" style="background:#fbfbfb;">
+    <h2><span>📁</span> Ubicación de los archivos en WordPress</h2>
+    <ul style="padding-left:1.2rem;line-height:1.7;color:#444;font-family:monospace;font-size:0.9rem;">
+      <li><strong>wp-content/themes/cafe-alegra-child/style.css</strong> (Cabecera del tema hijo Hello Elementor)</li>
+      <li><strong>wp-content/themes/cafe-alegra-child/functions.php</strong> (Shortcodes y hooks de WooCommerce)</li>
+      <li><strong>wp-content/themes/cafe-alegra-child/assets/css/brand.css</strong> (Tokens, tipografías y reglas de estilo)</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+function switchView(view) {
+  var vFrontend = document.getElementById('view-frontend');
+  var vElementor = document.getElementById('view-elementor');
+  var vGuide = document.getElementById('view-guide');
+
+  var btnFront = document.getElementById('tab-btn-frontend');
+  var btnElem = document.getElementById('tab-btn-elementor');
+  var btnGuide = document.getElementById('tab-btn-guide');
+
+  // Hide all
+  vFrontend.style.display = 'none';
+  vElementor.style.display = 'none';
+  vGuide.style.display = 'none';
+
+  btnFront.classList.remove('is-active');
+  btnElem.classList.remove('is-active');
+  btnGuide.classList.remove('is-active');
+
+  if (view === 'frontend') {
+    vFrontend.style.display = 'block';
+    btnFront.classList.add('is-active');
+  } else if (view === 'elementor') {
+    vElementor.style.display = 'block';
+    btnElem.classList.add('is-active');
+  } else if (view === 'guide') {
+    vGuide.style.display = 'block';
+    btnGuide.classList.add('is-active');
+  }
+}
+</script>
+
+</body>
+</html>
