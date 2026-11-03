@@ -191,3 +191,59 @@ function cafe_alegra_render_cookie_consent_banner() {
     <?php
 }
 add_action( 'wp_footer', 'cafe_alegra_render_cookie_consent_banner', 100 );
+
+/**
+ * Gestión y Experiencia de Productos Agotados en WooCommerce
+ * Réplica 1:1 de la propuesta estática adaptada al estándar nativo de WooCommerce.
+ */
+
+// 1. Caja informativa y botón de WhatsApp en la ficha de producto cuando está agotado
+add_action( 'woocommerce_single_product_summary', 'cafe_alegra_wc_soldout_notice_and_whatsapp', 31 );
+function cafe_alegra_wc_soldout_notice_and_whatsapp() {
+    global $product;
+    if ( ! $product || $product->is_in_stock() ) {
+        return;
+    }
+
+    $phone = '56977942117';
+    $product_name = $product->get_name();
+    $wa_msg = rawurlencode( 'Hola Café Alegra, quisiera consultar por la reposición de ' . $product_name );
+    $wa_url = 'https://wa.me/' . $phone . '?text=' . $wa_msg;
+    ?>
+    <div class="soldout-box">
+        <strong>⚠ Producto temporalmente agotado</strong>
+        <p>No contamos con stock de este lote en este momento. Tostamos semanalmente en Rancagua; consulta la fecha de la próxima tostada artesanal.</p>
+        <a class="btn ghost block" href="<?php echo esc_url( $wa_url ); ?>" target="_blank" rel="noopener" style="margin-top:.6rem;">
+            Consultar reposición por WhatsApp
+        </a>
+    </div>
+    <?php
+}
+
+// 2. Texto del botón en el catálogo/bucle de WooCommerce para productos sin stock
+add_filter( 'woocommerce_product_add_to_cart_text', 'cafe_alegra_wc_soldout_button_text', 10, 2 );
+function cafe_alegra_wc_soldout_button_text( $text, $product ) {
+    if ( ! $product->is_in_stock() ) {
+        return __( 'Ver producto (Agotado)', 'cafe-alegra-child' );
+    }
+    return $text;
+}
+
+// 3. Estilo del botón en el catálogo cuando está agotado
+add_filter( 'woocommerce_loop_add_to_cart_link', 'cafe_alegra_wc_soldout_loop_link', 10, 3 );
+function cafe_alegra_wc_soldout_loop_link( $html, $product, $args ) {
+    if ( ! $product->is_in_stock() ) {
+        $html = str_replace( 'class="', 'class="soldout-card-btn ', $html );
+    }
+    return $html;
+}
+
+// 4. Personalizar el texto de disponibilidad nativo de WooCommerce
+add_filter( 'woocommerce_get_availability_text', 'cafe_alegra_wc_custom_availability_text', 10, 2 );
+function cafe_alegra_wc_custom_availability_text( $availability, $product ) {
+    if ( ! $product->is_in_stock() ) {
+        $availability = __( 'Agotado (Tostamos semanalmente en Rancagua)', 'cafe-alegra-child' );
+    }
+    return $availability;
+}
+
