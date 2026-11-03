@@ -567,3 +567,148 @@ body {
   font-size: 0.75rem;
 }
 
+/* ==========================================================================
+   Sección Premium: Nuestra Casa de Cafés (Inicio)
+   ========================================================================== */
+#casa-de-cafes {
+  background: radial-gradient(ellipse at 50% 10%, #2c1a11 0%, #170e08 60%, #0d0805 100%) !important;
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid rgba(217, 179, 106, 0.2);
+  border-bottom: 1px solid rgba(217, 179, 106, 0.2);
+}
+#casa-de-cafes::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(217, 179, 106, 0.5), transparent);
+}
+.origins {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  margin-top: 2rem;
+}
+.origin-card {
+  position: relative;
+  padding: 2.2rem 2rem 1.8rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.015) 100%);
+  border: 1px solid rgba(217, 179, 106, 0.22);
+  border-radius: 8px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
+}
+.origin-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(217, 179, 106, 0.55);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.025) 100%);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(217, 179, 106, 0.12);
+}
+.origin-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+}
+.origin-num {
+  font: 400 1.9rem/1 var(--serif);
+  color: var(--oro-claro);
+  opacity: 0.85;
+  letter-spacing: 0.02em;
+}
+.origin-icon-disc {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(217, 179, 106, 0.35);
+  background: rgba(217, 179, 106, 0.1);
+  color: var(--oro-claro);
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+.origin-card:hover .origin-icon-disc {
+  transform: scale(1.08);
+  background: rgba(217, 179, 106, 0.2);
+  border-color: var(--oro-claro);
+}
+.origin-icon-disc .i {
+  width: 20px;
+  height: 20px;
+}
+.origin-tueste {
+  border-top: 3px solid var(--cobrizo);
+}
+.origin-patrimonio {
+  border-top: 3px solid var(--avellana-rojo);
+}
+.origin-praline {
+  border-top: 3px solid var(--cardamomo);
+}
+.origin-kicker {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--oro-claro);
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+.origin-card h3 {
+  font-size: 1.55rem;
+  line-height: 1.2;
+  color: var(--crema);
+  margin: 0.2rem 0 0.8rem;
+  font-family: var(--serif);
+}
+.origin-card p {
+  font-size: 0.94rem;
+  line-height: 1.6;
+  color: rgba(247, 241, 232, 0.8);
+  margin: 0 0 1.4rem;
+  flex-grow: 1;
+}
+.origin-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 1.4rem;
+}
+.origin-tags span {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  padding: 0.25rem 0.6rem;
+  border-radius: 99px;
+  background: rgba(247, 241, 232, 0.06);
+  border: 1px solid rgba(247, 241, 232, 0.14);
+  color: rgba(247, 241, 232, 0.85);
+}
+.origin-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--oro-claro);
+  font-weight: 500;
+  text-decoration: none;
+  transition: gap 0.2s ease, color 0.2s ease;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(247, 241, 232, 0.1);
+}
+.origin-link .i {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.2s ease;
+}
+.origin-link:hover {
+  color: #ffffff;
+  gap: 0.65rem;
+}
+.origin-link:hover .i {
+  transform: translateX(2px);
+}
