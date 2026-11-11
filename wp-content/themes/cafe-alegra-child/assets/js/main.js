@@ -135,8 +135,9 @@
   ];
   var cur = document.body.getAttribute("data-nav") || "";
   var logo = function (inv) {
+    var base = window.CA_ASSET_BASE || "assets/";
     return '<a class="logo' + (inv ? " inv" : "") + '" href="index.html" aria-label="Café Alegra, inicio">' +
-      '<img src="assets/img/logo-alegra.png" alt="Café Alegra" class="logo-img">' +
+      '<img src="' + base + 'img/logo-alegra.png" alt="Café Alegra" class="logo-img">' +
       '<span class="wm"><b>CAFÉ ALEGRA</b><small>Tostaduría artesanal · Especialidad</small></span></a>';
   };
   window.ca_logo = logo;
@@ -629,6 +630,7 @@
         $(".notes", pd).innerHTML = p.notes.map(function (n) { return "<li>" + n + "</li>"; }).join("");
         var factSize = $("#pd-fact-size", pd); if (factSize) factSize.textContent = p.size;
         var factGrind = $("#pd-fact-grind", pd); if (factGrind) factGrind.textContent = presentation(p);
+        var rc = $("#pd-roast-container", pd); if (rc) rc.innerHTML = roastProfile(p);
         $(".pd-img img", pd).alt = p.name;
         $(".price span", pd).textContent = money(p.price);
         $("#variant-summary").textContent = p.size + " · " + presentation(p) + " · " + money(p.price);

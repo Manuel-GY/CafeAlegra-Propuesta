@@ -266,24 +266,79 @@ function cafe_alegra_child_render_propuesta() {
 					$canonical_ref = 'prensa-francesa-cobre';
 				}
 
+				// 1. Extraer o deducir Tueste / Intensidad (admite atributos de WooCommerce 'tueste' o 'intensidad')
+				$roast_attr = $prod->get_attribute( 'tueste' ) ?: ( $prod->get_attribute( 'intensidad' ) ?: ( $prod->get_attribute( 'pa_tueste' ) ?: ( $prod->get_attribute( 'pa_intensidad' ) ?: get_post_meta( $pid, '_tueste', true ) ) ) );
+				$roast = null;
+				if ( ! empty( $roast_attr ) ) {
+					$r_clean = strtolower( trim( $roast_attr ) );
+					if ( false !== strpos( $r_clean, 'suave' ) ) {
+						$roast = array( 'label' => 'Medio suave', 'tone' => 'suave' );
+					} elseif ( false !== strpos( $r_clean, 'intenso' ) || false !== strpos( $r_clean, 'fuerte' ) ) {
+						$roast = array( 'label' => 'Medio intenso', 'tone' => 'intenso' );
+					} else {
+						$roast = array( 'label' => ucfirst( $roast_attr ), 'tone' => 'medio' );
+					}
+				} else {
+					if ( false !== strpos( $lower_name, 'bolivia' ) ) {
+						$roast = array( 'label' => 'Medio suave', 'tone' => 'suave' );
+					} elseif ( false !== strpos( $lower_name, 'colombia' ) ) {
+						$roast = array( 'label' => 'Medio intenso', 'tone' => 'intenso' );
+					} elseif ( false !== strpos( $lower_name, 'guatemala' ) || 'especialidad' === $cat || 'autor' === $cat ) {
+						$roast = array( 'label' => 'Medio', 'tone' => 'medio' );
+					}
+				}
+
+				// 2. Extraer o deducir Notas de cata (admite atributo 'notas' o 'pa_notas')
+				$notes_attr = $prod->get_attribute( 'notas' ) ?: ( $prod->get_attribute( 'pa_notas' ) ?: get_post_meta( $pid, '_notas', true ) );
+				if ( ! empty( $notes_attr ) ) {
+					$notes_parts = array_map( 'trim', preg_split( '/[|,;]+/', $notes_attr ) );
+					$notes = array_values( array_filter( $notes_parts ) );
+				} else {
+					if ( false !== strpos( $lower_name, 'guatemala' ) ) {
+						$notes = array( 'Bourbon & Catuai', '1.500 msnm', 'Lavado' );
+					} elseif ( false !== strpos( $lower_name, 'bolivia' ) ) {
+						$notes = array( 'Caturra & Castillo', '1.450 msnm', 'Lavado' );
+					} elseif ( false !== strpos( $lower_name, 'colombia' ) ) {
+						$notes = array( 'Castillo', '1.600 msnm', 'Lavado' );
+					} elseif ( false !== strpos( $lower_name, 'avellana' ) ) {
+						$notes = array( 'Avellana tostada', 'Caramelo dulce', 'Cuerpo cremoso' );
+					} elseif ( false !== strpos( $lower_name, 'nuez' ) ) {
+						$notes = array( 'Nuez tostada', 'Caramelo dulce', 'Cuerpo sedoso' );
+					} elseif ( false !== strpos( $lower_name, 'pistacho' ) ) {
+						$notes = array( 'Pistacho tostado', 'Caramelo dulce', 'Amaretto gourmet' );
+					} elseif ( false !== strpos( $lower_name, 'higo' ) ) {
+						$notes = array( 'Sin cafeína', '100% natural', 'VI Región' );
+					} elseif ( false !== strpos( $lower_name, 'trigo' ) ) {
+						$notes = array( 'Sin cafeína', '100% natural', 'VI Región' );
+					} else {
+						$notes = array( '100% arábica', 'Tueste Rancagua' );
+					}
+				}
+
+				// 3. Formato, Molienda y Preparación
+				$format_val = $prod->get_attribute( 'formato' ) ?: ( $prod->get_attribute( 'pa_formato' ) ?: '250 g' );
+				$grind_val  = $prod->get_attribute( 'molienda' ) ?: ( $prod->get_attribute( 'pa_molienda' ) ?: ( false !== strpos( $lower_name, 'molido' ) ? 'molido' : 'grano' ) );
+				$prep_val   = $prod->get_attribute( 'preparacion' ) ?: ( $prod->get_attribute( 'pa_preparacion' ) ?: 'Ideal en cafetera moka, prensa francesa o filtrado.' );
+
 				$wc_products_data[] = array(
 					'id'            => $canonical_id,
 					'wc_slug'       => $slug,
 					'reference'     => $canonical_ref,
 					'referenceName' => $name,
+					'roast'         => $roast,
 					'cat'           => $cat,
 					'collection'    => $collection,
 					'name'          => $name,
 					'sub'           => $name,
-					'size'          => '250 g',
-					'grind'         => 'grano',
+					'size'          => $format_val,
+					'grind'         => $grind_val,
 					'price'         => $curr_price ?: ( $reg_price ?: 14000 ),
 					'was'           => $sale_price ? $reg_price : 0,
 					'img'           => $img_url,
 					'short'         => $short,
-					'notes'         => array( '100% arábica', 'Tueste Rancagua' ),
+					'notes'         => $notes,
 					'desc'          => wpautop( $prod->get_description() ?: $short ),
-					'prep'          => 'Ideal en cafetera moka, prensa francesa o filtrado.',
+					'prep'          => $prep_val,
 					'sourcePage'    => 1,
 				);
 			}
