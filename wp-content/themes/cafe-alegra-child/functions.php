@@ -1,6 +1,6 @@
 <?php
 /**
- * Café Alegra child theme bootstrap.
+ * Café Alegra child theme bootstrap (GeneratePress Child + Maqueta 1:1).
  *
  * @package CafeAlegraChild
  */
@@ -54,6 +54,270 @@ function cafe_alegra_child_enqueue_styles() {
 }
 add_action( 'wp_enqueue_scripts', 'cafe_alegra_child_enqueue_styles', 20 );
 
+add_action( 'init', function() {
+	$home_path = trim( (string) wp_parse_url( home_url(), PHP_URL_PATH ), '/' );
+	$base      = $home_path ? '/' . $home_path . '/' : '/';
+	$file      = ABSPATH . '.htaccess';
+	if ( ! file_exists( $file ) || false === strpos( (string) @file_get_contents( $file ), 'RewriteBase ' . $base ) ) {
+		$rules = "# BEGIN WordPress\n<IfModule mod_rewrite.c>\nRewriteEngine On\nRewriteBase " . $base . "\nRewriteRule ^index\\.php$ - [L]\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule . " . $base . "index.php [L]\n</IfModule>\n# END WordPress\n";
+		@file_put_contents( $file, $rules );
+	}
+} );
+
+/**
+ * Enrutador de la Maqueta 1:1 (CafeAlegra-Propuesta) dentro del Tema Hijo.
+ * Renderiza fielmente todas las páginas de la propuesta cuando el tema hijo está activo
+ * o en modo de previsualización (/propuesta/ o ?propuesta=1).
+ */
+function cafe_alegra_child_resolve_propuesta_slug() {
+	$req_uri   = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
+	$path      = (string) wp_parse_url( $req_uri, PHP_URL_PATH );
+	$path      = trim( $path, '/' );
+	$home_path = trim( (string) wp_parse_url( home_url(), PHP_URL_PATH ), '/' );
+
+	if ( ! empty( $home_path ) && 0 === strpos( $path, $home_path ) ) {
+		$path = trim( substr( $path, strlen( $home_path ) ), '/' );
+	}
+
+	if ( 0 === strpos( $path, 'index.php/' ) ) {
+		$path = substr( $path, strlen( 'index.php/' ) );
+	}
+
+	// Quitar prefijo 'propuesta' si viene en la URL
+	if ( 'propuesta' === $path ) {
+		$path = '';
+	} elseif ( 0 === strpos( $path, 'propuesta/' ) ) {
+		$path = substr( $path, strlen( 'propuesta/' ) );
+	}
+
+	if ( '' === $path || 'index.html' === $path || 'index.php' === $path ) {
+		return 'index';
+	}
+
+	if ( '.html' === substr( $path, -5 ) ) {
+		$path = substr( $path, 0, -5 );
+	}
+	$slug = sanitize_file_name( basename( $path ) );
+
+	$pages_dir = get_stylesheet_directory() . '/pages/';
+	if ( $slug && file_exists( $pages_dir . $slug . '.html' ) ) {
+		return $slug;
+	}
+
+	// Mapeos amigables de slugs de WordPress a plantillas de la maqueta
+	$aliases = array(
+		'inicio'                     => 'index',
+		'shop'                       => 'tienda',
+		'tienda'                     => 'tienda',
+		'mi-cuenta'                  => 'acceder',
+		'cart'                       => 'carrito',
+		'checkout'                   => 'carrito',
+		'politica-de-privacidad'     => 'privacidad',
+		'terminos-y-condiciones'     => 'terminos',
+		'blog-cafe-de-trigo'         => 'articulo-cafe-de-trigo',
+	);
+	if ( isset( $aliases[ $slug ] ) && file_exists( $pages_dir . $aliases[ $slug ] . '.html' ) ) {
+		return $aliases[ $slug ];
+	}
+
+	return null;
+}
+
+function cafe_alegra_child_render_propuesta() {
+	if ( is_admin() || wp_doing_ajax() || wp_doing_cron() ) {
+		return;
+	}
+	$req_uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '';
+	if ( false !== strpos( $req_uri, '/wp-json/' ) || false !== strpos( $req_uri, '/wp-admin' ) || false !== strpos( $req_uri, 'wp-login.php' ) ) {
+		return;
+	}
+
+	$slug      = cafe_alegra_child_resolve_propuesta_slug();
+	$pages_dir = get_stylesheet_directory() . '/pages/';
+	$is_404    = false;
+
+	if ( ! $slug || ! file_exists( $pages_dir . $slug . '.html' ) ) {
+		$slug   = '404';
+		$is_404 = true;
+	}
+
+	$file = $pages_dir . $slug . '.html';
+	if ( ! file_exists( $file ) ) {
+		return;
+	}
+
+	// Evitar que LiteSpeed Cache guarde la vista previa encima de producción
+	if ( ! defined( 'DONOTCACHEPAGE' ) ) {
+		define( 'DONOTCACHEPAGE', true );
+	}
+	do_action( 'litespeed_control_set_nocache', 'Cafe Alegra Child Theme Propuesta' );
+	header( 'X-LiteSpeed-Cache-Control: no-cache' );
+	nocache_headers();
+	status_header( $is_404 ? 404 : 200 );
+	header( 'Content-Type: text/html; charset=UTF-8' );
+
+	$html       = file_get_contents( $file );
+	$theme_uri  = trailingslashit( get_stylesheet_directory_uri() );
+	$assets_uri = $theme_uri . 'assets/';
+	$base_href  = trailingslashit( home_url() );
+
+	// Reescribir rutas estáticas assets/ hacia el directorio del tema hijo en WordPress
+	$html = str_replace(
+		array( 'href="assets/', 'src="assets/', 'content="assets/' ),
+		array( 'href="' . esc_url( $assets_uri ), 'src="' . esc_url( $assets_uri ), 'content="' . esc_url( $assets_uri ) ),
+		$html
+	);
+
+	// Cache busting dinámico para forzar al navegador a descartar JS/CSS en caché
+	$asset_v = 'v' . ( defined( 'WP_DEBUG' ) && WP_DEBUG ? time() : '20261111_03' );
+	$html = preg_replace( '/\?v=[0-9a-zA-Z_\-]+/', '?v=' . $asset_v, $html );
+
+	// Eliminar cualquier elemento topbar remanente
+	$html = preg_replace( '/<div[^>]*class=["\'][^"\']*topbar[^"\']*["\'][^>]*>.*?<\/div>/is', '', $html );
+
+	// Obtener catálogo dinámico desde WooCommerce si hay productos creados
+	$wc_products_data = array();
+	$wc_soldout_data  = array();
+
+	if ( class_exists( 'WooCommerce' ) ) {
+		$wc_query = wc_get_products( array(
+			'status' => 'publish',
+			'limit'  => -1,
+		) );
+
+		if ( ! empty( $wc_query ) ) {
+			foreach ( $wc_query as $prod ) {
+				$pid        = $prod->get_id();
+				$slug       = $prod->get_slug() ?: ( 'wc-' . $pid );
+				$sku        = $prod->get_sku() ?: ( 'SKU-' . $pid );
+				$name       = $prod->get_name();
+				$reg_price  = (float) $prod->get_regular_price();
+				$curr_price = (float) $prod->get_price();
+				$sale_price = (float) $prod->get_sale_price();
+				$in_stock   = $prod->is_in_stock();
+
+				$terms = wp_get_post_terms( $pid, 'product_cat', array( 'fields' => 'slugs' ) );
+				if ( is_wp_error( $terms ) ) {
+					$terms = array();
+				}
+
+				$cat = 'especialidad';
+				$collection = 'origen';
+				if ( in_array( 'autor', $terms, true ) ) {
+					$cat = 'autor';
+					$collection = 'autor';
+				} elseif ( in_array( 'tradicion', $terms, true ) ) {
+					$cat = 'tradicion';
+					$collection = 'tradicion';
+				} elseif ( in_array( 'complementos', $terms, true ) ) {
+					$cat = 'complementos';
+					$collection = 'complementos';
+				}
+
+				$img_id = $prod->get_image_id();
+				$img_url = $img_id ? wp_get_attachment_image_url( $img_id, 'large' ) : '';
+				if ( ! $img_url ) {
+					$img_url = trailingslashit( get_stylesheet_directory_uri() ) . 'assets/img/catalogo-guatemala.png';
+				}
+
+				if ( ! $in_stock ) {
+					$wc_soldout_data[] = $slug;
+					$wc_soldout_data[] = (string) $pid;
+				}
+
+				$short = wp_strip_all_tags( $prod->get_short_description() );
+				if ( ! $short ) {
+					$short = $name;
+				}
+
+				$lower_name = strtolower( $name );
+				$canonical_id  = $slug;
+				$canonical_ref = $slug;
+
+				if ( false !== strpos( $lower_name, 'guatemala' ) ) {
+					$canonical_id  = 'origen-guatemala-grano';
+					$canonical_ref = 'origen-guatemala';
+				} elseif ( false !== strpos( $lower_name, 'bolivia' ) ) {
+					$canonical_id  = 'origen-bolivia-molido';
+					$canonical_ref = 'origen-bolivia';
+				} elseif ( false !== strpos( $lower_name, 'colombia' ) ) {
+					$canonical_id  = 'origen-colombia-grano';
+					$canonical_ref = 'origen-colombia';
+				} elseif ( false !== strpos( $lower_name, 'avellana' ) ) {
+					$canonical_id  = 'praline-avellana-250';
+					$canonical_ref = 'praline-avellana';
+				} elseif ( false !== strpos( $lower_name, 'nuez' ) ) {
+					$canonical_id  = 'praline-nuez-250';
+					$canonical_ref = 'praline-nuez';
+				} elseif ( false !== strpos( $lower_name, 'pistacho' ) ) {
+					$canonical_id  = 'praline-pistacho-250';
+					$canonical_ref = 'praline-pistacho';
+				} elseif ( false !== strpos( $lower_name, 'higo' ) ) {
+					$canonical_id  = 'cafe-de-higos';
+					$canonical_ref = 'cafe-de-higos';
+				} elseif ( false !== strpos( $lower_name, 'trigo' ) ) {
+					$canonical_id  = 'cafe-de-trigo';
+					$canonical_ref = 'cafe-de-trigo';
+				} elseif ( false !== strpos( $lower_name, 'moka' ) ) {
+					$canonical_id  = 'cafetera-moka-roja';
+					$canonical_ref = 'cafetera-moka-roja';
+				} elseif ( false !== strpos( $lower_name, 'prensa' ) ) {
+					$canonical_id  = 'prensa-francesa-cobre';
+					$canonical_ref = 'prensa-francesa-cobre';
+				}
+
+				$wc_products_data[] = array(
+					'id'            => $canonical_id,
+					'wc_slug'       => $slug,
+					'reference'     => $canonical_ref,
+					'referenceName' => $name,
+					'cat'           => $cat,
+					'collection'    => $collection,
+					'name'          => $name,
+					'sub'           => $name,
+					'size'          => '250 g',
+					'grind'         => 'grano',
+					'price'         => $curr_price ?: ( $reg_price ?: 14000 ),
+					'was'           => $sale_price ? $reg_price : 0,
+					'img'           => $img_url,
+					'short'         => $short,
+					'notes'         => array( '100% arábica', 'Tueste Rancagua' ),
+					'desc'          => wpautop( $prod->get_description() ?: $short ),
+					'prep'          => 'Ideal en cafetera moka, prensa francesa o filtrado.',
+					'sourcePage'    => 1,
+				);
+			}
+		}
+	}
+
+	// Inyectar <base> hacia home_url y configuración global de assets para main.js
+	$head_inject  = "\n" . '<base href="' . esc_url( $base_href ) . '">' . "\n";
+	$head_inject .= '<style>.topbar, [class*="topbar"] { display: none !important; height: 0 !important; visibility: hidden !important; overflow: hidden !important; padding: 0 !important; margin: 0 !important; }</style>' . "\n";
+	$head_inject .= '<script>'
+		. 'window.CA_ASSET_BASE = ' . wp_json_encode( $assets_uri ) . '; '
+		. 'window.CA_PROPUESTA_BASE = ' . wp_json_encode( $base_href ) . '; '
+		. ( ! empty( $wc_products_data ) ? 'window.WC_PRODUCTS = ' . wp_json_encode( $wc_products_data ) . '; ' : '' )
+		. ( ! empty( $wc_soldout_data ) ? 'window.WC_SOLDOUT = ' . wp_json_encode( $wc_soldout_data ) . '; ' : '' )
+		. '</script>' . "\n";
+	$html         = preg_replace( '/<head>/i', '<head>' . $head_inject, $html, 1 );
+
+	// Barra flotante discreta para volver al sitio en producción o ir al panel WP
+	$exit_url = esc_url( 'https://cafealegra.cl/' );
+	$admin_url = esc_url( admin_url() );
+	$badge    = '<div id="ca-wp-preview-pill" style="position:fixed;bottom:14px;left:14px;z-index:99999;background:#1b120c;color:#f7f1e8;border:1px solid #b98a3e;border-radius:99px;padding:6px 14px;font:500 12px/1.3 Jost,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.35);display:flex;align-items:center;gap:10px;">'
+		. '<span>☕ <strong>Tienda Propuesta (Staging)</strong></span>'
+		. '<a href="' . $admin_url . '" style="color:#d9b36a;text-decoration:none;font-weight:600;" target="_blank">Panel WP-Admin ⚙</a>'
+		. '<span style="opacity:.4">|</span>'
+		. '<a href="' . $exit_url . '" style="color:#f7f1e8;text-decoration:underline;font-weight:400;" target="_blank">Sitio oficial en vivo →</a>'
+		. '</div>';
+
+	$html = str_replace( '</body>', $badge . "\n</body>", $html );
+
+	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	exit;
+}
+add_action( 'template_redirect', 'cafe_alegra_child_render_propuesta', 1 );
+
 /**
  * Renderizado automático de barra de tueste y panel "Saber más" desde campos ACF de WooCommerce
  */
@@ -76,7 +340,6 @@ function cafe_alegra_render_product_roast_and_story() {
         echo '</div></div>';
     }
 }
-
 
 /**
  * Shortcodes para Elementor y Plantillas de Café de Especialidad
@@ -137,10 +400,6 @@ function cafe_alegra_praline_palette_shortcode() {
 }
 add_shortcode( 'cafe_alegra_praline_palette', 'cafe_alegra_praline_palette_shortcode' );
 
-/**
- * Shortcode: Sección "Nuestra Casa de Cafés" para Elementor o Gutenberg
- * Uso: [cafe_alegra_casa_cafes]
- */
 function cafe_alegra_casa_cafes_shortcode( $atts = array() ) {
     ob_start();
     ?>
@@ -178,67 +437,7 @@ function cafe_alegra_casa_cafes_shortcode( $atts = array() ) {
 }
 add_shortcode( 'cafe_alegra_casa_cafes', 'cafe_alegra_casa_cafes_shortcode' );
 
-/**
- * Banner de Consentimiento de Cookies Nativo (Fallback para WordPress)
- * Si no hay plugin de cookies (ej. Complianz / CookieYes) activo, despliega el banner corporativo.
- */
-function cafe_alegra_render_cookie_consent_banner() {
-    // Si ya existe un plugin especializado de cookies, no duplicar el banner
-    if ( class_exists( 'COMPLIANZ' ) || function_exists( 'cookieyes_init' ) ) {
-        return;
-    }
-    ?>
-    <div id="ca-cookie-banner" class="cookie-banner" role="region" aria-label="Consentimiento de cookies">
-      <div class="wrap cookie-wrap">
-        <div class="cookie-text">
-          <div class="cookie-title"><strong>🍪 Tu privacidad en Café Alegra</strong></div>
-          <p>Utilizamos cookies esenciales para el funcionamiento de la tienda y analíticas para optimizar tu experiencia de compra. Puedes aceptar todas o navegar solo con las necesarias. Conoce más en nuestra <a href="<?php echo esc_url( home_url( '/politica-de-privacidad/' ) ); ?>">Política de privacidad</a>.</p>
-        </div>
-        <div class="cookie-actions">
-          <button type="button" class="btn ghost sm" id="ca-cookie-essential">Solo esenciales</button>
-          <button type="button" class="btn gold sm" id="ca-cookie-accept">Aceptar todas</button>
-        </div>
-      </div>
-    </div>
-    <script>
-    (function() {
-      var STORAGE_KEY = 'ca_cookie_consent';
-      var banner = document.getElementById('ca-cookie-banner');
-      if (!banner) return;
-      var consent = null;
-      try { consent = localStorage.getItem(STORAGE_KEY); } catch(e) {}
-      if (!consent) {
-        setTimeout(function() { banner.classList.add('is-visible'); }, 700);
-      }
-      function setConsent(type) {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify({ choice: type, timestamp: new Date().toISOString() }));
-          document.cookie = "ca_cookie_consent=" + type + "; path=/; max-age=" + (365*24*60*60);
-        } catch(e) {}
-        banner.classList.remove('is-visible');
-      }
-      var bAcc = document.getElementById('ca-cookie-accept');
-      var bEss = document.getElementById('ca-cookie-essential');
-      if (bAcc) bAcc.addEventListener('click', function() { setConsent('all'); });
-      if (bEss) bEss.addEventListener('click', function() { setConsent('essential'); });
-      document.addEventListener('click', function(e) {
-        if (e.target && e.target.matches('[data-open-cookie-banner]')) {
-          e.preventDefault();
-          banner.classList.add('is-visible');
-        }
-      });
-    })();
-    </script>
-    <?php
-}
-add_action( 'wp_footer', 'cafe_alegra_render_cookie_consent_banner', 100 );
-
-/**
- * Gestión y Experiencia de Productos Agotados en WooCommerce
- * Réplica 1:1 de la propuesta estática adaptada al estándar nativo de WooCommerce.
- */
-
-// 1. Caja informativa y botón de WhatsApp en la ficha de producto cuando está agotado
+// Gestión y Experiencia de Productos Agotados en WooCommerce
 add_action( 'woocommerce_single_product_summary', 'cafe_alegra_wc_soldout_notice_and_whatsapp', 31 );
 function cafe_alegra_wc_soldout_notice_and_whatsapp() {
     global $product;
@@ -261,7 +460,6 @@ function cafe_alegra_wc_soldout_notice_and_whatsapp() {
     <?php
 }
 
-// 2. Texto del botón en el catálogo/bucle de WooCommerce para productos sin stock
 add_filter( 'woocommerce_product_add_to_cart_text', 'cafe_alegra_wc_soldout_button_text', 10, 2 );
 function cafe_alegra_wc_soldout_button_text( $text, $product ) {
     if ( ! $product->is_in_stock() ) {
@@ -270,7 +468,6 @@ function cafe_alegra_wc_soldout_button_text( $text, $product ) {
     return $text;
 }
 
-// 3. Estilo del botón en el catálogo cuando está agotado
 add_filter( 'woocommerce_loop_add_to_cart_link', 'cafe_alegra_wc_soldout_loop_link', 10, 3 );
 function cafe_alegra_wc_soldout_loop_link( $html, $product, $args ) {
     if ( ! $product->is_in_stock() ) {
@@ -279,7 +476,6 @@ function cafe_alegra_wc_soldout_loop_link( $html, $product, $args ) {
     return $html;
 }
 
-// 4. Personalizar el texto de disponibilidad nativo de WooCommerce
 add_filter( 'woocommerce_get_availability_text', 'cafe_alegra_wc_custom_availability_text', 10, 2 );
 function cafe_alegra_wc_custom_availability_text( $availability, $product ) {
     if ( ! $product->is_in_stock() ) {
@@ -287,4 +483,6 @@ function cafe_alegra_wc_custom_availability_text( $availability, $product ) {
     }
     return $availability;
 }
+
+
 

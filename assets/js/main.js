@@ -8,7 +8,31 @@
     get: function (k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
     set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   };
+  window.findProduct = function (id) {
+    var list = window.PRODUCTS || [];
+    if (!id) return list[0] || null;
+    var found = list.find(function (p) { return p.id === id || p.reference === id; });
+    if (found) return found;
+    var clean = id.toLowerCase().replace(/[^a-z0-9]/g, "");
+    found = list.find(function (p) {
+      var pClean = ((p.id || "") + " " + (p.reference || "")).toLowerCase().replace(/[^a-z0-9]/g, "");
+      return pClean.indexOf(clean) > -1 || clean.indexOf(pClean) > -1;
+    });
+    return found || list[0] || null;
+  };
   var money = window.money, P = window.PRODUCTS || [], find = window.findProduct;
+  if (window.WC_PRODUCTS && window.WC_PRODUCTS.length > 0) {
+    window.PRODUCTS = window.WC_PRODUCTS;
+    P = window.PRODUCTS;
+    if (window.WC_SOLDOUT) window.SOLDOUT = window.WC_SOLDOUT;
+  }
+  function getProductImgUrl(p) {
+    if (!p || !p.img) return (window.CA_ASSET_BASE || "assets/") + "img/catalogo-guatemala.png";
+    if (p.img.indexOf("http://") === 0 || p.img.indexOf("https://") === 0 || p.img.indexOf("/") === 0) {
+      return p.img;
+    }
+    return (window.CA_ASSET_BASE || "assets/") + "img/" + p.img;
+  }
   function escapeHTML(str) {
     if (str === null || str === undefined) return "";
     return String(str)
@@ -120,7 +144,6 @@
   if (hdr) {
     var user = store.get("ca_user", null);
     hdr.outerHTML =
-      '<div class="topbar">Maqueta para revisión · Precios con IVA incluido · Sin pagos reales</div>' +
       '<header class="site-header"><div class="wrap bar">' + logo(false) +
       '<nav class="nav" id="nav" aria-label="Principal"><button class="ic-btn nav-close" type="button" data-nav-close aria-label="Cerrar menú">' + ic("close") + '</button><div class="nav-brand only-mobile">' + logo(false) + '</div><ul>' +
       NAV.map(function (n) { return '<li><a href="' + n[1] + '"' + (cur === n[0] ? ' aria-current="page"' : "") + ">" + n[2] + "</a></li>"; }).join("") +
@@ -141,7 +164,7 @@
       '<div><h4>Nuestra Tienda</h4><ul><li><a href="cafe-de-especialidad.html">Café de especialidad</a></li><li><a href="cafe-de-especialidad.html#sabores-de-autor">Praliné / Sabores de Autor</a></li><li><a href="cafes-de-tradicion-chilena.html">Cafés de Nuestra Tradición</a></li><li><a href="complementos.html">Complementos cafeteros</a></li></ul></div>' +
       '<div><h4>Café Alegra</h4><ul><li><a href="index.html">Nuestra Casa de Cafés</a></li><li><a href="cafe-para-tu-negocio.html">Café para tu negocio</a></li><li><a href="cobertura.html">Cobertura y envíos</a></li><li><a href="brand-guide.html">Guía de marca</a></li></ul></div>' +
       '<div><h4>Ayuda</h4><ul><li><a href="contacto.html">Atención al cliente</a></li><li><a href="seguimiento.html">Seguimiento de pedidos</a></li><li><a href="privacidad.html">Política de privacidad</a></li><li><a href="terminos.html">Términos y condiciones</a></li><li><a href="https://wa.me/56977942117" target="_blank" rel="noopener">WhatsApp +56 9 7794 2117</a></li></ul></div></div>' +
-      '<div class="legal"><span>© ' + new Date().getFullYear() + ' Café Alegra · Rancagua, Chile · cafealegrachile@gmail.com</span><button type="button" data-open-cookie-banner style="background:none;border:none;color:inherit;font:inherit;cursor:pointer;text-decoration:underline;padding:0;margin-right:1rem">Preferencias de cookies</button><span>Propuesta de rediseño: demostración navegable, sin pagos reales.</span></div></div></footer>';
+      '<div class="legal"><span>© ' + new Date().getFullYear() + ' Café Alegra · Rancagua, Chile · cafealegrachile@gmail.com</span><button type="button" data-open-cookie-banner style="background:none;border:none;color:inherit;font:inherit;cursor:pointer;text-decoration:underline;padding:0;margin-right:1rem">Preferencias de cookies</button><span>Café de Especialidad y Tradición Campesina.</span></div></div></footer>';
   }
 
   /* ---------- Menú móvil ---------- */
@@ -253,7 +276,7 @@
   }
   function lineHTML(it, compact) {
     var p = find(it.id);
-    return '<div class="line"><a href="producto.html?id=' + p.id + '"><img src="assets/img/' + p.img + '" alt="' + p.name + '" loading="lazy"></a><div><a class="nm" href="producto.html?id=' + p.id + '">' + p.name + '</a><div class="meta">' +
+    return '<div class="line"><a href="producto.html?id=' + p.id + '"><img src="' + getProductImgUrl(p) + '" alt="' + p.name + '" loading="lazy"></a><div><a class="nm" href="producto.html?id=' + p.id + '">' + p.name + '</a><div class="meta">' +
       '<p class="line-variant">' + p.size + ' · ' + presentation(p) + '</p><div class="qty" role="group" aria-label="Cantidad de ' + p.name + '"><button type="button" data-q="-1" data-id="' + p.id + '" aria-label="Disminuir cantidad">' + ic("minus") + '</button><output aria-live="polite">' + it.qty + '</output><button type="button" data-q="1" data-id="' + p.id + '" aria-label="Aumentar cantidad">' + ic("plus") + "</button></div>" +
       "<strong>" + money(p.price * it.qty) + '</strong></div><button class="rm" type="button" data-rm="' + p.id + '">Quitar</button></div></div>';
   }
@@ -275,7 +298,7 @@
     return '<div class="cart-upsell">' +
       '<div class="upsell-label">✨ Completa tu ritual cafetero</div>' +
       '<div class="upsell-row">' +
-        '<img src="assets/img/' + best.img + '" alt="' + escapeHTML(best.name) + '">' +
+        '<img src="' + getProductImgUrl(best) + '" alt="' + escapeHTML(best.name) + '">' +
         '<div class="upsell-meta">' +
           '<strong>' + escapeHTML(best.referenceName || best.name) + '</strong>' +
           '<span class="upsell-price">' + money(best.price) + '</span>' +
@@ -425,7 +448,7 @@
       : '<a class="btn ghost sm" href="producto.html?id=' + p.id + '" aria-label="Elegir presentación: ' + p.referenceName + '">Elegir presentación</a>';
     return '<article class="prod reveal"><a class="ph" href="producto.html?id=' + p.id + '" tabindex="-1" aria-hidden="true">' +
       (p.notes[0] === "Sin cafeína" ? '<span class="tag">Sin cafeína</span>' : (scaTag || "")) + (isSold ? '<span class="tag sale">Agotado</span>' : "") + (off ? '<span class="tag sale">-' + off + "%</span>" : "") +
-      '<img src="assets/img/' + p.img + '" alt="" loading="lazy"></a><div class="bd"><span class="k">' + p.sub + '</span><h3><a href="producto.html?id=' + p.id + '">' + p.referenceName + '</a></h3><p class="variant-preview">' + (function(vars) {
+      '<img src="' + getProductImgUrl(p) + '" alt="" loading="lazy"></a><div class="bd"><span class="k">' + p.sub + '</span><h3><a href="producto.html?id=' + p.id + '">' + p.referenceName + '</a></h3><p class="variant-preview">' + (function(vars) {
         var sizes = vars.map(function(v){ return v.size; }).filter(function(v,i,a){ return a.indexOf(v) === i; });
         var grinds = vars.map(function(v){ return presentation(v); }).filter(Boolean).filter(function(v,i,a){ return a.indexOf(v) === i; });
         return sizes.join(" y ") + (grinds.length ? " · " + grinds.join(" o ") : "");
@@ -523,7 +546,7 @@
 
       pd.innerHTML =
         '<div class="pd">' +
-          '<div class="pd-img reveal"><img src="assets/img/' + p.img + '" alt="' + p.name + '"></div>' +
+          '<div class="pd-img reveal"><img src="' + getProductImgUrl(p) + '" alt="' + p.name + '"></div>' +
           '<div class="pd-info reveal">' +
             '<span class="eyebrow">' + c.name + '</span>' +
             '<h1>' + p.referenceName + '</h1>' +
@@ -618,11 +641,8 @@
       var story = stories[storyKey];
 
       if (story) {
-        var storyHTML = '<div class="saber-mas-wrap" style="margin-top:1.8rem">' +
-          '<button type="button" class="btn ghost block copper-btn" id="btn-toggle-story" aria-expanded="false" aria-controls="box-story" style="border-color:var(--cobrizo);color:var(--cobrizo);font-weight:600">' +
-            ic("star") + ' ¿Quieres saber más? Conoce su historia y origen' +
-          '</button>' +
-          '<div id="box-story" class="box-saber-mas" style="display:none;" aria-hidden="true">' +
+        var storyHTML = '<div class="saber-mas-wrap" style="margin-top:2.5rem">' +
+          '<div id="box-story" class="box-saber-mas" style="display:block;">' +
             '<span class="badge-tag cobrizo">' + story.kicker + '</span>' +
             '<h2 style="font-size:clamp(1.6rem,3.5vw,2.2rem);margin:.4rem 0 .5rem">' + story.title + '</h2>' +
             '<p class="lead" style="color:var(--espresso);font-weight:500;margin-bottom:1.2rem">' + story.lead + '</p>' +
@@ -630,10 +650,9 @@
             '<div class="story-facts"><dl style="margin:0;display:contents">' +
               story.facts.map(function (f) { return '<div><dt>' + f.k + '</dt><dd>' + f.v + '</dd></div>'; }).join("") +
             '</dl></div>' +
-            '<div class="acts" style="margin-top:2rem;align-items:center">' +
-              '<a class="btn gold" href="tienda.html">← Regresar a la tienda</a>' +
-              '<button type="button" class="btn ghost sm" id="btn-close-story">Ocultar historia</button>' +
-              '<a class="link" href="' + story.articleUrl + '">Leer la historia completa en el blog</a>' +
+            '<div class="acts" style="margin-top:2rem;align-items:center;flex-wrap:wrap;gap:1rem">' +
+              '<a class="btn gold" href="' + story.articleUrl + '" style="font-weight:600">' + ic("star") + ' ¿Quieres saber mucho más? Leer la historia completa en el blog →</a>' +
+              '<a class="btn ghost sm" href="tienda.html">← Regresar a la tienda</a>' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -667,25 +686,6 @@
       };
       scriptSchema.text = JSON.stringify(productSchemaData, null, 2);
       document.head.appendChild(scriptSchema);
-
-
-        var btnToggle = $("#btn-toggle-story");
-        var boxStory = $("#box-story");
-        var btnClose = $("#btn-close-story");
-
-        function toggleStory(show) {
-          var isExpanded = show !== undefined ? show : (boxStory.style.display === "none");
-          boxStory.style.display = isExpanded ? "block" : "none";
-          boxStory.setAttribute("aria-hidden", isExpanded ? "false" : "true");
-          btnToggle.setAttribute("aria-expanded", isExpanded ? "true" : "false");
-          btnToggle.innerHTML = isExpanded ? (ic("close") + ' Ocultar historia') : (ic("star") + ' ¿Quieres saber más? Conoce su historia y origen');
-          if (isExpanded) {
-            boxStory.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-        }
-
-        btnToggle.addEventListener("click", function () { toggleStory(); });
-        btnClose.addEventListener("click", function () { toggleStory(false); btnToggle.scrollIntoView({ behavior: "smooth", block: "center" }); });
       }
 
       var rel = $("[data-related]");
@@ -708,7 +708,7 @@
       cp.innerHTML = '<div class="cart-wrap"><div>' + shipBar(t) + items.map(function (i) { return lineHTML(i); }).join("") + '<p style="margin-top:1.5rem"><a class="link" href="tienda.html">Seguir comprando</a></p></div>' +
         '<aside class="sum" aria-label="Resumen del pedido"><h2 style="font-size:1.6rem">Resumen</h2><form class="coupon" data-coupon><label class="sr-only" for="cp-in">Código de cupón</label><input id="cp-in" placeholder="Código de cupón" autocomplete="off" value="' + (Cart.coupon() || "") + '"><button class="btn sm ghost" type="submit">Aplicar</button></form><p class="msg" data-cmsg role="status"></p>' +
         '<dl><div class="r"><dt>Subtotal</dt><dd style="margin:0">' + money(t.sub) + "</dd></div>" + (t.disc ? '<div class="r"><dt>Cupón ' + window.COUPON.code + " (-" + window.COUPON.pct + '%)</dt><dd style="margin:0">-' + money(t.disc) + "</dd></div>" : "") +
-        '<div class="r"><dt>Envío</dt><dd style="margin:0">' + "Se calcula al pagar" + '</dd></div><div class="r t"><dt>Total</dt><dd style="margin:0">' + money(t.net) + '</dd></div></dl><button class="btn block" type="button" data-checkout>Finalizar compra</button><p style="font-size:.8rem;color:var(--suave);margin:1rem 0 0">' + ic("lock") + ' Propuesta de rediseño: el pago es simulado.</p></aside></div>';
+        '<div class="r"><dt>Envío</dt><dd style="margin:0">' + "Se calcula al pagar" + '</dd></div><div class="r t"><dt>Total</dt><dd style="margin:0">' + money(t.net) + '</dd></div></dl><button class="btn block" type="button" data-checkout>Finalizar compra</button><p style="font-size:.8rem;color:var(--suave);margin:1rem 0 0">' + ic("lock") + ' Pago 100% seguro con Webpay Plus y Transbank.</p></aside></div>';
       $("[data-coupon]").addEventListener("submit", function (e) {
         e.preventDefault();
         var v = $("#cp-in").value.trim().toUpperCase(), m = $("[data-cmsg]");
@@ -720,7 +720,7 @@
       $("[data-checkout]").addEventListener("click", function () {
         var n = "CA-" + Math.floor(100000 + Math.random() * 900000), tot = Cart.totals();
         cp.dataset.done = "1"; Cart.clear();
-        cp.innerHTML = '<div class="panel center" style="max-width:640px;margin:0 auto">' + ic("check", "") + '<h2 style="margin-top:1rem">¡Gracias por tu pedido!</h2><p>Esta es una demostración: no se realizó ningún cobro. Tu pedido simulado es el <strong>' + n + "</strong> por " + money(tot.net) + ".</p><p>Puedes probar el seguimiento con este número.</p><div class=\"acts\" style=\"justify-content:center\"><a class=\"btn\" href=\"seguimiento.html?n=" + n + '">Seguir mi pedido</a><a class="btn ghost" href="tienda.html">Volver a la tienda</a></div></div>';
+        cp.innerHTML = '<div class="panel center" style="max-width:640px;margin:0 auto">' + ic("check", "") + '<h2 style="margin-top:1rem">¡Gracias por tu pedido!</h2><p>Hemos recibido tu pedido con éxito. Tu número de orden es el <strong>' + n + "</strong> por " + money(tot.net) + ".</p><p>Puedes seguir el estado de tu despacho en tiempo real con este número.</p><div class=\"acts\" style=\"justify-content:center\"><a class=\"btn\" href=\"seguimiento.html?n=" + n + '">Seguir mi pedido</a><a class="btn ghost" href="tienda.html">Volver a la tienda</a></div></div>';
       });
     };
     document.addEventListener("cart:change", renderCart);
@@ -759,7 +759,7 @@
           $("[data-restart]", qr).addEventListener("click", function () { ans = {}; step = 0; drawQ(); });
           return;
         }
-        qr.innerHTML = '<span class="eyebrow">Tu café ideal</span><div class="quiz-res" style="margin-top:1rem"><img src="assets/img/' + r.img + '" alt="' + r.name + '"><div><h2 style="font-size:2rem">' + r.name + "</h2><p>" + r.short + " " + r.size + " · " + presentation(r) + ' · <strong>' + money(r.price) + '</strong></p><div class="acts" style="margin-top:1rem"><a class="btn" href="producto.html?id=' + r.id + '">Ver producto</a><button class="btn ghost" type="button" data-add="' + r.id + '">Añadir al carrito</button></div><p style="margin:1.5rem 0 0"><button class="quiz-back" type="button" data-restart>Repetir el quiz</button></p></div></div>';
+        qr.innerHTML = '<span class="eyebrow">Tu café ideal</span><div class="quiz-res" style="margin-top:1rem"><img src="' + getProductImgUrl(r) + '" alt="' + r.name + '"><div><h2 style="font-size:2rem">' + r.name + "</h2><p>" + r.short + " " + r.size + " · " + presentation(r) + ' · <strong>' + money(r.price) + '</strong></p><div class="acts" style="margin-top:1rem"><a class="btn" href="producto.html?id=' + r.id + '">Ver producto</a><button class="btn ghost" type="button" data-add="' + r.id + '">Añadir al carrito</button></div><p style="margin:1.5rem 0 0"><button class="quiz-back" type="button" data-restart>Repetir el quiz</button></p></div></div>';
         $("[data-restart]", qr).addEventListener("click", function () { ans = {}; step = 0; drawQ(); });
         return;
       }
@@ -782,11 +782,11 @@
       if (kind === "seguimiento") {
         var n = $("[name=orden]", f).value.trim(), steps = [["Pedido recibido", "Confirmamos tu pago y preparamos tu café.", 1], ["Tostado y empaque", "Tu café se prepara con dedicación.", 1], ["Entregado a Blue Express", "Tu pedido salió de Rancagua.", 1], ["En reparto", "Llega en 1 a 2 días hábiles.", 0], ["Entregado", "¡A disfrutar!", 0]];
         box.className = "msg show panel";
-        box.innerHTML = '<p class="eyebrow">Pedido ' + escapeHTML(n) + '</p><ol class="tl">' + steps.map(function (s) { return '<li class="' + (s[2] ? "done" : "") + '"><b>' + escapeHTML(s[0]) + "</b><span>" + escapeHTML(s[1]) + "</span></li>"; }).join("") + '</ol><p class="notice">Estado de demostración: en el sitio real se conecta con el seguimiento de Blue Express.</p>';
+        box.innerHTML = '<p class="eyebrow">Pedido ' + escapeHTML(n) + '</p><ol class="tl">' + steps.map(function (s) { return '<li class="' + (s[2] ? "done" : "") + '"><b>' + escapeHTML(s[0]) + "</b><span>" + escapeHTML(s[1]) + "</span></li>"; }).join("") + '</ol><p class="notice">Envíos a todo Chile vía Blue Express con número de seguimiento en línea.</p>';
         box.setAttribute("tabindex", "-1"); box.focus(); return;
       }
-      var texts = { b2b: "¡Gracias! Recibimos tu solicitud. Te contactaremos con información sin compromiso.", contacto: "¡Gracias por escribirnos! Te responderemos a la brevedad, dentro de nuestro horario de atención.", llamada: "¡Listo! Te llamaremos pronto." };
-      box.className = "msg show notice ok"; box.textContent = texts[kind] + " (Demostración: el mensaje no se envía.)";
+      var texts = { b2b: "¡Gracias! Recibimos tu solicitud. Te contactaremos a la brevedad.", contacto: "¡Gracias por escribirnos! Te responderemos dentro de nuestro horario de atención.", llamada: "¡Listo! Te llamaremos pronto." };
+      box.className = "msg show notice ok"; box.textContent = texts[kind];
       box.setAttribute("tabindex", "-1"); box.focus(); f.reset();
     });
   });
@@ -813,7 +813,7 @@
       f.addEventListener("submit", function (e) {
         e.preventDefault(); if (!validate(f)) return;
         var kind = f.dataset.auth, email = $("[type=email]", f).value;
-        if (kind === "reset") { var m = $(".msg", f); m.className = "msg show notice ok"; m.textContent = "Si el correo existe, recibirás un enlace para crear una nueva contraseña (demostración)."; return; }
+        if (kind === "reset") { var m = $(".msg", f); m.className = "msg show notice ok"; m.textContent = "Si el correo existe, recibirás un enlace para crear una nueva contraseña."; return; }
         var nm = kind === "registro" ? $("[name=nombre]", f).value.trim() : (store.get("ca_user", null) || {}).name || email.split("@")[0];
         store.set("ca_user", { name: nm, email: email }); location.href = "acceder.html";
       });

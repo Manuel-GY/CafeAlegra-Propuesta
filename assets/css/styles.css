@@ -68,7 +68,7 @@ ul{padding:0;margin:0;list-style:none}
 .acts{display:flex;flex-wrap:wrap;gap:1rem;margin-top:2rem}
 
 /* Barra superior + header */
-.topbar{background:var(--espresso);color:var(--crema);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;text-align:center;padding:.65rem var(--pad)}
+.topbar{display:none !important}
 .topbar a{color:var(--oro-claro);margin-left:.8rem}
 .site-header{position:sticky;top:0;z-index:100;background:var(--crema);border-bottom:1px solid var(--linea)}
 @media(min-width:1024px){.site-header{background:rgba(247,241,232,.92);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px)}}

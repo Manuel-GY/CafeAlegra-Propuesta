@@ -1,0 +1,9 @@
+Banner photography sources:
+
+- Tracking truck: https://images.unsplash.com/photo-1601584115197-04ecc0da31d7
+- Coffee shop: https://images.unsplash.com/photo-1554118811-1e0d58224f24
+- Business handshake: https://images.unsplash.com/photo-1521791136064-7986c2920216
+- Customer support agent: https://www.pexels.com/photo/close-up-photo-of-a-woman-wearing-headset-at-the-office-8866749/
+
+Unsplash photos are provided under the Unsplash License: https://unsplash.com/license
+Pexels photos are provided under the Pexels License: https://www.pexels.com/license/
