@@ -122,7 +122,7 @@
   // Manejo de páginas de líneas descontinuadas o pendientes de cosecha
   var pendingCatalogPages = ["packs.html", "set-descubrimiento.html"];
   if (pendingCatalogPages.indexOf(location.pathname.split("/").pop()) !== -1) {
-    $("#main").innerHTML = '<section class="section"><div class="wrap"><h1>Catálogo pendiente</h1><p class="lead">Esta línea de productos se encuentra en preparación para la próxima temporada de cosecha.</p><a class="btn" href="tienda.html">Ver productos del catálogo actualizado</a></div></section>';
+    $("#main").innerHTML = '<section class="section"><div class="wrap"><h1>Línea de Temporada</h1><p class="lead">Esta selección de productos se encuentra temporalmente agotada y regresará en la próxima temporada de cosecha.</p><a class="btn" href="tienda.html">Ver productos del catálogo actualizado</a></div></section>';
   }
 
   /* ==========================================================================
@@ -336,7 +336,7 @@
     ftr.outerHTML =
       '<footer class="site-footer"><div class="wrap"><div class="fgrid"><div>' + logo(true) +
       '<p style="margin-top:1.4rem;max-width:34ch">Tostaduría artesanal de Rancagua. Café de especialidad y cafés de tradición chilena.</p>' +
-      '<div class="social" role="group" aria-label="Redes sociales"><a href="https://www.instagram.com/cafealegrachile/" target="_blank" rel="noopener" class="social-link" style="display:inline-flex;align-items:center;gap:6px;color:inherit;text-decoration:none;margin-right:12px;">' + ic("instagram") + ' Instagram</a><a href="https://www.facebook.com/cafealegrachile/" target="_blank" rel="noopener" class="social-link" style="display:inline-flex;align-items:center;gap:6px;color:inherit;text-decoration:none;">' + ic("facebook") + ' Facebook</a></div></div>' +
+      '<div class="social" role="group" aria-label="Redes sociales"><a href="https://www.instagram.com/cafealegrachile/" target="_blank" rel="noopener" aria-label="Síguenos en Instagram" title="Instagram">' + ic("instagram") + '<span class="sr-only">Instagram</span></a><a href="https://www.facebook.com/cafealegrachile/" target="_blank" rel="noopener" aria-label="Síguenos en Facebook" title="Facebook">' + ic("facebook") + '<span class="sr-only">Facebook</span></a></div></div>' +
       '<div><h4>Nuestra Tienda</h4><ul><li><a href="cafe-de-especialidad.html">Café de especialidad</a></li><li><a href="cafe-de-especialidad.html#sabores-de-autor">Praliné / Sabores de Autor</a></li><li><a href="cafes-de-tradicion-chilena.html">Cafés de Nuestra Tradición</a></li><li><a href="complementos.html">Complementos cafeteros</a></li></ul></div>' +
       '<div><h4>Café Alegra</h4><ul><li><a href="index.html">Nuestra Casa de Cafés</a></li><li><a href="cafe-para-tu-negocio.html">Café para tu negocio</a></li><li><a href="cobertura.html">Cobertura y envíos</a></li><li><a href="brand-guide.html">Guía de marca</a></li></ul></div>' +
       '<div><h4>Ayuda</h4><ul><li><a href="contacto.html">Atención al cliente</a></li><li><a href="seguimiento.html">Seguimiento de pedidos</a></li><li><a href="privacidad.html">Política de privacidad</a></li><li><a href="terminos.html">Términos y condiciones</a></li><li><a href="https://wa.me/56977942117" target="_blank" rel="noopener">WhatsApp +56 9 7794 2117</a></li></ul></div></div>' +
