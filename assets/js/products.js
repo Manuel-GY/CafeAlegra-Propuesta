@@ -1,6 +1,32 @@
+/**
+ * ============================================================================
+ * CAFÉ ALEGRA · Catálogo Oficial de Productos y Definiciones de Datos
+ * ============================================================================
+ * Archivo: products.js
+ * Descripción:
+ *   Define la fuente de verdad del catálogo comercial de Café Alegra para la
+ *   tienda web y la maqueta 1:1. Contiene:
+ *     1. Historias editoriales y fichas de autor (window.COFFEE_STORIES).
+ *     2. Taxonomía de categorías y navegación (window.CATEGORIES).
+ *     3. Cafés de especialidad de origen único (ORIGINS).
+ *     4. Accesorios y complementos cafeteros (COMPLEMENTS).
+ *     5. Colección Praliné de autor con frutos secos reales (ASSEMBLAGES).
+ *     6. Generación dinámica de variantes y catálogo global (window.PRODUCTS).
+ *     7. Reglas de envío, formato de moneda (CLP) y utilidades de búsqueda.
+ *
+ * Todos los precios están expresados en pesos chilenos (CLP) con IVA incluido.
+ * ============================================================================
+ */
 
-/* Historias detalladas por café (disponibles al presionar "Saber más") */
+/* ============================================================================
+ * 1. HISTORIAS DETALLADAS POR CAFÉ (Módulo "Saber Más" y Blog)
+ * ============================================================================
+ * Contenido editorial enriquecido para cada variedad de café. Se despliega
+ * en las fichas de producto al interactuar con el botón "¿Quieres saber más?"
+ * y enlaza a los artículos de fondo en el blog de especialidad.
+ */
 window.COFFEE_STORIES = {
+  // Historia y territorio: Café de Especialidad Guatemala (Bourbon & Catuaí)
   "origen-guatemala": {
     title: "Historia y Territorio · Guatemala",
     kicker: "Café de Especialidad · Origen Único",
@@ -15,6 +41,8 @@ window.COFFEE_STORIES = {
     ],
     articleUrl: "articulo-origen-y-territorio.html"
   },
+
+  // Historia y territorio: Café de Especialidad Bolivia Caranavi
   "origen-bolivia": {
     title: "Historia y Territorio · Bolivia Caranavi",
     kicker: "Café de Especialidad · Origen Único",
@@ -29,6 +57,8 @@ window.COFFEE_STORIES = {
     ],
     articleUrl: "articulo-procesos-lavado-natural-honey.html"
   },
+
+  // Historia y territorio: Café de Especialidad Colombia (Varietal Castillo)
   "origen-colombia": {
     title: "Historia y Territorio · Colombia",
     kicker: "Café de Especialidad · Origen Único",
@@ -43,6 +73,8 @@ window.COFFEE_STORIES = {
     ],
     articleUrl: "articulo-origen-y-territorio.html"
   },
+
+  // Historia de Autor: Colección Praliné · Avellana Chilena & Caramelo
   "praline-avellana": {
     title: "Historia de Autor · Avellana Chilena & Caramelo",
     kicker: "Historia de Autor · Tostaduría en Rancagua",
@@ -57,6 +89,8 @@ window.COFFEE_STORIES = {
     ],
     articleUrl: "praline-avellana.html"
   },
+
+  // Historia de Autor: Colección Praliné · Nuez & Caramelo
   "praline-nuez": {
     title: "Historia de Autor · «La calidez del encuentro»",
     kicker: "Historia de Autor · Tostaduría en Rancagua",
@@ -71,6 +105,8 @@ window.COFFEE_STORIES = {
     ],
     articleUrl: "praline-nuez.html"
   },
+
+  // Historia de Autor: Colección Praliné · Pistacho & Caramelo con notas de amaretto
   "praline-pistacho": {
     title: "Historia de Autor · «La alegría de compartir»",
     kicker: "Historia de Autor · Tostaduría en Rancagua",
@@ -86,6 +122,8 @@ window.COFFEE_STORIES = {
     ],
     articleUrl: "praline-pistacho.html"
   },
+
+  // Historia patrimonial: Café de Higos (sin cafeína)
   "cafe-de-higos": {
     title: "Historia Campesina · El Café de Higos",
     kicker: "Cafés de Nuestra Tradición · Sin Cafeína",
@@ -100,6 +138,8 @@ window.COFFEE_STORIES = {
     ],
     articleUrl: "articulo-cafe-de-trigo.html"
   },
+
+  // Historia patrimonial: Café de Trigo (sin cafeína)
   "cafe-de-trigo": {
     title: "Historia Campesina · El Café de Trigo",
     kicker: "Cafés de Nuestra Tradición · Sin Cafeína",
@@ -115,13 +155,44 @@ window.COFFEE_STORIES = {
   }
 };
 
-/* Catálogo oficial Café Alegra · Precios en CLP, IVA incluido. */
+/* ============================================================================
+ * 2. CATEGORÍAS PRINCIPALES DEL CATÁLOGO
+ * ============================================================================
+ * Estructura de navegación para agrupar los productos en la tienda y menús.
+ */
 window.CATEGORIES = {
-  especialidad: { name: "Cafés de origen", page: "cafe-de-especialidad.html#origenes", blurb: "Guatemala, Bolivia y Colombia" },
-  autor: { name: "Colección Praliné", page: "cafe-de-especialidad.html#sabores-de-autor", blurb: "Nuez, avellana chilena y pistacho" },
-  complementos: { name: "Complementos cafeteros", page: "complementos.html", blurb: "Prensas, teteras y cafeteras" }
+  especialidad: {
+    name: "Cafés de origen",
+    page: "cafe-de-especialidad.html#origenes",
+    blurb: "Guatemala, Bolivia y Colombia"
+  },
+  autor: {
+    name: "Colección Praliné",
+    page: "cafe-de-especialidad.html#sabores-de-autor",
+    blurb: "Nuez, avellana chilena y pistacho"
+  },
+  complementos: {
+    name: "Complementos cafeteros",
+    page: "complementos.html",
+    blurb: "Prensas, teteras y cafeteras"
+  }
 };
 
+/* ============================================================================
+ * 3. CAFÉS DE ESPECIALIDAD DE ORIGEN ÚNICO (Base de datos de Orígenes)
+ * ============================================================================
+ * Cada origen define:
+ *   - id: identificador base único.
+ *   - name: nombre público del origen.
+ *   - price: valor unitario en CLP para formato 250 g.
+ *   - img: nombre del archivo de imagen en assets/img/.
+ *   - short: descripción sensorial breve.
+ *   - desc: ficha técnica de altura, varietal, proceso y puntaje SCA.
+ *   - prep: recomendación técnica de preparación.
+ *   - methods: métodos de extracción sugeridos.
+ *   - notes: etiquetas clave de cata y origen.
+ *   - roast: nivel de tueste artesanal aplicado en Rancagua.
+ */
 const ORIGINS = [
   {
     id: "guatemala",
@@ -177,11 +248,24 @@ const ORIGINS = [
   }
 ];
 
+/* ============================================================================
+ * 4. COMPLEMENTOS Y ACCESORIOS CAFETEROS
+ * ============================================================================
+ * Equipamiento para métodos de extracción por inmersión y fuego directo.
+ */
 const COMPLEMENTS = [
   {
-    id: "cafetera-moka-roja", reference: "cafetera-moka-roja", referenceName: "Cafetera Italiana Moka Roja",
-    cat: "complementos", collection: "complementos", name: "Cafetera Italiana Moka Roja · 3 Tazas", sub: "Moka",
-    size: "3 tazas", grind: "", price: 16990, img: "cafetera-italiana-roja.webp",
+    id: "cafetera-moka-roja",
+    reference: "cafetera-moka-roja",
+    referenceName: "Cafetera Italiana Moka Roja",
+    cat: "complementos",
+    collection: "complementos",
+    name: "Cafetera Italiana Moka Roja · 3 Tazas",
+    sub: "Moka",
+    size: "3 tazas",
+    grind: "",
+    price: 16990,
+    img: "cafetera-italiana-roja.webp",
     short: "Cuerpo de aluminio y válvula de seguridad. Ideal para extracciones con cuerpo e intensidad.",
     notes: ["Aluminio clásico", "Fuego directo", "3 tazas"],
     desc: "Clásica cafetera italiana Moka para fuego directo. Prepara un café concentrado y aromático, ideal para disfrutar solo o con leche.",
@@ -190,9 +274,17 @@ const COMPLEMENTS = [
     q: { caf: 0, sabor: "", met: ["italiana"], regalo: 1 }
   },
   {
-    id: "prensa-francesa-cobre", reference: "prensa-francesa-cobre", referenceName: "Cafetera Prensa Francesa Cobre",
-    cat: "complementos", collection: "complementos", name: "Cafetera Prensa Francesa Cobre · 350 ml", sub: "Prensa",
-    size: "350 ml", grind: "", price: 19990, img: "cafetera-francesa-cobre.webp",
+    id: "prensa-francesa-cobre",
+    reference: "prensa-francesa-cobre",
+    referenceName: "Cafetera Prensa Francesa Cobre",
+    cat: "complementos",
+    collection: "complementos",
+    name: "Cafetera Prensa Francesa Cobre · 350 ml",
+    sub: "Prensa",
+    size: "350 ml",
+    grind: "",
+    price: 19990,
+    img: "cafetera-francesa-cobre.webp",
     short: "Vidrio borosilicato y acabado cobrizo Café Alegra. Extracción limpia y equilibrada por inmersión.",
     notes: ["Vidrio borosilicato", "Filtro acero inox", "Tono cobrizo"],
     desc: "Prensa francesa elegante que armoniza con los tonos cobrizos de Café Alegra. Filtro de acero inoxidable de malla fina para una taza sedosa.",
@@ -202,6 +294,13 @@ const COMPLEMENTS = [
   }
 ];
 
+/* ============================================================================
+ * 5. COLECCIÓN PRALINÉ · SABORES DE AUTOR
+ * ============================================================================
+ * Creaciones exclusivas de Café Alegra: café 100% arábica de especialidad
+ * combinado con frutos secos reales cuidadosamente tostados y molidos.
+ * Disponibles en dos formatos: 100 g ($7.000) y 250 g ($14.000).
+ */
 const ASSEMBLAGES = [
   {
     id: "nuez",
@@ -251,6 +350,16 @@ const ASSEMBLAGES = [
   }
 ];
 
+/* ============================================================================
+ * 6. GENERACIÓN DINÁMICA DE PRODUCTOS Y VARIANTES (window.PRODUCTS)
+ * ============================================================================
+ * Mapea:
+ *   a) Orígenes únicos: 2 variantes de molienda por café ("grano" y "molido")
+ *      en presentación de 250 g.
+ *   b) Colección Praliné: 2 variantes de gramaje por ensamble (100 g y 250 g),
+ *      ambas con molienda media calibrada.
+ *   c) Complementos: artículos de preparación y cafeteras.
+ */
 window.PRODUCTS = ORIGINS.flatMap(function (origin) {
   return ["grano", "molido"].map(function (grind) {
     var presentation = grind === "grano" ? "Grano entero" : "Molido";
@@ -258,25 +367,47 @@ window.PRODUCTS = ORIGINS.flatMap(function (origin) {
     var roastLabel = origin.roast ? origin.roast.label : (origin.id === "bolivia" ? "Medio suave" : origin.id === "colombia" ? "Medio intenso" : "Medio");
     var refName = origin.id === "colombia-huila" ? "Microlote Colombia · Huila (86 SCA)" : (origin.id === "guatemala" ? "Café de Especialidad Guatemala (85 SCA)" : (origin.id === "bolivia" ? "Café de Especialidad Bolivia Caranavi (84 SCA)" : "Café de Especialidad Colombia (85 SCA)"));
     return {
-      id: "origen-" + origin.id + "-" + grind, reference: "origen-" + origin.id,
+      id: "origen-" + origin.id + "-" + grind,
+      reference: "origen-" + origin.id,
       referenceName: refName,
       roast: { label: roastLabel, tone: roastTone },
-      cat: "especialidad", collection: "origen",
-      name: (origin.id === "colombia-huila" ? "Microlote Colombia · Huila" : "Café de Especialidad " + origin.name) + " · " + presentation, sub: origin.name,
-      size: "250 g", grind: grind, price: origin.price, img: origin.img,
-      short: origin.short, notes: origin.notes.concat(presentation), desc: origin.desc,
-      prep: origin.prep, sourcePage: origin.sourcePage,
-      q: { caf: 1, sabor: "puro", met: grind === "grano" ? ["grano"] : origin.methods.filter(function (m) { return m !== "grano"; }), regalo: 0 }
+      cat: "especialidad",
+      collection: "origen",
+      name: (origin.id === "colombia-huila" ? "Microlote Colombia · Huila" : "Café de Especialidad " + origin.name) + " · " + presentation,
+      sub: origin.name,
+      size: "250 g",
+      grind: grind,
+      price: origin.price,
+      img: origin.img,
+      short: origin.short,
+      notes: origin.notes.concat(presentation),
+      desc: origin.desc,
+      prep: origin.prep,
+      sourcePage: origin.sourcePage,
+      q: {
+        caf: 1,
+        sabor: "puro",
+        met: grind === "grano" ? ["grano"] : origin.methods.filter(function (m) { return m !== "grano"; }),
+        regalo: 0
+      }
     };
   });
 }).concat(ASSEMBLAGES.flatMap(function (blend) {
   return [100, 250].map(function (weight) {
     return {
-      id: "praline-" + blend.id + "-" + weight, reference: "praline-" + blend.id,
-      referenceName: blend.fullName, cat: "autor", collection: "autor",
-      name: blend.fullName, sub: blend.name, size: weight + " g",
-      grind: "molido", price: weight === 100 ? 7000 : 14000, img: blend.img,
-      short: blend.short, notes: ["100% arábica", "Molido (" + weight + " g)", "Frutos secos reales"],
+      id: "praline-" + blend.id + "-" + weight,
+      reference: "praline-" + blend.id,
+      referenceName: blend.fullName,
+      cat: "autor",
+      collection: "autor",
+      name: blend.fullName,
+      sub: blend.name,
+      size: weight + " g",
+      grind: "molido",
+      price: weight === 100 ? 7000 : 14000,
+      img: blend.img,
+      short: blend.short,
+      notes: ["100% arábica", "Molido (" + weight + " g)", "Frutos secos reales"],
       desc: blend.desc,
       prep: blend.prep,
       roast: blend.roast,
@@ -287,10 +418,37 @@ window.PRODUCTS = ORIGINS.flatMap(function (origin) {
     };
   });
 })).concat(COMPLEMENTS);
+
+/* ============================================================================
+ * 7. CONFIGURACIÓN DE ENVÍOS, PROMOCIONES Y FUNCIONES DE UTILIDAD
+ * ============================================================================
+ */
+// Política oficial de despachos: Blue Express a todo Chile
 window.SHIPPING_NOTE = "Despachos a todo Chile mediante Blue Express. Las tarifas de envío se calculan según región y comuna en el checkout. No aplica despacho gratuito.";
 window.FREE_SHIP = null;
-// Todos los productos disponibles
+
+// Lista de identificadores de productos agotados (vacía: stock disponible)
 window.SOLDOUT = [];
+
+// Cupón de bienvenida opcional para checkout
 window.COUPON = { code: "MIPRIMERCAFE", pct: 0 };
-window.money = n => "$" + Math.round(n).toLocaleString("es-CL");
-window.findProduct = id => window.PRODUCTS.find(p => p.id === id);
+
+/**
+ * Formatea un valor numérico a moneda local chilena (CLP, ej: $13.000).
+ * @param {number} n - Valor en pesos.
+ * @returns {string} Texto formateado con símbolo de moneda y separador de miles.
+ */
+window.money = function (n) {
+  return "$" + Math.round(n).toLocaleString("es-CL");
+};
+
+/**
+ * Busca un producto por su id de variante o referencia base.
+ * @param {string} id - Identificador del producto.
+ * @returns {Object|undefined} Objeto de producto coincidente.
+ */
+window.findProduct = function (id) {
+  return window.PRODUCTS.find(function (p) {
+    return p.id === id;
+  });
+};

@@ -1,28 +1,55 @@
 <?php
 /**
- * Café Alegra child theme bootstrap (GeneratePress Child + Maqueta 1:1).
+ * ============================================================================
+ * CAFÉ ALEGRA · TEMA HIJO DE WORDPRESS (GeneratePress Child + Maqueta 1:1)
+ * ============================================================================
+ * Archivo: functions.php
+ * Descripción:
+ *   Configuración central del tema hijo para Café Alegra.
+ *   Contiene:
+ *     1. Inicialización y soporte de características del tema (WooCommerce, HTML5).
+ *     2. Encolado de hojas de estilo de marca (brand.css).
+ *     3. Auto-configuración de reglas de reescritura en .htaccess.
+ *     4. Enrutador fiel 1:1 de la propuesta comercial (/pages/{slug}.html).
+ *     5. Sincronización bidireccional dinámica con el catálogo de WooCommerce.
+ *     6. Control de encabezados para deshabilitar caché en staging (LiteSpeed).
+ *     7. Shortcodes modulares para Elementor y plantillas de especialidad.
+ *     8. Experiencia optimizada para productos agotados con contacto a WhatsApp.
  *
  * @package CafeAlegraChild
+ * @version 20261111_03
+ * ============================================================================
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+	exit; // Seguridad: impedir acceso directo desde el navegador
 }
 
 /**
- * Register theme features without replacing WooCommerce templates or behavior.
+ * ----------------------------------------------------------------------------
+ * 1. CONFIGURACIÓN DEL TEMA (Theme Setup)
+ * ----------------------------------------------------------------------------
+ * Registra soporte nativo para etiquetas de título, miniaturas, logotipo
+ * personalizado, marcado semántico HTML5 y compatibilidad con WooCommerce.
  *
  * @return void
  */
 function cafe_alegra_child_setup() {
+	// Habilitar soporte para la etiqueta <title> administrada por WordPress / SEO
 	add_theme_support( 'title-tag' );
+
+	// Habilitar imágenes destacadas en entradas y productos
 	add_theme_support( 'post-thumbnails' );
+
+	// Soporte para logotipo personalizado en el personalizador
 	add_theme_support( 'custom-logo', array(
 		'height'      => 160,
 		'width'       => 480,
 		'flex-height' => true,
 		'flex-width'  => true,
 	) );
+
+	// Marcado semántico HTML5 moderno en formularios y galerías
 	add_theme_support( 'html5', array(
 		'search-form',
 		'comment-form',
@@ -32,12 +59,17 @@ function cafe_alegra_child_setup() {
 		'style',
 		'script',
 	) );
+
+	// Declarar soporte oficial para la suite WooCommerce
 	add_theme_support( 'woocommerce' );
 }
 add_action( 'after_setup_theme', 'cafe_alegra_child_setup' );
 
 /**
- * Load the Café Alegra design tokens after the parent theme stylesheet.
+ * ----------------------------------------------------------------------------
+ * 2. ENCOLADO DE ESTILOS DE LA MARCA (Brand Styles)
+ * ----------------------------------------------------------------------------
+ * Carga los tokens de diseño y reglas CSS de Café Alegra tras la hoja del tema padre.
  *
  * @return void
  */
@@ -54,6 +86,13 @@ function cafe_alegra_child_enqueue_styles() {
 }
 add_action( 'wp_enqueue_scripts', 'cafe_alegra_child_enqueue_styles', 20 );
 
+/**
+ * ----------------------------------------------------------------------------
+ * 3. CONFIGURACIÓN AUTOMÁTICA DE .HTACCESS PARA SUBDIRECTORIOS
+ * ----------------------------------------------------------------------------
+ * Asegura que las reglas de mod_rewrite tengan el RewriteBase adecuado cuando
+ * el sitio se ejecuta en subcarpetas (ej: /myfreshinstall02/).
+ */
 add_action( 'init', function() {
 	$home_path = trim( (string) wp_parse_url( home_url(), PHP_URL_PATH ), '/' );
 	$base      = $home_path ? '/' . $home_path . '/' : '/';
@@ -65,9 +104,13 @@ add_action( 'init', function() {
 } );
 
 /**
- * Enrutador de la Maqueta 1:1 (CafeAlegra-Propuesta) dentro del Tema Hijo.
- * Renderiza fielmente todas las páginas de la propuesta cuando el tema hijo está activo
- * o en modo de previsualización (/propuesta/ o ?propuesta=1).
+ * ----------------------------------------------------------------------------
+ * 4. RESOLUCIÓN DE SLUGS PARA LA MAQUETA 1:1 (Router de Propuesta)
+ * ----------------------------------------------------------------------------
+ * Determina cuál plantilla HTML dentro de wp-content/themes/cafe-alegra-child/pages/
+ * debe responder a la solicitud actual.
+ *
+ * @return string|null Nombre del archivo sin extensión, o null si no aplica.
  */
 function cafe_alegra_child_resolve_propuesta_slug() {
 	$req_uri   = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
@@ -75,6 +118,7 @@ function cafe_alegra_child_resolve_propuesta_slug() {
 	$path      = trim( $path, '/' );
 	$home_path = trim( (string) wp_parse_url( home_url(), PHP_URL_PATH ), '/' );
 
+	// Remover prefijo de instalación en subdirectorio si existe
 	if ( ! empty( $home_path ) && 0 === strpos( $path, $home_path ) ) {
 		$path = trim( substr( $path, strlen( $home_path ) ), '/' );
 	}
@@ -83,17 +127,19 @@ function cafe_alegra_child_resolve_propuesta_slug() {
 		$path = substr( $path, strlen( 'index.php/' ) );
 	}
 
-	// Quitar prefijo 'propuesta' si viene en la URL
+	// Quitar prefijo 'propuesta' si se está utilizando para previsualización
 	if ( 'propuesta' === $path ) {
 		$path = '';
 	} elseif ( 0 === strpos( $path, 'propuesta/' ) ) {
 		$path = substr( $path, strlen( 'propuesta/' ) );
 	}
 
+	// Página de inicio
 	if ( '' === $path || 'index.html' === $path || 'index.php' === $path ) {
 		return 'index';
 	}
 
+	// Normalizar extensión .html
 	if ( '.html' === substr( $path, -5 ) ) {
 		$path = substr( $path, 0, -5 );
 	}
@@ -104,20 +150,23 @@ function cafe_alegra_child_resolve_propuesta_slug() {
 		return $slug;
 	}
 
-	// Mapeos amigables de slugs de WordPress a plantillas de la maqueta
+	// Mapeos amigables de slugs de WordPress hacia plantillas de la maqueta
 	$aliases = array(
-		'inicio'                     => 'index',
-		'shop'                       => 'tienda',
-		'tienda'                     => 'tienda',
-		'mi-cuenta'                  => 'acceder',
-		'cart'                       => 'carrito',
-		'checkout'                   => 'carrito',
-		'politica-de-privacidad'     => 'privacidad',
-		'terminos-y-condiciones'     => 'terminos',
-		'blog-cafe-de-trigo'         => 'articulo-cafe-de-trigo',
-		'praline-nuez'               => 'praline-nuez',
-		'praline-avellana'           => 'praline-avellana',
-		'praline-pistacho'           => 'praline-pistacho',
+		'inicio'                 => 'index',
+		'shop'                   => 'tienda',
+		'tienda'                 => 'tienda',
+		'mi-cuenta'              => 'acceder',
+		'cart'                   => 'carrito',
+		'checkout'               => 'carrito',
+		'politica-de-privacidad' => 'privacidad',
+		'terminos-y-condiciones' => 'terminos',
+		'blog-cafe-de-trigo'     => 'articulo-cafe-de-trigo',
+		'praline-nuez'           => 'praline-nuez',
+		'praline-avellana'       => 'praline-avellana',
+		'praline-pistacho'       => 'praline-pistacho',
+		'origen-colombia'        => 'origen-colombia',
+		'origen-guatemala'       => 'origen-guatemala',
+		'origen-bolivia'         => 'origen-bolivia',
 	);
 	if ( isset( $aliases[ $slug ] ) && file_exists( $pages_dir . $aliases[ $slug ] . '.html' ) ) {
 		return $aliases[ $slug ];
@@ -126,7 +175,18 @@ function cafe_alegra_child_resolve_propuesta_slug() {
 	return null;
 }
 
+/**
+ * ----------------------------------------------------------------------------
+ * 5. RENDERIZADOR DE LA MAQUETA 1:1 CON INTEGRACIÓN WOOCOMMERCE
+ * ----------------------------------------------------------------------------
+ * Intercepta template_redirect para emitir el HTML exacto de la propuesta,
+ * reescribir rutas relativas de assets, deshabilitar caché de LiteSpeed,
+ * y alimentar window.WC_PRODUCTS en JavaScript con los productos reales de WooCommerce.
+ *
+ * @return void
+ */
 function cafe_alegra_child_render_propuesta() {
+	// Ignorar peticiones de administración, AJAX o cron de WordPress
 	if ( is_admin() || wp_doing_ajax() || wp_doing_cron() ) {
 		return;
 	}
@@ -149,7 +209,7 @@ function cafe_alegra_child_render_propuesta() {
 		return;
 	}
 
-	// Evitar que LiteSpeed Cache guarde la vista previa encima de producción
+	// Evitar que LiteSpeed Cache almacene la vista de staging sobre producción
 	if ( ! defined( 'DONOTCACHEPAGE' ) ) {
 		define( 'DONOTCACHEPAGE', true );
 	}
@@ -164,21 +224,26 @@ function cafe_alegra_child_render_propuesta() {
 	$assets_uri = $theme_uri . 'assets/';
 	$base_href  = trailingslashit( home_url() );
 
-	// Reescribir rutas estáticas assets/ hacia el directorio del tema hijo en WordPress
+	// Reescribir rutas relativas assets/ hacia la URL del tema hijo en WordPress
 	$html = str_replace(
 		array( 'href="assets/', 'src="assets/', 'content="assets/' ),
 		array( 'href="' . esc_url( $assets_uri ), 'src="' . esc_url( $assets_uri ), 'content="' . esc_url( $assets_uri ) ),
 		$html
 	);
 
-	// Cache busting dinámico para forzar al navegador a descartar JS/CSS en caché
+	// Cache-busting dinámico para forzar a navegadores a descartar versiones anteriores de JS y CSS
 	$asset_v = 'v' . ( defined( 'WP_DEBUG' ) && WP_DEBUG ? time() : '20261111_03' );
 	$html = preg_replace( '/\?v=[0-9a-zA-Z_\-]+/', '?v=' . $asset_v, $html );
 
-	// Eliminar cualquier elemento topbar remanente
+	// Ocultar cualquier elemento topbar remanente
 	$html = preg_replace( '/<div[^>]*class=["\'][^"\']*topbar[^"\']*["\'][^>]*>.*?<\/div>/is', '', $html );
 
-	// Obtener catálogo dinámico desde WooCommerce si hay productos creados
+	/* ------------------------------------------------------------------------
+	 * EXTRACCIÓN DINÁMICA DEL CATÁLOGO DE WOOCOMMERCE
+	 * ------------------------------------------------------------------------
+	 * Si existen productos cargados en WooCommerce, se procesan y serializan
+	 * en JSON para que main.js use los precios, nombres y stock reales.
+	 */
 	$wc_products_data = array();
 	$wc_soldout_data  = array();
 
@@ -237,6 +302,7 @@ function cafe_alegra_child_render_propuesta() {
 				$canonical_id  = $slug;
 				$canonical_ref = $slug;
 
+				// Identificación canónica según catálogo oficial
 				if ( false !== strpos( $lower_name, 'huila' ) || false !== strpos( $lower_name, 'microlote' ) ) {
 					$canonical_id  = 'origen-colombia-huila-grano';
 					$canonical_ref = 'origen-colombia-huila';
@@ -272,7 +338,7 @@ function cafe_alegra_child_render_propuesta() {
 					$canonical_ref = 'prensa-francesa-cobre';
 				}
 
-				// 1. Extraer o deducir Tueste / Intensidad (admite atributos de WooCommerce 'tueste' o 'intensidad')
+				// Extraer o deducir Tueste / Intensidad (admite atributos de WooCommerce)
 				$roast_attr = $prod->get_attribute( 'tueste' ) ?: ( $prod->get_attribute( 'intensidad' ) ?: ( $prod->get_attribute( 'pa_tueste' ) ?: ( $prod->get_attribute( 'pa_intensidad' ) ?: get_post_meta( $pid, '_tueste', true ) ) ) );
 				$roast = null;
 				if ( ! empty( $roast_attr ) ) {
@@ -296,7 +362,7 @@ function cafe_alegra_child_render_propuesta() {
 					}
 				}
 
-				// 2. Extraer o deducir Notas de cata (admite atributo 'notas' o 'pa_notas')
+				// Extraer o deducir Notas de cata sensoriales
 				$notes_attr = $prod->get_attribute( 'notas' ) ?: ( $prod->get_attribute( 'pa_notas' ) ?: get_post_meta( $pid, '_notas', true ) );
 				if ( ! empty( $notes_attr ) ) {
 					$notes_parts = array_map( 'trim', preg_split( '/[|,;]+/', $notes_attr ) );
@@ -325,7 +391,7 @@ function cafe_alegra_child_render_propuesta() {
 					}
 				}
 
-				// 3. Formato, Molienda y Preparación
+				// Formato, molienda y recomendación de preparación
 				$format_val = $prod->get_attribute( 'formato' ) ?: ( $prod->get_attribute( 'pa_formato' ) ?: '250 g' );
 				$grind_val  = $prod->get_attribute( 'molienda' ) ?: ( $prod->get_attribute( 'pa_molienda' ) ?: ( false !== strpos( $lower_name, 'molido' ) ? 'molido' : 'grano' ) );
 				$default_prep = 'Ideal en prensa francesa o métodos de filtrado.';
@@ -334,7 +400,7 @@ function cafe_alegra_child_render_propuesta() {
 				} elseif ( 'autor' === $cat ) {
 					$default_prep = 'Molienda media, ideal para prensa francesa y máquinas automáticas compatibles con café molido.';
 				}
-				$prep_val   = $prod->get_attribute( 'preparacion' ) ?: ( $prod->get_attribute( 'pa_preparacion' ) ?: $default_prep );
+				$prep_val = $prod->get_attribute( 'preparacion' ) ?: ( $prod->get_attribute( 'pa_preparacion' ) ?: $default_prep );
 
 				$default_price = 13000;
 				if ( false !== strpos( $lower_name, 'guatemala' ) ) {
@@ -345,6 +411,7 @@ function cafe_alegra_child_render_propuesta() {
 					$default_price = 14000;
 				}
 
+				// Limpieza de textos residuales de borradores
 				$clean_desc = $prod->get_description() ?: $short;
 				$clean_desc = preg_replace( '/\s*Color de etiqueta.*?(#[0-9a-fA-F]{3,6}|\))/i', '', $clean_desc );
 				$clean_desc = preg_replace( '/\s*Fuente:\s*cat[áa]logo.*?\./i', '', $clean_desc );
@@ -375,7 +442,7 @@ function cafe_alegra_child_render_propuesta() {
 		}
 	}
 
-	// Inyectar <base> hacia home_url y configuración global de assets para main.js
+	// Inyectar etiqueta <base> hacia home_url y variables globales de configuración para main.js
 	$head_inject  = "\n" . '<base href="' . esc_url( $base_href ) . '">' . "\n";
 	$head_inject .= '<style>.topbar, [class*="topbar"] { display: none !important; height: 0 !important; visibility: hidden !important; overflow: hidden !important; padding: 0 !important; margin: 0 !important; }</style>' . "\n";
 	$head_inject .= '<script>'
@@ -384,12 +451,12 @@ function cafe_alegra_child_render_propuesta() {
 		. ( ! empty( $wc_products_data ) ? 'window.WC_PRODUCTS = ' . wp_json_encode( $wc_products_data ) . '; ' : '' )
 		. ( ! empty( $wc_soldout_data ) ? 'window.WC_SOLDOUT = ' . wp_json_encode( $wc_soldout_data ) . '; ' : '' )
 		. '</script>' . "\n";
-	$html         = preg_replace( '/<head>/i', '<head>' . $head_inject, $html, 1 );
+	$html = preg_replace( '/<head>/i', '<head>' . $head_inject, $html, 1 );
 
-	// Barra flotante discreta para volver al sitio en producción o ir al panel WP
-	$exit_url = esc_url( 'https://cafealegra.cl/' );
+	// Indicador flotante para administradores que permite navegar entre staging y producción
+	$exit_url  = esc_url( 'https://cafealegra.cl/' );
 	$admin_url = esc_url( admin_url() );
-	$badge    = '<div id="ca-wp-preview-pill" style="position:fixed;bottom:14px;left:14px;z-index:99999;background:#1b120c;color:#f7f1e8;border:1px solid #b98a3e;border-radius:99px;padding:6px 14px;font:500 12px/1.3 Jost,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.35);display:flex;align-items:center;gap:10px;">'
+	$badge     = '<div id="ca-wp-preview-pill" style="position:fixed;bottom:14px;left:14px;z-index:99999;background:#1b120c;color:#f7f1e8;border:1px solid #b98a3e;border-radius:99px;padding:6px 14px;font:500 12px/1.3 Jost,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.35);display:flex;align-items:center;gap:10px;">'
 		. '<span>☕ <strong>Tienda Propuesta (Staging)</strong></span>'
 		. '<a href="' . $admin_url . '" style="color:#d9b36a;text-decoration:none;font-weight:600;" target="_blank">Panel WP-Admin ⚙</a>'
 		. '<span style="opacity:.4">|</span>'
@@ -404,169 +471,196 @@ function cafe_alegra_child_render_propuesta() {
 add_action( 'template_redirect', 'cafe_alegra_child_render_propuesta', 1 );
 
 /**
- * Renderizado automático de barra de tueste y panel "Saber más" desde campos ACF de WooCommerce
+ * ----------------------------------------------------------------------------
+ * 6. RENDERIZADO DE PERFIL DE TUESTE Y HISTORIA ACF EN WOOCOMMERCE
+ * ----------------------------------------------------------------------------
+ * Permite mostrar el bloque editorial "Saber más" en fichas nativas de WooCommerce
+ * si los campos de Advanced Custom Fields (ACF) están definidos.
  */
 add_action( 'woocommerce_single_product_summary', 'cafe_alegra_render_product_roast_and_story', 25 );
 function cafe_alegra_render_product_roast_and_story() {
-    if ( ! function_exists( 'get_field' ) ) return;
-    $post_id = get_the_ID();
-    $titulo_historia = get_field( 'alegra_historia_titulo', $post_id );
-    $cuerpo_historia = get_field( 'alegra_historia_cuerpo', $post_id );
-    $kicker = get_field( 'alegra_historia_kicker', $post_id ) ?: 'Café de Especialidad · Origen Único';
-    
-    if ( $titulo_historia && $cuerpo_historia ) {
-        echo '<div class="saber-mas-wrap" style="margin-top:1.8rem;">';
-        echo '<button type="button" class="btn ghost block copper-btn" id="btn-toggle-story" style="border-color:var(--cobrizo);color:var(--cobrizo);font-weight:600;">★ ¿Quieres saber más? Conoce su historia y origen</button>';
-        echo '<div id="box-story" class="box-saber-mas" style="display:none;margin-top:1.5rem;">';
-        echo '<span class="badge-tag cobrizo">' . esc_html( $kicker ) . '</span>';
-        echo '<h2 style="font-size:1.8rem;margin:.4rem 0;">' . esc_html( $titulo_historia ) . '</h2>';
-        echo '<p style="font-size:1rem;line-height:1.7;color:var(--suave);">' . nl2br( esc_html( $cuerpo_historia ) ) . '</p>';
-        echo '<div class="acts" style="margin-top:1.5rem;"><a class="btn gold" href="' . esc_url( wc_get_page_permalink( 'shop' ) ) . '">← Regresar a la tienda</a></div>';
-        echo '</div></div>';
-    }
+	if ( ! function_exists( 'get_field' ) ) {
+		return;
+	}
+	$post_id         = get_the_ID();
+	$titulo_historia = get_field( 'alegra_historia_titulo', $post_id );
+	$cuerpo_historia = get_field( 'alegra_historia_cuerpo', $post_id );
+	$kicker          = get_field( 'alegra_historia_kicker', $post_id ) ?: 'Café de Especialidad · Origen Único';
+
+	if ( $titulo_historia && $cuerpo_historia ) {
+		echo '<div class="saber-mas-wrap" style="margin-top:1.8rem;">';
+		echo '<button type="button" class="btn ghost block copper-btn" id="btn-toggle-story" style="border-color:var(--cobrizo);color:var(--cobrizo);font-weight:600;">★ ¿Quieres saber más? Conoce su historia y origen</button>';
+		echo '<div id="box-story" class="box-saber-mas" style="display:none;margin-top:1.5rem;">';
+		echo '<span class="badge-tag cobrizo">' . esc_html( $kicker ) . '</span>';
+		echo '<h2 style="font-size:1.8rem;margin:.4rem 0;">' . esc_html( $titulo_historia ) . '</h2>';
+		echo '<p style="font-size:1rem;line-height:1.7;color:var(--suave);">' . nl2br( esc_html( $cuerpo_historia ) ) . '</p>';
+		echo '<div class="acts" style="margin-top:1.5rem;"><a class="btn gold" href="' . esc_url( wc_get_page_permalink( 'shop' ) ) . '">← Regresar a la tienda</a></div>';
+		echo '</div></div>';
+	}
 }
 
 /**
- * Shortcodes para Elementor y Plantillas de Café de Especialidad
+ * ----------------------------------------------------------------------------
+ * 7. SHORTCODES PARA ELEMENTOR Y PLANTILLAS
+ * ----------------------------------------------------------------------------
+ */
+
+/**
+ * Shortcode: [cafe_alegra_subcat_nav]
+ * Renderiza la barra de navegación rápida por subcategorías en café de especialidad.
  */
 function cafe_alegra_subcat_nav_shortcode() {
-    ob_start();
-    ?>
-    <div class="subcat-bar">
-      <div class="wrap">
-        <nav class="subcat-nav" aria-label="Navegación de subcategorías">
-          <a href="cafe-de-especialidad.html#origenes" class="subcat-link is-active">☕ Cafés de Origen Único</a>
-          <a href="cafe-de-especialidad.html#sabores-de-autor" class="subcat-link">🌰 Colección Praliné · Autor</a>
-          <a href="cafe-de-especialidad.html#calidad-especialidad" class="subcat-link">✓ ¿Qué es Especialidad?</a>
-        </nav>
-      </div>
-    </div>
-    <?php
-    return ob_get_clean();
+	ob_start();
+	?>
+	<div class="subcat-bar">
+		<div class="wrap">
+			<nav class="subcat-nav" aria-label="Navegación de subcategorías">
+				<a href="cafe-de-especialidad.html#origenes" class="subcat-link is-active">☕ Cafés de Origen Único</a>
+				<a href="cafe-de-especialidad.html#sabores-de-autor" class="subcat-link">🌰 Colección Praliné · Autor</a>
+				<a href="cafe-de-especialidad.html#calidad-especialidad" class="subcat-link">✓ ¿Qué es Especialidad?</a>
+			</nav>
+		</div>
+	</div>
+	<?php
+	return ob_get_clean();
 }
 add_shortcode( 'cafe_alegra_subcat_nav', 'cafe_alegra_subcat_nav_shortcode' );
 
+/**
+ * Shortcode: [cafe_alegra_quality_pillars]
+ * Muestra los tres pilares de calidad internacional de Café Alegra.
+ */
 function cafe_alegra_quality_pillars_shortcode() {
-    ob_start();
-    ?>
-    <div class="pillars-grid">
-      <div class="pillar-card">
-        <span class="pillar-badge">01 · Estándar Internacional</span>
-        <h3>Calificación 84–85 SCA</h3>
-        <p>Grano 100% arábica de estricta altura sin defectos primarios, evaluado por catadores Q-Grader certificados con más de 80 puntos sobre una escala de 100.</p>
-      </div>
-      <div class="pillar-card">
-        <span class="pillar-badge">02 · Tueste en Rancagua</span>
-        <h3>Curvas a Medida</h3>
-        <p>Tostamos en pequeños lotes semanales en nuestra tostaduría de Rancagua. Aplicamos perfiles medio y medio-suave que respetan la dulzura y notas florales nativas.</p>
-      </div>
-      <div class="pillar-card">
-        <span class="pillar-badge">03 · Frescura y Molienda</span>
-        <h3>Preparado para tu Ritual</h3>
-        <p>Envasado con válvula desgasificadora unidireccional. Puedes elegir en grano entero o molido fresco a la medida exacta de tu Moka italiana, Prensa o Espresso.</p>
-      </div>
-    </div>
-    <?php
-    return ob_get_clean();
+	ob_start();
+	?>
+	<div class="pillars-grid">
+		<div class="pillar-card">
+			<span class="pillar-badge">01 · Estándar Internacional</span>
+			<h3>Calificación 84–85 SCA</h3>
+			<p>Grano 100% arábica de estricta altura sin defectos primarios, evaluado por catadores Q-Grader certificados con más de 80 puntos sobre una escala de 100.</p>
+		</div>
+		<div class="pillar-card">
+			<span class="pillar-badge">02 · Tueste en Rancagua</span>
+			<h3>Curvas a Medida</h3>
+			<p>Tostamos en pequeños lotes semanales en nuestra tostaduría de Rancagua. Aplicamos perfiles medio y medio-suave que respetan la dulzura y notas florales nativas.</p>
+		</div>
+		<div class="pillar-card">
+			<span class="pillar-badge">03 · Frescura y Molienda</span>
+			<h3>Preparado para tu Ritual</h3>
+			<p>Envasado con válvula desgasificadora unidireccional. Puedes elegir en grano entero o molido fresco a la medida exacta de tu Moka italiana, Prensa o Espresso.</p>
+		</div>
+	</div>
+	<?php
+	return ob_get_clean();
 }
 add_shortcode( 'cafe_alegra_quality_pillars', 'cafe_alegra_quality_pillars_shortcode' );
 
+/**
+ * Shortcode: [cafe_alegra_praline_palette]
+ * Despliega las etiquetas sensoriales de los tres ensambles Praliné.
+ */
 function cafe_alegra_praline_palette_shortcode() {
-    ob_start();
-    ?>
-    <div class="palette-row">
-      <span class="badge-tag cobrizo">Nuez & Caramelo</span>
-      <span class="badge-tag avellana">Avellana Chilena & Caramelo</span>
-      <span class="badge-tag pistacho">Pistacho & Caramelo · notas de amaretto</span>
-    </div>
-    <?php
-    return ob_get_clean();
+	ob_start();
+	?>
+	<div class="palette-row">
+		<span class="badge-tag cobrizo">Nuez & Caramelo</span>
+		<span class="badge-tag avellana">Avellana Chilena & Caramelo</span>
+		<span class="badge-tag pistacho">Pistacho & Caramelo · notas de amaretto</span>
+	</div>
+	<?php
+	return ob_get_clean();
 }
 add_shortcode( 'cafe_alegra_praline_palette', 'cafe_alegra_praline_palette_shortcode' );
 
+/**
+ * Shortcode: [cafe_alegra_casa_cafes]
+ * Sección editorial completa "Nuestra Casa de Cafés · Rancagua".
+ */
 function cafe_alegra_casa_cafes_shortcode( $atts = array() ) {
-    ob_start();
-    ?>
-    <section class="section alt" id="casa-de-cafes" aria-labelledby="h-orig">
-      <div class="wrap">
-        <div class="sec-head">
-          <span class="eyebrow"><?php esc_html_e( 'Nuestra Casa de Cafés · Rancagua', 'cafe-alegra-child' ); ?></span>
-          <h2 id="h-orig"><?php _e( 'El encuentro entre la <em>especialidad</em> y la <em>tradición</em>', 'cafe-alegra-child' ); ?></h2>
-          <div class="rule"></div>
-          <p class="lead" style="margin-inline:auto"><?php esc_html_e( 'Nacimos en la VI Región con el propósito de ofrecer un café auténtico. En nuestra tostaduría artesanal conviven dos mundos que se complementan: la precisión sensorial de los mejores cafetales y el rescate patrimonial de nuestra tierra.', 'cafe-alegra-child' ); ?></p>
-        </div>
-        <div class="origins">
-          <article class="origin-card origin-tueste">
-            <span class="origin-kicker"><?php esc_html_e( 'Tostaduría Artesanal', 'cafe-alegra-child' ); ?></span>
-            <h3><?php esc_html_e( 'Curvas de Tueste', 'cafe-alegra-child' ); ?></h3>
-            <p><?php esc_html_e( 'Seleccionamos granos arábica de altura y cuidamos cada tueste semanal en pequeños lotes en Rancagua para resaltar notas florales, dulces y achocolatadas sin quemar el grano.', 'cafe-alegra-child' ); ?></p>
-          </article>
+	ob_start();
+	?>
+	<section class="section alt" id="casa-de-cafes" aria-labelledby="h-orig">
+		<div class="wrap">
+			<div class="sec-head">
+				<span class="eyebrow"><?php esc_html_e( 'Nuestra Casa de Cafés · Rancagua', 'cafe-alegra-child' ); ?></span>
+				<h2 id="h-orig"><?php _e( 'El encuentro entre la <em>especialidad</em> y la <em>tradición</em>', 'cafe-alegra-child' ); ?></h2>
+				<div class="rule"></div>
+				<p class="lead" style="margin-inline:auto"><?php esc_html_e( 'Nacimos en la VI Región con el propósito de ofrecer un café auténtico. En nuestra tostaduría artesanal conviven dos mundos que se complementan: la precisión sensorial de los mejores cafetales y el rescate patrimonial de nuestra tierra.', 'cafe-alegra-child' ); ?></p>
+			</div>
+			<div class="origins">
+				<article class="origin-card origin-tueste">
+					<span class="origin-kicker"><?php esc_html_e( 'Tostaduría Artesanal', 'cafe-alegra-child' ); ?></span>
+					<h3><?php esc_html_e( 'Curvas de Tueste', 'cafe-alegra-child' ); ?></h3>
+					<p><?php esc_html_e( 'Seleccionamos granos arábica de altura y cuidamos cada tueste semanal en pequeños lotes en Rancagua para resaltar notas florales, dulces y achocolatadas sin quemar el grano.', 'cafe-alegra-child' ); ?></p>
+				</article>
 
-          <article class="origin-card origin-patrimonio">
-            <span class="origin-kicker"><?php esc_html_e( 'Patrimonio de Chile', 'cafe-alegra-child' ); ?></span>
-            <h3><?php esc_html_e( 'Rescate del Higo y Trigo', 'cafe-alegra-child' ); ?></h3>
-            <p><?php esc_html_e( 'Reinterpretamos bebidas ancestrales chilenas elaboradas a partir de higos y trigo tostado, transformándolas en alternativas nobles 100% libres de cafeína.', 'cafe-alegra-child' ); ?></p>
-          </article>
+				<article class="origin-card origin-patrimonio">
+					<span class="origin-kicker"><?php esc_html_e( 'Patrimonio de Chile', 'cafe-alegra-child' ); ?></span>
+					<h3><?php esc_html_e( 'Rescate del Higo y Trigo', 'cafe-alegra-child' ); ?></h3>
+					<p><?php esc_html_e( 'Reinterpretamos bebidas ancestrales chilenas elaboradas a partir de higos y trigo tostado, transformándolas en alternativas nobles 100% libres de cafeína.', 'cafe-alegra-child' ); ?></p>
+				</article>
 
-          <article class="origin-card origin-praline">
-            <span class="origin-kicker"><?php esc_html_e( 'Sabores de Autor', 'cafe-alegra-child' ); ?></span>
-            <h3><?php esc_html_e( 'Colección Praliné', 'cafe-alegra-child' ); ?></h3>
-            <p><?php esc_html_e( 'Una línea pionera con identidad propia: ensambles de café arábica combinados con frutos secos reales cuidadosamente tostados y molidos: avellana chilena, nuez y pistacho con notas de amaretto.', 'cafe-alegra-child' ); ?></p>
-          </article>
-        </div>
-      </div>
-    </section>
-    <?php
-    return ob_get_clean();
+				<article class="origin-card origin-praline">
+					<span class="origin-kicker"><?php esc_html_e( 'Sabores de Autor', 'cafe-alegra-child' ); ?></span>
+					<h3><?php esc_html_e( 'Colección Praliné', 'cafe-alegra-child' ); ?></h3>
+					<p><?php esc_html_e( 'Una línea pionera con identidad propia: ensambles de café arábica combinados con frutos secos reales cuidadosamente tostados y molidos: avellana chilena, nuez y pistacho con notas de amaretto.', 'cafe-alegra-child' ); ?></p>
+				</article>
+			</div>
+		</div>
+	</section>
+	<?php
+	return ob_get_clean();
 }
 add_shortcode( 'cafe_alegra_casa_cafes', 'cafe_alegra_casa_cafes_shortcode' );
 
-// Gestión y Experiencia de Productos Agotados en WooCommerce
+/**
+ * ----------------------------------------------------------------------------
+ * 8. GESTIÓN Y EXPERIENCIA DE PRODUCTOS AGOTADOS EN WOOCOMMERCE
+ * ----------------------------------------------------------------------------
+ * Muestra cajas de aviso amigables y botón directo de consulta a WhatsApp.
+ */
 add_action( 'woocommerce_single_product_summary', 'cafe_alegra_wc_soldout_notice_and_whatsapp', 31 );
 function cafe_alegra_wc_soldout_notice_and_whatsapp() {
-    global $product;
-    if ( ! $product || $product->is_in_stock() ) {
-        return;
-    }
+	global $product;
+	if ( ! $product || $product->is_in_stock() ) {
+		return;
+	}
 
-    $phone = '56977942117';
-    $product_name = $product->get_name();
-    $wa_msg = rawurlencode( 'Hola Café Alegra, quisiera consultar por la reposición de ' . $product_name );
-    $wa_url = 'https://wa.me/' . $phone . '?text=' . $wa_msg;
-    ?>
-    <div class="soldout-box">
-        <strong>⚠ Producto temporalmente agotado</strong>
-        <p>No contamos con stock de este lote en este momento. Tostamos semanalmente en Rancagua; consulta la fecha de la próxima tostada artesanal.</p>
-        <a class="btn ghost block" href="<?php echo esc_url( $wa_url ); ?>" target="_blank" rel="noopener" style="margin-top:.6rem;">
-            Consultar reposición por WhatsApp
-        </a>
-    </div>
-    <?php
+	$phone        = '56977942117';
+	$product_name = $product->get_name();
+	$wa_msg       = rawurlencode( 'Hola Café Alegra, quisiera consultar por la reposición de ' . $product_name );
+	$wa_url       = 'https://wa.me/' . $phone . '?text=' . $wa_msg;
+	?>
+	<div class="soldout-box">
+		<strong>⚠ Producto temporalmente agotado</strong>
+		<p>No contamos con stock de este lote en este momento. Tostamos semanalmente en Rancagua; consulta la fecha de la próxima tostada artesanal.</p>
+		<a class="btn ghost block" href="<?php echo esc_url( $wa_url ); ?>" target="_blank" rel="noopener" style="margin-top:.6rem;">
+			Consultar reposición por WhatsApp
+		</a>
+	</div>
+	<?php
 }
 
 add_filter( 'woocommerce_product_add_to_cart_text', 'cafe_alegra_wc_soldout_button_text', 10, 2 );
 function cafe_alegra_wc_soldout_button_text( $text, $product ) {
-    if ( ! $product->is_in_stock() ) {
-        return __( 'Ver producto (Agotado)', 'cafe-alegra-child' );
-    }
-    return $text;
+	if ( ! $product->is_in_stock() ) {
+		return __( 'Ver producto (Agotado)', 'cafe-alegra-child' );
+	}
+	return $text;
 }
 
 add_filter( 'woocommerce_loop_add_to_cart_link', 'cafe_alegra_wc_soldout_loop_link', 10, 3 );
 function cafe_alegra_wc_soldout_loop_link( $html, $product, $args ) {
-    if ( ! $product->is_in_stock() ) {
-        $html = str_replace( 'class="', 'class="soldout-card-btn ', $html );
-    }
-    return $html;
+	if ( ! $product->is_in_stock() ) {
+		$html = str_replace( 'class="', 'class="soldout-card-btn ', $html );
+	}
+	return $html;
 }
 
 add_filter( 'woocommerce_get_availability_text', 'cafe_alegra_wc_custom_availability_text', 10, 2 );
 function cafe_alegra_wc_custom_availability_text( $availability, $product ) {
-    if ( ! $product->is_in_stock() ) {
-        $availability = __( 'Agotado (Tostamos semanalmente en Rancagua)', 'cafe-alegra-child' );
-    }
-    return $availability;
+	if ( ! $product->is_in_stock() ) {
+		$availability = __( 'Agotado (Tostamos semanalmente en Rancagua)', 'cafe-alegra-child' );
+	}
+	return $availability;
 }
-
-
-

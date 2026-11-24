@@ -1,13 +1,73 @@
-﻿/* Café Alegra · Propuesta · main.js (sin dependencias) */
+﻿/**
+ * ============================================================================
+ * CAFÉ ALEGRA · Motor de Interacción, Carrito y Componentes Web
+ * ============================================================================
+ * Archivo: main.js
+ * Descripción:
+ *   Script principal modular sin dependencias externas (Vanilla JavaScript).
+ *   Provee toda la interactividad para la tienda online de Café Alegra:
+ *     1. Utilidades del DOM y almacenamiento persistente en LocalStorage.
+ *     2. Resolución dinámica de imágenes y sanitización HTML.
+ *     3. Registro e inyección del sprite SVG de iconos de marca.
+ *     4. Módulo de Carrito de Compras (Cart) con cálculo de totales y cupones.
+ *     5. Generación de cabecera (site-header) y pie de página (site-footer).
+ *     6. Menú móvil accesible con control ARIA y trampeo de foco.
+ *     7. Sistema de notificaciones emergentes no invasivas (Toast).
+ *     8. Banner de Consentimiento de Cookies (conforme a normativa chilena y GDPR).
+ *     9. Carrito lateral desplegable (Drawer) con venta cruzada.
+ *    10. Validación de formularios en tiempo real.
+ *    11. Observador de intersección para animaciones suaves (Reveal on scroll).
+ *    12. Renderizado dinámico de tarjetas de producto para Orígenes y Praliné.
+ *    13. Filtros interactivos por categoría, subcategoría, molienda y precio.
+ *    14. Enrutamiento y detalle de productos con selector de variantes y Schema.org.
+ *    15. Página de carrito y simulación de pasarela Webpay Plus / Transbank.
+ *    16. Quiz interactivo de recomendación de café ideal.
+ *    17. Formularios de atención, seguimiento de envíos (Blue Express) y acceso.
+ *    18. Botón flotante interactivo de WhatsApp.
+ *    19. Manejador de scroll suave para anclas compatible con <base href>.
+ * ============================================================================
+ */
+
 (function () {
   "use strict";
+
+  // Indicador de soporte JavaScript para estilos progresivos
   document.documentElement.classList.add("js");
+
+  /* ==========================================================================
+   * 1. UTILIDADES DEL DOM Y ALMACENAMIENTO (LocalStorage)
+   * ==========================================================================
+   */
+  // Selector abreviado para un elemento
   var $ = function (s, r) { return (r || document).querySelector(s); };
+  // Selector abreviado para múltiples elementos devueltos como Array
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  /**
+   * Envoltorio seguro para LocalStorage con serialización JSON y manejo de excepciones.
+   */
   var store = {
-    get: function (k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
-    set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+    get: function (k, d) {
+      try {
+        var v = localStorage.getItem(k);
+        return v ? JSON.parse(v) : d;
+      } catch (e) {
+        return d;
+      }
+    },
+    set: function (k, v) {
+      try {
+        localStorage.setItem(k, JSON.stringify(v));
+      } catch (e) {}
+    }
   };
+
+  /**
+   * Busca un producto en el catálogo por su identificador de variante o referencia base.
+   * Si no encuentra coincidencia exacta, intenta una búsqueda tolerante por nombre limpio.
+   * @param {string} id - Identificador o slug del producto.
+   * @returns {Object|null} Objeto del producto encontrado o el primero de la lista como fallback.
+   */
   window.findProduct = function (id) {
     var list = window.PRODUCTS || [];
     if (!id) return list[0] || null;
@@ -20,12 +80,22 @@
     });
     return found || list[0] || null;
   };
+
   var money = window.money, P = window.PRODUCTS || [], find = window.findProduct;
+
+  // Si WordPress inyectó un catálogo sincronizado desde WooCommerce, se sobreescribe el catálogo en memoria
   if (window.WC_PRODUCTS && window.WC_PRODUCTS.length > 0) {
     window.PRODUCTS = window.WC_PRODUCTS;
     P = window.PRODUCTS;
     if (window.WC_SOLDOUT) window.SOLDOUT = window.WC_SOLDOUT;
   }
+
+  /**
+   * Resuelve la ruta absoluta o relativa de la imagen de un producto,
+   * respetando la URL base de assets inyectada por WordPress (window.CA_ASSET_BASE).
+   * @param {Object} p - Objeto del producto.
+   * @returns {string} URL completa de la imagen.
+   */
   function getProductImgUrl(p) {
     if (!p || !p.img) return (window.CA_ASSET_BASE || "assets/") + "img/catalogo-guatemala.png";
     if (p.img.indexOf("http://") === 0 || p.img.indexOf("https://") === 0 || p.img.indexOf("/") === 0) {
@@ -33,6 +103,12 @@
     }
     return (window.CA_ASSET_BASE || "assets/") + "img/" + p.img;
   }
+
+  /**
+   * Sanitiza cadenas de texto para evitar inyecciones XSS al renderizar contenido dinámico.
+   * @param {*} str - Texto a escapar.
+   * @returns {string} Cadena segura para inserción HTML.
+   */
   function escapeHTML(str) {
     if (str === null || str === undefined) return "";
     return String(str)
@@ -42,12 +118,19 @@
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
   }
+
+  // Manejo de páginas de líneas descontinuadas o pendientes de cosecha
   var pendingCatalogPages = ["packs.html", "set-descubrimiento.html"];
   if (pendingCatalogPages.indexOf(location.pathname.split("/").pop()) !== -1) {
     $("#main").innerHTML = '<section class="section"><div class="wrap"><h1>Catálogo pendiente</h1><p class="lead">Esta línea de productos se encuentra en preparación para la próxima temporada de cosecha.</p><a class="btn" href="tienda.html">Ver productos del catálogo actualizado</a></div></section>';
   }
 
-  /* ---------- Iconos ---------- */
+  /* ==========================================================================
+   * 2. SISTEMA DE ICONOS SVG (Sprite y Helper de Inyección)
+   * ==========================================================================
+   * Definición centralizada de rutas vectoriales SVG de alto rendimiento.
+   * Se compilan en un sprite oculto al inicio del <body> para reutilización inmediata.
+   */
   var ICONS = {
     cart: '<path d="M3 4h2l2.2 11h10.6L20 8H6.2"/><circle cx="9" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/>',
     user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6 8-6s7.2 2 8 6"/>',
@@ -78,15 +161,38 @@
     star: '<path d="M12 4l2.4 5 5.600.7-4.100 3.800 1.100 5.500L12 16.400 7 19l1.100-5.500L4 9.700 9.600 9z"/>'
   };
   window.CA_ICONS = ICONS;
+
+  // Construcción del sprite SVG e inyección en el DOM
   var sprite = '<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">';
-  Object.keys(ICONS).forEach(function (k) { sprite += '<symbol id="i-' + k + '" viewBox="0 0 24 24">' + ICONS[k] + "</symbol>"; });
+  Object.keys(ICONS).forEach(function (k) {
+    sprite += '<symbol id="i-' + k + '" viewBox="0 0 24 24">' + ICONS[k] + "</symbol>";
+  });
   sprite += '<symbol id="logo-mark" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="24" cy="24" r="18.500" fill="none" stroke="currentColor" stroke-width=".5" stroke-dasharray="1.500 2.500"/><path d="M24 40V15" stroke="currentColor" stroke-width="1.400" fill="none"/><g fill="currentColor"><ellipse cx="24" cy="11" rx="2" ry="4.200"/><ellipse cx="19.300" cy="19.500" rx="1.900" ry="4.300" transform="rotate(-38 19.300 19.500)"/><ellipse cx="28.700" cy="19.500" rx="1.900" ry="4.300" transform="rotate(38 28.700 19.500)"/><ellipse cx="19.300" cy="27.500" rx="1.900" ry="4.300" transform="rotate(-38 19.300 27.500)"/><ellipse cx="28.700" cy="27.500" rx="1.900" ry="4.300" transform="rotate(38 28.700 27.500)"/><ellipse cx="20" cy="34.500" rx="1.600" ry="3.600" transform="rotate(-38 20 34.500)"/><ellipse cx="28" cy="34.500" rx="1.600" ry="3.600" transform="rotate(38 28 34.500)"/></g></symbol></svg>';
   document.body.insertAdjacentHTML("afterbegin", sprite);
-  var ic = function (n, c) { return '<svg class="i ' + (c || "") + '" aria-hidden="true" focusable="false"><use href="#i-' + n + '"/></svg>'; };
+
+  /**
+   * Genera el marcado HTML para referenciar un icono del sprite.
+   * @param {string} n - Identificador del icono (ej: "cart", "star").
+   * @param {string} [c] - Clases CSS adicionales.
+   * @returns {string} Elemento <svg> con etiqueta <use>.
+   */
+  var ic = function (n, c) {
+    return '<svg class="i ' + (c || "") + '" aria-hidden="true" focusable="false"><use href="#i-' + n + '"/></svg>';
+  };
   window.ca_icon = ic;
 
-  /* ---------- Carrito ---------- */
+  /* ==========================================================================
+   * 3. MÓDULO DE CARRITO DE COMPRAS (Cart Engine)
+   * ==========================================================================
+   * Gestiona el estado de los artículos seleccionados, persistencia en cliente,
+   * cálculo de subtotales, validación de stock y emisión de eventos 'cart:change'.
+   */
   var Cart = {
+    /**
+     * Retorna los artículos vigentes en el carrito, filtrando aquellos que ya no
+     * existen en el catálogo o que se encuentren agotados (SOLDOUT).
+     * @returns {Array<{id: string, qty: number}>} Lista de items.
+     */
     items: function () {
       return store.get("ca_cart", []).filter(function (i) {
         var prod = find(i.id);
@@ -95,7 +201,22 @@
         return !isSold;
       });
     },
-    save: function (a) { store.set("ca_cart", a); document.dispatchEvent(new CustomEvent("cart:change")); },
+
+    /**
+     * Guarda la lista de artículos en LocalStorage y notifica a la aplicación.
+     * @param {Array} a - Lista actualizada de artículos.
+     */
+    save: function (a) {
+      store.set("ca_cart", a);
+      document.dispatchEvent(new CustomEvent("cart:change"));
+    },
+
+    /**
+     * Añade una cantidad determinada de un producto al carrito.
+     * @param {string} id - Identificador de variante del producto.
+     * @param {number} q - Cantidad a sumar.
+     * @returns {boolean} True si se añadió exitosamente; False si está agotado.
+     */
     add: function (id, q) {
       var prod = find(id);
       if (!prod) return false;
@@ -109,31 +230,81 @@
       Cart.save(a);
       return true;
     },
+
+    /**
+     * Establece la cantidad exacta de un producto o lo elimina si q <= 0.
+     * @param {string} id - Identificador de variante.
+     * @param {number} q - Nueva cantidad.
+     */
     set: function (id, q) {
       var a = Cart.items();
       a = q <= 0 ? a.filter(function (x) { return x.id !== id; }) : a.map(function (x) { if (x.id === id) x.qty = Math.min(99, q); return x; });
       Cart.save(a);
     },
-    clear: function () { Cart.save([]); },
-    count: function () { return Cart.items().reduce(function (s, i) { return s + i.qty; }, 0); },
-    coupon: function () { return store.get("ca_coupon", null) === window.COUPON.code ? window.COUPON.code : null; },
+
+    /**
+     * Vacía completamente los artículos del carrito.
+     */
+    clear: function () {
+      Cart.save([]);
+    },
+
+    /**
+     * Retorna la suma total de unidades físicas añadidas al carrito.
+     * @returns {number}
+     */
+    count: function () {
+      return Cart.items().reduce(function (s, i) { return s + i.qty; }, 0);
+    },
+
+    /**
+     * Retorna el código de cupón activo si es válido.
+     * @returns {string|null}
+     */
+    coupon: function () {
+      return store.get("ca_coupon", null) === window.COUPON.code ? window.COUPON.code : null;
+    },
+
+    /**
+     * Calcula los importes financieros del pedido: subtotal, descuento y total neto.
+     * @returns {{sub: number, disc: number, net: number, free: boolean, missing: number, pct: number}}
+     */
     totals: function () {
       var sub = Cart.items().reduce(function (s, i) { return s + find(i.id).price * i.qty; }, 0);
       var disc = Cart.coupon() ? Math.round(sub * window.COUPON.pct / 100) : 0;
       var net = sub - disc;
-      return { sub: sub, disc: disc, net: net, free: net >= window.FREE_SHIP && net > 0, missing: Math.max(0, window.FREE_SHIP - net), pct: Math.min(100, Math.round(net / window.FREE_SHIP * 100)) };
+      return {
+        sub: sub,
+        disc: disc,
+        net: net,
+        free: net >= window.FREE_SHIP && net > 0,
+        missing: Math.max(0, window.FREE_SHIP - net),
+        pct: Math.min(100, Math.round(net / window.FREE_SHIP * 100))
+      };
     }
   };
   window.CACart = Cart;
 
-  /* ---------- Plantillas: header y footer ---------- */
+  /* ==========================================================================
+   * 4. PLANTILLAS ESTRUCTURALES: CABECERA Y PIE DE PÁGINA (Header & Footer)
+   * ==========================================================================
+   * Inyecta dinámicamente la barra de navegación superior y el pie de página
+   * oficial de Café Alegra con sus enlaces corporativos y redes sociales.
+   */
   var NAV = [
     ["tienda", "tienda.html", "Nuestra tienda"],
     ["negocio", "cafe-para-tu-negocio.html", "Café para tu negocio"],
     ["seguimiento", "seguimiento.html", "Seguimiento de pedidos"],
     ["contacto", "contacto.html", "Atención al cliente"]
   ];
+
   var cur = document.body.getAttribute("data-nav") || "";
+
+  /**
+   * Genera el logotipo oficial de Café Alegra en versión estándar o invertida (footer).
+   * @param {boolean} inv - Indica si se renderiza sobre fondo oscuro.
+   * @returns {string} Marcado HTML del logo.
+   */
   var logo = function (inv) {
     var base = window.CA_ASSET_BASE || "assets/";
     return '<a class="logo' + (inv ? " inv" : "") + '" href="index.html" aria-label="Café Alegra, inicio">' +
@@ -141,6 +312,8 @@
       '<span class="wm"><b>CAFÉ ALEGRA</b><small>Tostaduría artesanal · Especialidad</small></span></a>';
   };
   window.ca_logo = logo;
+
+  // Inyección de la cabecera del sitio
   var hdr = $("#site-header");
   if (hdr) {
     var user = store.get("ca_user", null);
@@ -156,6 +329,8 @@
       '<div class="nav-scrim" data-nav-close></div>';
     if (user) { var lb = $("[data-user-lbl]"); lb.textContent = "Hola, " + (user.name || "tú").split(" ")[0]; }
   }
+
+  // Inyección del pie de página del sitio
   var ftr = $("#site-footer");
   if (ftr) {
     ftr.outerHTML =
@@ -168,16 +343,30 @@
       '<div class="legal"><span>© ' + new Date().getFullYear() + ' Café Alegra · Rancagua, Chile · cafealegrachile@gmail.com</span><button type="button" data-open-cookie-banner style="background:none;border:none;color:inherit;font:inherit;cursor:pointer;text-decoration:underline;padding:0;margin-right:1rem">Preferencias de cookies</button><span>Café de Especialidad y Tradición Campesina.</span></div></div></footer>';
   }
 
-  /* ---------- Menú móvil ---------- */
+  /* ==========================================================================
+   * 5. CONTROL DEL MENÚ MÓVIL (Navegación Colapsable y Accesibilidad)
+   * ==========================================================================
+   */
   var nav = $("#nav"), scrim = $(".nav-scrim"), burger = $("[data-nav-open]");
+
+  /**
+   * Abre o cierra el menú móvil gestionando clases, ARIA y bloqueo de scroll.
+   * @param {boolean} open
+   */
   function navToggle(open) {
     if (!nav) return;
-    nav.classList.toggle("open", open); scrim.classList.toggle("on", open);
+    nav.classList.toggle("open", open);
+    scrim.classList.toggle("on", open);
     burger.setAttribute("aria-expanded", open ? "true" : "false");
     document.body.style.overflow = open ? "hidden" : "";
-    if (open) { var f = $("[data-nav-close]", nav) || $("a", nav); f && f.focus(); }
-    else if (burger.getClientRects().length) burger.focus();
+    if (open) {
+      var f = $("[data-nav-close]", nav) || $("a", nav);
+      if (f) f.focus();
+    } else if (burger.getClientRects().length) {
+      burger.focus();
+    }
   }
+
   if (burger) {
     burger.addEventListener("click", function () { navToggle(true); });
     $$("[data-nav-close]").forEach(function (b) { b.addEventListener("click", function () { navToggle(false); }); });
@@ -187,18 +376,35 @@
     });
   }
 
-  /* ---------- Toast ---------- */
+  /* ==========================================================================
+   * 6. NOTIFICACIONES FLOTANTES (Toast)
+   * ==========================================================================
+   * Muestra avisos no intrusivos al usuario (ej: producto añadido al carrito).
+   */
   var toastEl = document.createElement("div");
-  toastEl.className = "toast"; toastEl.setAttribute("role", "status"); toastEl.setAttribute("aria-live", "polite");
+  toastEl.className = "toast";
+  toastEl.setAttribute("role", "status");
+  toastEl.setAttribute("aria-live", "polite");
   document.body.appendChild(toastEl);
   var toastT;
+
+  /**
+   * Despliega un mensaje toast en pantalla por 3.8 segundos.
+   * @param {string} html - Contenido HTML del mensaje.
+   */
   function toast(html) {
-    toastEl.innerHTML = html; toastEl.classList.add("on");
-    clearTimeout(toastT); toastT = setTimeout(function () { toastEl.classList.remove("on"); }, 3800);
+    toastEl.innerHTML = html;
+    toastEl.classList.add("on");
+    clearTimeout(toastT);
+    toastT = setTimeout(function () { toastEl.classList.remove("on"); }, 3800);
   }
   window.caToast = toast;
 
-  /* ---------- Banner de Consentimiento de Cookies (GDPR / Chile / WordPress) ---------- */
+  /* ==========================================================================
+   * 7. BANNER DE CONSENTIMIENTO DE COOKIES (GDPR / Chile / WordPress)
+   * ==========================================================================
+   * Gestiona el cumplimiento legal y la preferencia del usuario en LocalStorage.
+   */
   function initCookieConsent() {
     var STORAGE_KEY = "ca_cookie_consent";
     var consent = null;
@@ -249,6 +455,7 @@
     if (btnAccept) btnAccept.addEventListener("click", function () { setConsent("all"); });
     if (btnEssential) btnEssential.addEventListener("click", function () { setConsent("essential"); });
 
+    // Permite reabrir el banner desde el enlace del footer
     document.addEventListener("click", function (e) {
       var btn = e.target.closest("[data-open-cookie-banner]");
       if (btn) {
@@ -259,31 +466,66 @@
   }
   initCookieConsent();
 
-
-  /* ---------- Mini-carrito (drawer) ---------- */
+  /* ==========================================================================
+   * 8. MINI-CARRITO LATERAL DESPLEGABLE (Drawer)
+   * ==========================================================================
+   * Panel deslizante con resumen en tiempo real, controles de cantidad,
+   * sugerencias de venta cruzada (cross-sell) y llamada directa a finalizar compra.
+   */
   var scr = document.createElement("div"); scr.className = "scrim";
   var dr = document.createElement("aside");
-  dr.className = "drawer"; dr.setAttribute("role", "dialog"); dr.setAttribute("aria-modal", "true"); dr.setAttribute("aria-label", "Carrito de compras"); dr.setAttribute("aria-hidden", "true");
+  dr.className = "drawer";
+  dr.setAttribute("role", "dialog");
+  dr.setAttribute("aria-modal", "true");
+  dr.setAttribute("aria-label", "Carrito de compras");
+  dr.setAttribute("aria-hidden", "true");
   dr.setAttribute("inert", "");
   dr.innerHTML = '<header><h2>Tu carrito</h2><button class="ic-btn" type="button" data-drawer-close aria-label="Cerrar carrito">' + ic("close") + '</button></header><div class="body" data-drawer-body></div><footer data-drawer-foot></footer>';
-  document.body.appendChild(scr); document.body.appendChild(dr);
+  document.body.appendChild(scr);
+  document.body.appendChild(dr);
   var lastFocus;
+
+  /**
+   * Abre o cierra el panel lateral del carrito.
+   * @param {boolean} open
+   */
   function drawer(open) {
-    dr.classList.toggle("open", open); scr.classList.toggle("on", open); dr.setAttribute("aria-hidden", open ? "false" : "true");
+    dr.classList.toggle("open", open);
+    scr.classList.toggle("on", open);
+    dr.setAttribute("aria-hidden", open ? "false" : "true");
     if (open) dr.removeAttribute("inert"); else dr.setAttribute("inert", "");
     document.body.style.overflow = open ? "hidden" : "";
-    if (open) { lastFocus = document.activeElement; renderDrawer(); $("[data-drawer-close]", dr).focus(); }
-    else if (lastFocus) lastFocus.focus();
+    if (open) {
+      lastFocus = document.activeElement;
+      renderDrawer();
+      $("[data-drawer-close]", dr).focus();
+    } else if (lastFocus) {
+      lastFocus.focus();
+    }
   }
+
+  /**
+   * Renderiza una línea de producto dentro del carrito o drawer.
+   * @param {{id: string, qty: number}} it - Item del carrito.
+   * @param {boolean} [compact] - Si es vista reducida.
+   * @returns {string} Marcado HTML de la fila de producto.
+   */
   function lineHTML(it, compact) {
     var p = find(it.id);
     return '<div class="line"><a href="producto.html?id=' + p.id + '"><img src="' + getProductImgUrl(p) + '" alt="' + p.name + '" loading="lazy"></a><div><a class="nm" href="producto.html?id=' + p.id + '">' + p.name + '</a><div class="meta">' +
       '<p class="line-variant">' + p.size + ' · ' + presentation(p) + '</p><div class="qty" role="group" aria-label="Cantidad de ' + p.name + '"><button type="button" data-q="-1" data-id="' + p.id + '" aria-label="Disminuir cantidad">' + ic("minus") + '</button><output aria-live="polite">' + it.qty + '</output><button type="button" data-q="1" data-id="' + p.id + '" aria-label="Aumentar cantidad">' + ic("plus") + "</button></div>" +
       "<strong>" + money(p.price * it.qty) + '</strong></div><button class="rm" type="button" data-rm="' + p.id + '">Quitar</button></div></div>';
   }
+
   function shipBar(t) {
     return "";
   }
+
+  /**
+   * Renderiza un bloque de recomendación de venta cruzada (complemento o formato descubrimiento).
+   * @param {Array} items - Artículos ya presentes en el pedido.
+   * @returns {string} Marcado HTML del producto sugerido.
+   */
   function renderCrossSell(items) {
     var itemIds = items.map(function (x) { return x.id; });
     var candidates = (window.PRODUCTS || []).filter(function (p) {
@@ -308,15 +550,23 @@
       '</div>' +
     '</div>';
   }
+
+  /**
+   * Actualiza el contenido visual del drawer lateral del carrito.
+   */
   function renderDrawer() {
     var items = Cart.items(), t = Cart.totals(), b = $("[data-drawer-body]", dr), f = $("[data-drawer-foot]", dr);
     if (!items.length) {
-      b.innerHTML = '<div class="cart-empty"><p>Aún no has agregado productos a tu pedido.</p><a class="btn" href="tienda.html">Explorar productos</a></div>'; f.style.display = "none"; return;
+      b.innerHTML = '<div class="cart-empty"><p>Aún no has agregado productos a tu pedido.</p><a class="btn" href="tienda.html">Explorar productos</a></div>';
+      f.style.display = "none";
+      return;
     }
     f.style.display = "";
     b.innerHTML = '<div style="padding-top:1.2rem">' + shipBar(t) + "</div>" + items.map(function (i) { return lineHTML(i, true); }).join("") + renderCrossSell(items);
     f.innerHTML = '<div class="tot"><span>Subtotal</span><span>' + money(t.sub) + '</span></div><a class="btn block" href="carrito.html">Ver carrito y pagar</a>';
   }
+
+  // Delegación global de eventos para botones del carrito
   document.addEventListener("click", function (e) {
     var t = e.target.closest("button,a"); if (!t) return;
     if (t.hasAttribute("data-cart-open")) drawer(true);
@@ -325,7 +575,12 @@
     else if (t.dataset.rm) Cart.set(t.dataset.rm, 0);
     else if (t.dataset.add) { if (Cart.add(t.dataset.add, 1)) toast("Añadido: " + find(t.dataset.add).name + ' <a href="carrito.html">Ver carrito</a>'); }
   });
+
   scr.addEventListener("click", function () { drawer(false); });
+
+  /**
+   * Trampeo de foco accesible para diálogos modales y paneles laterales.
+   */
   function trapFocus(container, e) {
     var focusable = $$('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])', container)
       .filter(function (el) { return el.getClientRects().length && !el.closest("[inert]"); });
@@ -337,6 +592,8 @@
       e.preventDefault(); first.focus();
     }
   }
+
+  // Manejo de teclado global: tecla Escape para cerrar paneles y Tab para atrapar foco
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") {
       if (dr.classList.contains("open")) drawer(false);
@@ -350,15 +607,26 @@
     else if (dr.classList.contains("open")) trapFocus(dr, e);
     else if (nav && nav.classList.contains("open")) trapFocus(nav, e);
   });
+
+  /**
+   * Refresca las insignias numéricas con la cantidad de productos en toda la interfaz.
+   */
   function updateCount() {
-    $$("[data-cart-count]").forEach(function (c) { var n = Cart.count(); c.textContent = n; c.dataset.n = n; });
+    $$("[data-cart-count]").forEach(function (c) {
+      var n = Cart.count();
+      c.textContent = n;
+      c.dataset.n = n;
+    });
     if (dr.classList.contains("open")) renderDrawer();
   }
   document.addEventListener("cart:change", updateCount);
   window.addEventListener("storage", updateCount);
   updateCount();
 
-  /* ---------- Modales (popup de cupón) ---------- */
+  /* ==========================================================================
+   * 9. MODALES Y DIÁLOGOS DE CUPÓN PROMOCIONAL
+   * ==========================================================================
+   */
   var modalFocus;
   function openModal(m) { modalFocus = document.activeElement; m.classList.add("open"); var f = $("input,button",m); f && f.focus(); }
   function closeModal(m) { m.classList.remove("open"); if (modalFocus) modalFocus.focus(); }
@@ -366,6 +634,7 @@
     var done = function () { btn.textContent = "¡Cupón copiado!"; };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(done, done); else done();
   }
+
   if (!document.body.hasAttribute("data-nopopup") && window.COUPON.pct > 0) {
     var pop = document.createElement("div"); pop.className = "modal";
     pop.setAttribute("role", "dialog"); pop.setAttribute("aria-modal", "true"); pop.setAttribute("aria-labelledby", "pop-t");
@@ -395,7 +664,11 @@
   }
   if (!window.COUPON.pct) $$("[data-open-coupon]").forEach(function (b) { b.remove(); });
 
-  /* ---------- Validación de formularios ---------- */
+  /* ==========================================================================
+   * 10. VALIDACIÓN DE FORMULARIOS DEL LADO DEL CLIENTE
+   * ==========================================================================
+   * Valida campos requeridos, correos electrónicos válidos y longitudes mínimas.
+   */
   function validate(form) {
     var ok = true, first = null;
     $$("input,textarea,select", form).forEach(function (f) {
@@ -414,14 +687,37 @@
     return ok;
   }
 
-  /* ---------- Reveal on scroll ---------- */
+  /* ==========================================================================
+   * 11. ANIMACIONES DE APARICIÓN AL HACER SCROLL (Reveal on Scroll)
+   * ==========================================================================
+   */
   var io = "IntersectionObserver" in window ? new IntersectionObserver(function (en) {
     en.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); } });
   }, { threshold: .12, rootMargin: "0px 0px -40px 0px" }) : null;
-  function observe(root) { $$(".reveal", root || document).forEach(function (el) { io ? io.observe(el) : el.classList.add("in"); }); }
 
-  /* ---------- Tarjeta de producto y grillas ---------- */
-  function presentation(p) { if (!p.grind) return p.size || "Estándar"; return p.grind === "grano" ? "Grano entero" : "Molido"; }
+  function observe(root) {
+    $$(".reveal", root || document).forEach(function (el) { io ? io.observe(el) : el.classList.add("in"); });
+  }
+
+  /* ==========================================================================
+   * 12. TARJETAS DE PRODUCTO, GRILLAS Y FILTROS INTERACTIVOS
+   * ==========================================================================
+   */
+  /**
+   * Retorna la etiqueta legible de presentación para un café.
+   * @param {Object} p
+   * @returns {string}
+   */
+  function presentation(p) {
+    if (!p.grind) return p.size || "Estándar";
+    return p.grind === "grano" ? "Grano entero" : "Molido";
+  }
+
+  /**
+   * Genera el marcado de la escala gráfica de nivel de tueste para la ficha de producto.
+   * @param {Object} p
+   * @returns {string}
+   */
   function roastProfile(p) {
     if (!p.roast) return "";
     return '<section class="roast-profile" aria-label="Nivel de tueste"><span class="roast-kicker">Perfil de tueste</span><h2>Tueste: ' + p.roast.label + '</h2><div class="roast-bar" aria-hidden="true">' +
@@ -430,9 +726,26 @@
           (tone === p.roast.tone ? '<i class="roast-marker">' + ic("bean") + '</i>' : '') + '</span>';
       }).join("") + '</div><div class="roast-labels" aria-hidden="true"><span' + (p.roast.tone === "suave" ? ' class="is-selected"' : '') + '>Medio suave</span><span' + (p.roast.tone === "medio" ? ' class="is-selected"' : '') + '>Medio</span><span' + (p.roast.tone === "intenso" ? ' class="is-selected"' : '') + '>Medio intenso</span></div></section>';
   }
+
+  /**
+   * Filtra una lista de variantes dejando una única referencia comercial representativa.
+   * @param {Array} list
+   * @returns {Array}
+   */
   function references(list) {
-    return list.filter(function (p, i) { return list.findIndex(function (x) { return x.reference === p.reference; }) === i; });
+    return list.filter(function (p, i) {
+      return list.findIndex(function (x) { return x.reference === p.reference; }) === i;
+    });
   }
+
+  /**
+   * Renderiza la tarjeta visual de un producto para la grilla de la tienda.
+   * Aplica un tratamiento especial y diferenciado para la Colección Praliné
+   * respecto a los cafés de especialidad de origen único.
+   * @param {Object} p - Producto o referencia principal.
+   * @param {Array} [variants] - Lista de variantes asociadas a la referencia.
+   * @returns {string} Marcado HTML del artículo.
+   */
   function card(p, variants) {
     variants = variants || P.filter(function (x) { return x.reference === p.reference; });
     var prices = variants.map(function (x) { return x.price; });
@@ -443,6 +756,8 @@
       var scaMatch = p.desc.match(/(\d{2}\s*puntos\s*SCA|\d{2}\s*SCA)/i);
       if (scaMatch) scaTag = '<span class="tag sca">' + scaMatch[0] + '</span>';
     }
+
+    // Determinación de la URL destino (fichas dedicadas de origen y praliné)
     var targetUrl = "producto.html?id=" + p.id;
     if (p.reference === "origen-colombia" || p.reference === "origen-colombia-huila") targetUrl = "origen-colombia.html";
     else if (p.reference === "origen-guatemala") targetUrl = "origen-guatemala.html";
@@ -456,6 +771,7 @@
       else if (p.reference === "origen-colombia") displayName = "Café de Especialidad Colombia";
     }
 
+    // Tarjeta estilizada para la Colección Praliné de autor
     if (p.collection === "autor") {
       var amarettoSub = p.reference === "praline-pistacho" ? '<span class="praline-card-sub">con notas de amaretto</span>' : '';
       return '<article class="prod reveal"><a class="ph" href="' + targetUrl + '" tabindex="-1" aria-hidden="true">' +
@@ -468,10 +784,12 @@
         '</div></div></article>';
     }
 
+    // Tarjeta para Cafés de Origen Único y Complementos
     var isSold = (window.SOLDOUT || []).indexOf(p.reference) > -1 || (window.SOLDOUT || []).indexOf(p.id) > -1;
     var actionBtn = isSold
       ? '<a class="btn ghost sm soldout-card-btn" href="' + targetUrl + '" aria-label="Ver producto agotado: ' + displayName + '">Ver producto (Agotado)</a>'
       : '<a class="btn ghost sm" href="' + targetUrl + '" aria-label="Elegir presentación: ' + displayName + '">Elegir presentación</a>';
+
     return '<article class="prod reveal"><a class="ph" href="' + targetUrl + '" tabindex="-1" aria-hidden="true">' +
       (p.notes[0] === "Sin cafeína" ? '<span class="tag">Sin cafeína</span>' : (scaTag || "")) + (isSold ? '<span class="tag sale">Agotado</span>' : "") + (off ? '<span class="tag sale">-' + off + "%</span>" : "") +
       '<img src="' + getProductImgUrl(p) + '" alt="" loading="lazy"></a><div class="bd"><span class="k">' + p.sub + '</span><h3><a href="' + targetUrl + '">' + displayName + '</a></h3><p class="variant-preview">' + (function(vars) {
@@ -482,6 +800,8 @@
       '<div class="price"><span>' + (from ? "Desde " : "") + money(Math.min.apply(null, prices)) + "</span>" + (off ? '<del><span class="sr-only">Precio original </span>' + money(p.was) + "</del>" : "") + '</div>' + actionBtn + '</div></article>';
   }
   window.caCard = card;
+
+  // Inicialización de todas las grillas de catálogo marcadas con [data-grid]
   $$("[data-grid]").forEach(function (g) {
     var cat = g.dataset.cat, filter = g.dataset.filter, sortBy = "def", active = "all";
     var activeSub = "all", activeSize = "all", activeGrind = "all", maxPrice = Infinity;
@@ -490,6 +810,7 @@
     var cnt = g.parentNode.querySelector("[data-count]");
     var q = new URLSearchParams(location.search);
     if (filter === "cat" && q.get("cat") && window.CATEGORIES[q.get("cat")]) active = q.get("cat");
+
     function draw() {
       var list = base.filter(function (p) {
         var matchesCategory = active === "all" || (active === "autor" ? p.collection === "autor" : (active === "packs" ? p.cat === "packs" : p.cat === active));
@@ -500,7 +821,6 @@
           p.price <= maxPrice;
       });
       if (sortBy === "asc" || sortBy === "desc") list = list.slice().sort(function (a, b) { return a.price - b.price; });
-      // Agrupar después de filtrar y ordenar conserva el enlace a una variante coincidente.
       var grouped = references(list);
       if (sortBy === "desc") grouped.sort(function (a, b) { return b.price - a.price; });
       g.innerHTML = grouped.map(function (p) { return card(p, list.filter(function (x) { return x.reference === p.reference; })); }).join("") || '<p class="empty">No hay productos disponibles en esta selección.</p>';
@@ -508,11 +828,13 @@
       observe(g);
       if (bar) $$("[data-f]", bar).forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.f === active ? "true" : "false"); });
     }
+
     if (bar && filter) {
       var keys = filter === "cat" ? Object.keys(window.CATEGORIES) : base.map(function (p) { return p.sub; }).filter(function (v, i, a) { return a.indexOf(v) === i; });
       bar.insertAdjacentHTML("afterbegin", '<button class="chip" type="button" data-f="all" aria-pressed="true">Todos</button>' + keys.map(function (k) { return '<button class="chip" type="button" data-f="' + k + '" aria-pressed="false">' + (filter === "cat" ? window.CATEGORIES[k].name : k) + "</button>"; }).join(""));
       bar.addEventListener("click", function (e) { var b = e.target.closest("[data-f]"); if (b) { active = b.dataset.f; draw(); } });
     }
+
     if (bar && filter === "cat") {
       [
         ["[data-filter-sub]", "sub", "Todos los sabores y orígenes"],
@@ -536,15 +858,23 @@
       if (sizeSelect) sizeSelect.addEventListener("change", function () { activeSize = sizeSelect.value; draw(); });
       if (grindSelect) grindSelect.addEventListener("change", function () { activeGrind = grindSelect.value; draw(); });
     }
+
     var sel = g.parentNode.querySelector("[data-sort]");
     if (sel) sel.addEventListener("change", function () { sortBy = sel.value; draw(); });
     draw();
   });
 
-  /* ---------- Detalle de producto ---------- */
+  /* ==========================================================================
+   * 13. DETALLE DE PRODUCTO (#product-detail) Y ENRUTAMIENTO DEDICADO
+   * ==========================================================================
+   * Redirige orígenes y ensambles Praliné a sus plantillas dedicadas, o renderiza
+   * la vista detallada interactiva con selector de molienda y datos estructurados SEO.
+   */
   var pd = $("#product-detail");
   if (pd) {
     var pid = new URLSearchParams(location.search).get("id"), p = find(pid);
+
+    // Enrutamiento automático hacia páginas dedicadas de orígenes
     if (p && p.collection === "origen") {
       if (p.reference === "origen-colombia") {
         location.replace("origen-colombia.html");
@@ -560,12 +890,14 @@
         return;
       }
     } else if (p && p.collection === "autor") {
+      // Enrutamiento automático hacia páginas dedicadas de Colección Praliné
       var blendSlug = p.reference.replace("praline-", "");
       var targetPraline = "praline-" + blendSlug + ".html";
       if (p.size === "100 g") targetPraline += "#formato-100";
       location.replace(targetPraline);
       return;
     }
+
     if (!p) {
       document.title = "Producto no encontrado · Café Alegra";
       pd.innerHTML = '<div class="cart-empty"><h1 style="font-size:2.4rem">No encontramos ese producto</h1><p>Puede que el enlace haya cambiado. Explora nuestra tienda.</p><a class="btn" href="tienda.html">Ver la tienda</a></div>';
@@ -575,11 +907,13 @@
       var md = $('meta[name="description"]'); if (md) md.setAttribute("content", p.name + " (" + p.size + "). " + p.short);
       var ogt = $('meta[property="og:title"]'); if (ogt) ogt.setAttribute("content", p.name + " · Café Alegra");
       $("[data-crumb]").innerHTML = '<a href="index.html">Inicio</a><span aria-hidden="true">/</span><a href="' + c.page + '">' + c.name + '</a><span aria-hidden="true">/</span><span aria-current="page">' + p.name + "</span>";
+
       var sealIcons = { "Sin cafeína": "nocaf", Vegano: "vegan", "Sin azúcar añadida": "nosugar" };
       var seals = p.notes.filter(function (note) { return sealIcons[note]; }).map(function (note) {
         return '<span class="seal"><span class="disc">' + ic(sealIcons[note]) + "</span>" + note + "</span>";
       }).join("");
       if (seals) seals = '<div class="seals" style="margin:1.5rem 0">' + seals + "</div>";
+
       var variants = P.filter(function (x) { return x.reference === p.reference; });
       var isOrigin = p.collection === "origen";
       var variantHTML =
@@ -663,6 +997,7 @@
 
       renderBuyArea(p);
 
+      // Evento de cambio en el selector de variante (molienda o formato)
       $("#product-variant").addEventListener("change", function (e) {
         p = find(e.target.value);
         var url = new URL(location.href); url.searchParams.set("id", p.id);
@@ -680,7 +1015,8 @@
         $("#variant-summary").textContent = p.size + " · " + presentation(p) + " · " + money(p.price);
         renderBuyArea(p);
       });
-            /* Lógica de "Saber Más" (oculto por defecto, visible por café; reservado para el blog en orígenes de especialidad) */
+
+      // Módulo "Saber Más" con la historia editorial y enlace al blog
       var stories = window.COFFEE_STORIES || {};
       var storyKey = p.reference;
       if (!stories[storyKey] && p.cat === "tradicion") storyKey = p.id.indexOf("higo") > -1 ? "cafe-de-higos" : "cafe-de-trigo";
@@ -705,35 +1041,36 @@
 
         pd.querySelector(".pd").insertAdjacentHTML("afterend", storyHTML);
 
-      /* Inyección de Schema.org JSON-LD (Product + Offer) para SEO */
-      var existingSchema = document.getElementById("product-schema-jsonld");
-      if (existingSchema) existingSchema.remove();
-      var scriptSchema = document.createElement("script");
-      scriptSchema.id = "product-schema-jsonld";
-      scriptSchema.type = "application/ld+json";
-      var productSchemaData = {
-        "@context": "https://schema.org/",
-        "@type": "Product",
-        "name": p.referenceName + " (" + p.size + ")",
-        "image": ["https://cafealegra.cl/assets/img/" + p.img],
-        "description": p.short + " " + p.desc,
-        "sku": "ALEGRA-" + p.id.toUpperCase(),
-        "brand": { "@type": "Brand", "name": "Café Alegra" },
-        "offers": {
-          "@type": "Offer",
-          "url": location.href,
-          "priceCurrency": "CLP",
-          "price": p.price,
-          "priceValidUntil": "2027-12-31",
-          "itemCondition": "https://schema.org/NewCondition",
-          "availability": (window.SOLDOUT || []).indexOf(p.reference) > -1 ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
-          "seller": { "@type": "Organization", "name": "Café Alegra" }
-        }
-      };
-      scriptSchema.text = JSON.stringify(productSchemaData, null, 2);
-      document.head.appendChild(scriptSchema);
+        // Inyección de Schema.org JSON-LD (Product + Offer) para posicionamiento SEO
+        var existingSchema = document.getElementById("product-schema-jsonld");
+        if (existingSchema) existingSchema.remove();
+        var scriptSchema = document.createElement("script");
+        scriptSchema.id = "product-schema-jsonld";
+        scriptSchema.type = "application/ld+json";
+        var productSchemaData = {
+          "@context": "https://schema.org/",
+          "@type": "Product",
+          "name": p.referenceName + " (" + p.size + ")",
+          "image": ["https://cafealegra.cl/assets/img/" + p.img],
+          "description": p.short + " " + p.desc,
+          "sku": "ALEGRA-" + p.id.toUpperCase(),
+          "brand": { "@type": "Brand", "name": "Café Alegra" },
+          "offers": {
+            "@type": "Offer",
+            "url": location.href,
+            "priceCurrency": "CLP",
+            "price": p.price,
+            "priceValidUntil": "2027-12-31",
+            "itemCondition": "https://schema.org/NewCondition",
+            "availability": (window.SOLDOUT || []).indexOf(p.reference) > -1 ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+            "seller": { "@type": "Organization", "name": "Café Alegra" }
+          }
+        };
+        scriptSchema.text = JSON.stringify(productSchemaData, null, 2);
+        document.head.appendChild(scriptSchema);
       }
 
+      // Productos relacionados sugeridos al pie de página
       var rel = $("[data-related]");
       if (rel) {
         var r = P.filter(function (x) { return x.cat === p.cat && x.reference !== p.reference; });
@@ -743,29 +1080,43 @@
     }
   }
 
-  /* ---------- Página de carrito ---------- */
+  /* ==========================================================================
+   * 14. PÁGINA COMPLETA DE CARRITO Y PAGO (Checkout Flow)
+   * ==========================================================================
+   */
   var cp = $("#cart-page");
   if (cp) {
     var renderCart = function () {
       var items = Cart.items(), t = Cart.totals();
       if (!items.length && !cp.dataset.done) {
-        cp.innerHTML = '<div class="cart-empty"><h2>Tu carrito está vacío</h2><p>Aún no has agregado productos a tu pedido. ¡Es un buen momento para hacer un pedido!</p><a class="btn" href="tienda.html">Explorar productos</a></div>'; return;
+        cp.innerHTML = '<div class="cart-empty"><h2>Tu carrito está vacío</h2><p>Aún no has agregado productos a tu pedido. ¡Es un buen momento para hacer un pedido!</p><a class="btn" href="tienda.html">Explorar productos</a></div>';
+        return;
       }
       cp.innerHTML = '<div class="cart-wrap"><div>' + shipBar(t) + items.map(function (i) { return lineHTML(i); }).join("") + '<p style="margin-top:1.5rem"><a class="link" href="tienda.html">Seguir comprando</a></p></div>' +
         '<aside class="sum" aria-label="Resumen del pedido"><h2 style="font-size:1.6rem">Resumen</h2><form class="coupon" data-coupon><label class="sr-only" for="cp-in">Código de cupón</label><input id="cp-in" placeholder="Código de cupón" autocomplete="off" value="' + (Cart.coupon() || "") + '"><button class="btn sm ghost" type="submit">Aplicar</button></form><p class="msg" data-cmsg role="status"></p>' +
         '<dl><div class="r"><dt>Subtotal</dt><dd style="margin:0">' + money(t.sub) + "</dd></div>" + (t.disc ? '<div class="r"><dt>Cupón ' + window.COUPON.code + " (-" + window.COUPON.pct + '%)</dt><dd style="margin:0">-' + money(t.disc) + "</dd></div>" : "") +
         '<div class="r"><dt>Envío</dt><dd style="margin:0">' + "Se calcula al pagar" + '</dd></div><div class="r t"><dt>Total</dt><dd style="margin:0">' + money(t.net) + '</dd></div></dl><button class="btn block" type="button" data-checkout>Finalizar compra</button><p style="font-size:.8rem;color:var(--suave);margin:1rem 0 0">' + ic("lock") + ' Pago 100% seguro con Webpay Plus y Transbank.</p></aside></div>';
+
       $("[data-coupon]").addEventListener("submit", function (e) {
         e.preventDefault();
         var v = $("#cp-in").value.trim().toUpperCase(), m = $("[data-cmsg]");
         m.classList.add("show");
-        if (!window.COUPON.pct) { m.textContent = "Este código de cupón no es válido o ha expirado."; m.className = "msg show notice"; }
-        else if (v === window.COUPON.code) { store.set("ca_coupon", v); document.dispatchEvent(new CustomEvent("cart:change")); }
-        else { m.textContent = "Ese cupón no es válido. Prueba con " + window.COUPON.code + "."; m.className = "msg show notice"; }
+        if (!window.COUPON.pct) {
+          m.textContent = "Este código de cupón no es válido o ha expirado.";
+          m.className = "msg show notice";
+        } else if (v === window.COUPON.code) {
+          store.set("ca_coupon", v);
+          document.dispatchEvent(new CustomEvent("cart:change"));
+        } else {
+          m.textContent = "Ese cupón no es válido. Prueba con " + window.COUPON.code + ".";
+          m.className = "msg show notice";
+        }
       });
+
       $("[data-checkout]").addEventListener("click", function () {
         var n = "CA-" + Math.floor(100000 + Math.random() * 900000), tot = Cart.totals();
-        cp.dataset.done = "1"; Cart.clear();
+        cp.dataset.done = "1";
+        Cart.clear();
         cp.innerHTML = '<div class="panel center" style="max-width:640px;margin:0 auto">' + ic("check", "") + '<h2 style="margin-top:1rem">¡Gracias por tu pedido!</h2><p>Hemos recibido tu pedido con éxito. Tu número de orden es el <strong>' + n + "</strong> por " + money(tot.net) + ".</p><p>Puedes seguir el estado de tu despacho en tiempo real con este número.</p><div class=\"acts\" style=\"justify-content:center\"><a class=\"btn\" href=\"seguimiento.html?n=" + n + '">Seguir mi pedido</a><a class="btn ghost" href="tienda.html">Volver a la tienda</a></div></div>';
       });
     };
@@ -773,7 +1124,11 @@
     renderCart();
   }
 
-  /* ---------- Quiz ---------- */
+  /* ==========================================================================
+   * 15. QUIZ INTERACTIVO DE RECOMENDACIÓN DE CAFÉ IDEAL
+   * ==========================================================================
+   * Algoritmo paso a paso de scoring sensorial según gustos de preparación.
+   */
   var qr = $("#quiz-root");
   if (qr) {
     var QS = [
@@ -818,7 +1173,10 @@
     drawQ();
   }
 
-  /* ---------- Formularios genéricos ---------- */
+  /* ==========================================================================
+   * 16. FORMULARIOS DE CONTACTO, ATENCIÓN Y SEGUIMIENTO BLUE EXPRESS
+   * ==========================================================================
+   */
   $$("form[data-form]").forEach(function (f) {
     f.setAttribute("novalidate", "");
     f.addEventListener("submit", function (e) {
@@ -836,10 +1194,14 @@
       box.setAttribute("tabindex", "-1"); box.focus(); f.reset();
     });
   });
+
   var sq = new URLSearchParams(location.search).get("n"), so = $("form[data-form=seguimiento] [name=orden]");
   if (so && sq) so.value = sq;
 
-  /* ---------- Acceder (simulado) ---------- */
+  /* ==========================================================================
+   * 17. PANEL DE MI CUENTA (Acceso / Registro Simulado)
+   * ==========================================================================
+   */
   var au = $("#auth");
   if (au) {
     var showAuth = function () {
@@ -871,6 +1233,10 @@
   observe();
 })();
 
+/* ==========================================================================
+ * 18. CARRUSEL CORPORATIVO DE VALORES Y TESTIMONIOS
+ * ==========================================================================
+ */
 (function () {
   var c = document.querySelector("[data-brand-car]"); if (!c) return;
   var tr = c.querySelector(".track"), n = tr.children.length, i = 0, dots = c.querySelectorAll(".dots button"), t;
@@ -879,6 +1245,13 @@
   dots.forEach(function (d, j) { d.addEventListener("click", function () { go(j); play(); }); });
   c.addEventListener("mouseenter", function () { clearInterval(t); }); c.addEventListener("mouseleave", play); play();
 })();
+
+/* ==========================================================================
+ * 19. BOTÓN FLOTANTE INTERACTIVO DE WHATSAPP CON FORMULARIO
+ * ==========================================================================
+ * Permite a los visitantes consultar directamente con la tostaduría artesanal
+ * en Rancagua con un mensaje pre-estructurado según el producto de interés.
+ */
 (function () {
   var NUM = "56977942117";
   var w = document.createElement("div"); w.className = "wa-bot";
@@ -901,7 +1274,14 @@
   });
 })();
 
-/* Manejador seguro de scroll y navegación para pestañas de colección (compatible con <base href>) */
+/* ==========================================================================
+ * 20. MANEJADOR DE SCROLL SUAVE Y NAVEGACIÓN ANCLA INTERNA (Compatible con <base href>)
+ * ==========================================================================
+ * Resuelve el problema donde enlaces con ancla (ej: #sabores-de-autor) son
+ * redirigidos a la raíz por la presencia de la etiqueta <base href="...">
+ * requerida por WordPress. Intercepta los clics en subcategorías y realiza
+ * scroll fluido hacia la sección correspondiente actualizando la URL con pushState.
+ */
 (function () {
   document.addEventListener("click", function (e) {
     var link = e.target.closest("a");
@@ -929,6 +1309,7 @@
     }
   });
 
+  // Al cargar la página con un hash existente, desliza automáticamente a la sección
   if (location.pathname.indexOf("cafe-de-especialidad") > -1 && location.hash) {
     setTimeout(function () {
       var initialEl = document.getElementById(location.hash.substring(1));
