@@ -231,8 +231,9 @@ function cafe_alegra_child_render_propuesta() {
 		$html
 	);
 
-	// Cache-busting dinámico para forzar a navegadores a descartar versiones anteriores de JS y CSS
-	$asset_v = 'v' . ( defined( 'WP_DEBUG' ) && WP_DEBUG ? time() : '20261111_03' );
+	// Cache-busting dinámico con filemtime para forzar a navegadores a descartar versiones anteriores de JS y CSS
+	$js_file = get_stylesheet_directory() . '/assets/js/main.js';
+	$asset_v = 'v' . ( file_exists( $js_file ) ? filemtime( $js_file ) : time() );
 	$html = preg_replace( '/\?v=[0-9a-zA-Z_\-]+/', '?v=' . $asset_v, $html );
 
 	// Ocultar cualquier elemento topbar remanente
