@@ -3,44 +3,309 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>Café de Especialidad Colombia 85 SCA | En Grano | Café Alegra</title>
-<meta name="description" content="Café colombiano de alta montaña (>1.600 msnm), varietal Castillo. Notas de caramelo dulce, panela y cacao. Tueste medio intenso con envío a todo Chile.">
-<meta property="og:title" content="Café de Especialidad Colombia 85 SCA | En Grano | Café Alegra">
-<meta property="og:description" content="Café colombiano de alta montaña (>1.600 msnm), varietal Castillo. Notas de caramelo dulce, panela y cacao. Tueste medio intenso con envío a todo Chile.">
-<meta property="og:type" content="website">
-<meta property="og:image" content="assets/img/hero-taza.jpg">
+<title>Café de Especialidad Colombia | Selección y Microlotes | Café Alegra</title>
+<meta name="description" content="Descubre dos expresiones del café colombiano: nuestra selección de origen Castillo 85 SCA y el microlote Huila 86 SCA. Tostado artesanalmente en Rancagua.">
+<meta property="og:title" content="Café de Especialidad Colombia | Selección y Microlotes | Café Alegra">
+<meta property="og:description" content="Descubre dos expresiones del café colombiano: nuestra selección de origen y microlotes especiales de altura. Envíos Blue Express a todo Chile.">
+<meta property="og:type" content="product">
+<meta property="og:image" content="assets/img/catalogo-colombia.png">
 <meta name="theme-color" content="#1b120c">
 <link rel="canonical" href="https://cafealegra.cl/origen-colombia.html">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;family=Jost:wght@300;400;500&amp;display=swap">
-<link rel="stylesheet" href="assets/css/styles.css?v=16">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;family=Jost:wght@300;400;500;600&amp;display=swap">
+<link rel="stylesheet" href="assets/css/styles.css?v=17">
 <meta property="og:locale" content="es_CL">
 <meta property="og:site_name" content="Café Alegra">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Café Alegra · Tostaduría de Especialidad">
-<meta name="twitter:description" content="Café de especialidad y tradición chilena. Envíos Blue Express a todo Chile.">
-<meta name="twitter:image" content="https://cafealegra.cl/assets/img/hero-taza.jpg">
+<meta name="twitter:title" content="Café de Especialidad Colombia | Café Alegra">
+<meta name="twitter:description" content="Selección de origen y microlotes especiales de Colombia.">
+<meta name="twitter:image" content="https://cafealegra.cl/assets/img/catalogo-colombia.png">
 </head>
 <body data-nav="tienda">
 <a class="skip" href="#main">Saltar al contenido</a>
 <div id="site-header"></div>
+
 <main id="main">
-  <section class="page-hero"><div class="wrap">
-    <p class="crumbs"><a href="index.html">Inicio</a><span aria-hidden="true">/</span><a href="cafe-de-especialidad.html">Café de especialidad</a><span aria-hidden="true">/</span><span aria-current="page">Café de origen Colombia</span></p>
-    <span class="eyebrow">Especialidad · Origen</span>
-    <h1>Café de origen <em>Colombia</em></h1>
-    <p>Aroma intenso, miel de caña, caramelo dulce y cacao intenso. Cuerpo redondo.</p>
-  </div></section>
-  <section class="section"><div class="wrap narrow">
-    <div class="split" style="align-items:center"><div><h2>Ficha de origen</h2><p>Tueste medio intenso. Lavado y secado en patio. Varietal Castillo, sobre 1.600 msnm; 85 puntos SCA.</p><p><a class="btn" href="producto.html?id=origen-colombia-grano">Ver en la tienda</a> <a class="btn ghost" href="producto.html?id=origen-colombia-molido">Versión molida</a></p></div>
-    <div><img src="assets/img/catalogo-colombia.png" alt="Café de origen Colombia" loading="lazy" style="width:100%;max-height:380px;object-fit:contain"><p style="margin-top:1.5rem"><a class="btn gold sm" href="tienda.html">← Regresar a la tienda</a></p></div></div>
-    <p class="notice">Comentario para Café Alegra: el origen se carga como dato de cada ficha; la lista de países no es fija.</p>
-  </div></section>
+  <!-- Hero de Sección Colombia -->
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="crumbs">
+        <a href="index.html">Inicio</a>
+        <span aria-hidden="true">/</span>
+        <a href="cafe-de-especialidad.html">Café de especialidad</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">Colombia</span>
+      </p>
+      <span class="eyebrow">TRAZABILIDAD Y TERRUÑO (TERROIR) · +84 PUNTOS SCA</span>
+      <h1>Café de Especialidad <em>Colombia</em></h1>
+      <p>Descubre dos expresiones del café colombiano: nuestra selección de origen y una propuesta de microlotes especiales, cuyas características varían según la cosecha y la disponibilidad. Cada selección ofrece una experiencia sensorial propia.</p>
+    </div>
+  </section>
+
+  <!-- Pestañas de Selección -->
+  <section class="section" style="padding-top:1.5rem">
+    <div class="wrap">
+      <nav class="origin-tabs-nav" aria-label="Selección de cafés de Colombia" role="tablist">
+        <button class="origin-tab-btn is-active" id="tab-btn-especialidad" role="tab" aria-selected="true" aria-controls="pane-especialidad" tabindex="0">Especialidad</button>
+        <button class="origin-tab-btn" id="tab-btn-microlotes" role="tab" aria-selected="false" aria-controls="pane-microlotes" tabindex="-1">Microlotes de Especialidad</button>
+      </nav>
+
+      <!-- Panel 1: Especialidad (Castillo, 85 SCA) -->
+      <div class="origin-tab-pane is-active" id="pane-especialidad" role="tabpanel" aria-labelledby="tab-btn-especialidad">
+        <div class="pd">
+          <div class="pd-img reveal in">
+            <img src="assets/img/catalogo-colombia.png" alt="Café de Especialidad Colombia Castillo 85 SCA" loading="lazy">
+          </div>
+          <div class="pd-info reveal in">
+            <span class="eyebrow">Cafés de Orígenes Seleccionados · 85 SCA</span>
+            <h2 style="font-size:clamp(1.8rem,4vw,2.4rem);margin:.2rem 0 .8rem">Café de Especialidad · Colombia (Castillo, 85 SCA)</h2>
+            <p class="sensory-desc">Un café de carácter envolvente, con notas dulces de caramelo y miel de caña que aportan calidez y suavidad a cada taza. Su cuerpo medio, acidez balanceada y tueste medio intenso ofrecen una experiencia armoniosa, de sabor definido y agradable persistencia.</p>
+            
+            <div class="price">
+              <span>$13.000</span>
+            </div>
+
+            <!-- Selector de compra: Únicamente 2 opciones de 250 g -->
+            <fieldset class="variant-picker" aria-label="Presentación de compra">
+              <legend>Presentación · 250 g</legend>
+              <div class="variant-options">
+                <label class="variant-option">
+                  <input type="radio" name="colombia-esp-variant" value="origen-colombia-grano" checked>
+                  <span>Grano entero<b aria-hidden="true"> ✓</b></span>
+                </label>
+                <label class="variant-option">
+                  <input type="radio" name="colombia-esp-variant" value="origen-colombia-molido">
+                  <span>Molido<b aria-hidden="true"> ✓</b></span>
+                </label>
+              </div>
+              <p role="status" aria-live="polite">250 g · $13.000</p>
+            </fieldset>
+
+            <div class="buy" style="margin:1.4rem 0">
+              <div class="qty" role="group" aria-label="Cantidad">
+                <button type="button" data-esp-q="-1" aria-label="Disminuir">-</button>
+                <output id="esp-qty" aria-live="polite">1</output>
+                <button type="button" data-esp-q="1" aria-label="Aumentar">+</button>
+              </div>
+              <button class="btn" type="button" id="btn-add-esp">Añadir al carrito</button>
+            </div>
+
+            <!-- Barra de Tueste: Medio Intenso (sin disclaimer) -->
+            <section class="roast-profile" aria-label="Nivel de tueste">
+              <span class="roast-kicker">Perfil de tueste</span>
+              <h2>Tueste: Medio intenso</h2>
+              <div class="roast-bar" aria-hidden="true">
+                <span class="roast-stop roast-suave"></span>
+                <span class="roast-stop roast-medio"></span>
+                <span class="roast-stop roast-intenso is-selected"><i class="roast-marker">☕</i></span>
+              </div>
+              <div class="roast-labels" aria-hidden="true">
+                <span>Medio suave</span>
+                <span>Medio</span>
+                <span class="is-selected">Medio intenso</span>
+              </div>
+            </section>
+
+            <!-- Ficha Técnica -->
+            <h3 style="font-size:1.15rem;margin:1.8rem 0 .5rem;letter-spacing:.06em;text-transform:uppercase;color:var(--espresso)">Información técnica</h3>
+            <table class="specs-table">
+              <tbody>
+                <tr><th>Varietal</th><td>Castillo</td></tr>
+                <tr><th>Notas</th><td>Caramelo, miel de caña</td></tr>
+                <tr><th>Altura</th><td>1.600 msnm</td></tr>
+                <tr><th>Tueste</th><td>Medio intenso</td></tr>
+                <tr><th>Proceso</th><td>Lavado</td></tr>
+                <tr><th>Acidez</th><td>Balanceada</td></tr>
+                <tr><th>Cuerpo</th><td>Medio</td></tr>
+                <tr><th>Formato</th><td>250 g</td></tr>
+                <tr><th>Precio</th><td>$13.000</td></tr>
+                <tr><th>Puntaje SCA</th><td>85 puntos</td></tr>
+              </tbody>
+            </table>
+
+            <details class="acc" open>
+              <summary>Cómo prepararlo</summary>
+              <div class="c">
+                <p>Ideal en prensa francesa o métodos de filtrado.</p>
+              </div>
+            </details>
+
+            <details class="acc">
+              <summary>Envíos</summary>
+              <div class="c">
+                <p>Despachos a todo Chile mediante Blue Express. Las tarifas de envío se calculan según región y comuna en el checkout. No aplica despacho gratuito.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 2: Microlotes de Especialidad (Huila, 86 SCA) -->
+      <div class="origin-tab-pane" id="pane-microlotes" role="tabpanel" aria-labelledby="tab-btn-microlotes">
+        <div class="pd">
+          <div class="pd-img reveal in">
+            <img src="assets/img/catalogo-colombia.png" alt="Microlote Colombia Huila 86 SCA" loading="lazy">
+          </div>
+          <div class="pd-info reveal in">
+            <span class="eyebrow" style="color:var(--oro-hondo)">Lote Especial de Altura · 86 SCA</span>
+            <h2 style="font-size:clamp(1.8rem,4vw,2.4rem);margin:.2rem 0 .8rem">Microlote Colombia · Huila (86 SCA)</h2>
+            <p class="sensory-desc">Un café de altura que destaca por su dulzor, su acidez brillante y su cuerpo redondo. Sus notas de caña de azúcar, chocolate de leche y mandarina ofrecen una experiencia de taza fresca, armoniosa y llena de matices.</p>
+            
+            <div class="price">
+              <span>$13.000</span>
+            </div>
+
+            <!-- Selector de compra: Únicamente 2 opciones de 250 g -->
+            <fieldset class="variant-picker" aria-label="Presentación de compra">
+              <legend>Presentación · 250 g</legend>
+              <div class="variant-options">
+                <label class="variant-option">
+                  <input type="radio" name="colombia-micro-variant" value="origen-colombia-huila-grano" checked>
+                  <span>Grano entero · 250 g<b aria-hidden="true"> ✓</b></span>
+                </label>
+                <label class="variant-option">
+                  <input type="radio" name="colombia-micro-variant" value="origen-colombia-huila-molido">
+                  <span>Molido · 250 g<b aria-hidden="true"> ✓</b></span>
+                </label>
+              </div>
+              <p role="status" aria-live="polite">250 g · $13.000</p>
+            </fieldset>
+
+            <div class="buy" style="margin:1.4rem 0">
+              <div class="qty" role="group" aria-label="Cantidad">
+                <button type="button" data-micro-q="-1" aria-label="Disminuir">-</button>
+                <output id="micro-qty" aria-live="polite">1</output>
+                <button type="button" data-micro-q="1" aria-label="Aumentar">+</button>
+              </div>
+              <button class="btn gold" type="button" id="btn-add-micro">Añadir al carrito</button>
+            </div>
+
+            <!-- Barra de Tueste: Medio Claro (sin disclaimer) -->
+            <section class="roast-profile" aria-label="Nivel de tueste">
+              <span class="roast-kicker">Perfil de tueste</span>
+              <h2>Tueste: Medio claro</h2>
+              <div class="roast-bar" aria-hidden="true">
+                <span class="roast-stop roast-suave is-selected"><i class="roast-marker">☕</i></span>
+                <span class="roast-stop roast-medio"></span>
+                <span class="roast-stop roast-intenso"></span>
+              </div>
+              <div class="roast-labels" aria-hidden="true">
+                <span class="is-selected">Medio claro</span>
+                <span>Medio</span>
+                <span>Medio intenso</span>
+              </div>
+            </section>
+
+            <!-- Ficha Técnica Microlote -->
+            <h3 style="font-size:1.15rem;margin:1.8rem 0 .5rem;letter-spacing:.06em;text-transform:uppercase;color:var(--espresso)">Información técnica del lote actual</h3>
+            <table class="specs-table">
+              <tbody>
+                <tr><th>Origen del lote</th><td>Huila, Colombia</td></tr>
+                <tr><th>Varietal</th><td>Blend de Caturra y Colombia</td></tr>
+                <tr><th>Notas</th><td>Caña de azúcar, chocolate de leche, mandarina</td></tr>
+                <tr><th>Puntaje en taza</th><td>86 puntos SCA</td></tr>
+                <tr><th>Altitud</th><td>1.700–1.800 msnm</td></tr>
+                <tr><th>Tueste</th><td>Medio claro</td></tr>
+                <tr><th>Proceso</th><td>Lavado</td></tr>
+                <tr><th>Acidez</th><td>Brillante (media-alta)</td></tr>
+                <tr><th>Cuerpo</th><td>Redondo</td></tr>
+                <tr><th>Formato</th><td>250 g</td></tr>
+                <tr><th>Precio</th><td>$13.000</td></tr>
+              </tbody>
+            </table>
+
+            <details class="acc" open>
+              <summary>Cómo prepararlo</summary>
+              <div class="c">
+                <p>Ideal en prensa francesa o métodos de filtrado.</p>
+              </div>
+            </details>
+
+            <details class="acc">
+              <summary>Envíos</summary>
+              <div class="c">
+                <p>Despachos a todo Chile mediante Blue Express. Las tarifas de envío se calculan según región y comuna en el checkout. No aplica despacho gratuito.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:3rem;text-align:center">
+        <a class="btn ghost sm" href="cafe-de-especialidad.html">← Ver todos los cafés de especialidad</a>
+      </div>
+    </div>
+  </section>
 </main>
+
 <div id="site-footer"></div>
-<script src="assets/js/products.js?v=4"></script>
-<script src="assets/js/main.js?v=4"></script>
+<script src="assets/js/products.js?v=17"></script>
+<script src="assets/js/main.js?v=17"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  var tabButtons = document.querySelectorAll(".origin-tab-btn");
+  var tabPanes = document.querySelectorAll(".origin-tab-pane");
+
+  tabButtons.forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      tabButtons.forEach(function(b) {
+        b.classList.remove("is-active");
+        b.setAttribute("aria-selected", "false");
+        b.setAttribute("tabindex", "-1");
+      });
+      tabPanes.forEach(function(p) {
+        p.classList.remove("is-active");
+      });
+      btn.classList.add("is-active");
+      btn.setAttribute("aria-selected", "true");
+      btn.setAttribute("tabindex", "0");
+      var paneId = btn.getAttribute("aria-controls");
+      var targetPane = document.getElementById(paneId);
+      if (targetPane) targetPane.classList.add("is-active");
+    });
+  });
+
+  // Cantidad y compra Especialidad
+  var espQty = 1;
+  var espOutput = document.getElementById("esp-qty");
+  document.querySelectorAll("[data-esp-q]").forEach(function(b) {
+    b.addEventListener("click", function() {
+      espQty = Math.max(1, Math.min(99, espQty + parseInt(b.dataset.espQ, 10)));
+      if (espOutput) espOutput.textContent = espQty;
+    });
+  });
+  var btnAddEsp = document.getElementById("btn-add-esp");
+  if (btnAddEsp) {
+    btnAddEsp.addEventListener("click", function() {
+      var sel = document.querySelector('input[name="colombia-esp-variant"]:checked');
+      var pid = sel ? sel.value : "origen-colombia-grano";
+      if (window.Cart && Cart.add(pid, espQty)) {
+        if (window.toast) toast("Añadido: Café de Especialidad Colombia (" + (pid.indexOf("grano") > -1 ? "Grano entero" : "Molido") + ') <a href="carrito.html">Ver carrito</a>');
+      }
+    });
+  }
+
+  // Cantidad y compra Microlote
+  var microQty = 1;
+  var microOutput = document.getElementById("micro-qty");
+  document.querySelectorAll("[data-micro-q]").forEach(function(b) {
+    b.addEventListener("click", function() {
+      microQty = Math.max(1, Math.min(99, microQty + parseInt(b.dataset.microQ, 10)));
+      if (microOutput) microOutput.textContent = microQty;
+    });
+  });
+  var btnAddMicro = document.getElementById("btn-add-micro");
+  if (btnAddMicro) {
+    btnAddMicro.addEventListener("click", function() {
+      var sel = document.querySelector('input[name="colombia-micro-variant"]:checked');
+      var pid = sel ? sel.value : "origen-colombia-huila-grano";
+      if (window.Cart && Cart.add(pid, microQty)) {
+        if (window.toast) toast("Añadido: Microlote Colombia Huila (' + (pid.indexOf("grano") > -1 ? "Grano entero" : "Molido") + ') <a href="carrito.html">Ver carrito</a>');
+      }
+    });
+  }
+});
+</script>
 </body>
 </html>

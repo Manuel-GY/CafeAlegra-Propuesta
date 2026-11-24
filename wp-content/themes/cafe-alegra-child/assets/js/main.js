@@ -421,14 +421,14 @@
   function observe(root) { $$(".reveal", root || document).forEach(function (el) { io ? io.observe(el) : el.classList.add("in"); }); }
 
   /* ---------- Tarjeta de producto y grillas ---------- */
-  function presentation(p) { if (!p.grind) return p.size || "Estándar"; return p.grind === "grano" ? "Grano entero" : "Molienda media"; }
+  function presentation(p) { if (!p.grind) return p.size || "Estándar"; return p.grind === "grano" ? "Grano entero" : "Molido"; }
   function roastProfile(p) {
     if (!p.roast) return "";
     return '<section class="roast-profile" aria-label="Nivel de tueste"><span class="roast-kicker">Perfil de tueste</span><h2>Tueste: ' + p.roast.label + '</h2><div class="roast-bar" aria-hidden="true">' +
       ["suave", "medio", "intenso"].map(function (tone) {
         return '<span class="roast-stop roast-' + tone + (tone === p.roast.tone ? ' is-selected' : '') + '">' +
           (tone === p.roast.tone ? '<i class="roast-marker">' + ic("bean") + '</i>' : '') + '</span>';
-      }).join("") + '</div><div class="roast-labels" aria-hidden="true"><span' + (p.roast.tone === "suave" ? ' class="is-selected"' : '') + '>Medio suave</span><span' + (p.roast.tone === "medio" ? ' class="is-selected"' : '') + '>Medio</span><span' + (p.roast.tone === "intenso" ? ' class="is-selected"' : '') + '>Medio intenso</span></div><p>Comparación visual entre los tres tuestes de origen del catálogo; no es una escala técnica.</p></section>';
+      }).join("") + '</div><div class="roast-labels" aria-hidden="true"><span' + (p.roast.tone === "suave" ? ' class="is-selected"' : '') + '>Medio suave</span><span' + (p.roast.tone === "medio" ? ' class="is-selected"' : '') + '>Medio</span><span' + (p.roast.tone === "intenso" ? ' class="is-selected"' : '') + '>Medio intenso</span></div></section>';
   }
   function references(list) {
     return list.filter(function (p, i) { return list.findIndex(function (x) { return x.reference === p.reference; }) === i; });
@@ -443,13 +443,25 @@
       var scaMatch = p.desc.match(/(\d{2}\s*puntos\s*SCA|\d{2}\s*SCA)/i);
       if (scaMatch) scaTag = '<span class="tag sca">' + scaMatch[0] + '</span>';
     }
+    var targetUrl = "producto.html?id=" + p.id;
+    if (p.reference === "origen-colombia" || p.reference === "origen-colombia-huila") targetUrl = "origen-colombia.html";
+    else if (p.reference === "origen-guatemala") targetUrl = "origen-guatemala.html";
+    else if (p.reference === "origen-bolivia") targetUrl = "origen-bolivia.html";
+
+    var displayName = p.referenceName;
+    if (p.collection === "origen") {
+      if (p.reference === "origen-guatemala") displayName = "Café de Especialidad Guatemala";
+      else if (p.reference === "origen-bolivia") displayName = "Café de Especialidad Bolivia";
+      else if (p.reference === "origen-colombia") displayName = "Café de Especialidad Colombia";
+    }
+
     var isSold = (window.SOLDOUT || []).indexOf(p.reference) > -1 || (window.SOLDOUT || []).indexOf(p.id) > -1;
     var actionBtn = isSold
-      ? '<a class="btn ghost sm soldout-card-btn" href="producto.html?id=' + p.id + '" aria-label="Ver producto agotado: ' + p.referenceName + '">Ver producto (Agotado)</a>'
-      : '<a class="btn ghost sm" href="producto.html?id=' + p.id + '" aria-label="Elegir presentación: ' + p.referenceName + '">Elegir presentación</a>';
-    return '<article class="prod reveal"><a class="ph" href="producto.html?id=' + p.id + '" tabindex="-1" aria-hidden="true">' +
+      ? '<a class="btn ghost sm soldout-card-btn" href="' + targetUrl + '" aria-label="Ver producto agotado: ' + displayName + '">Ver producto (Agotado)</a>'
+      : '<a class="btn ghost sm" href="' + targetUrl + '" aria-label="Elegir presentación: ' + displayName + '">Elegir presentación</a>';
+    return '<article class="prod reveal"><a class="ph" href="' + targetUrl + '" tabindex="-1" aria-hidden="true">' +
       (p.notes[0] === "Sin cafeína" ? '<span class="tag">Sin cafeína</span>' : (scaTag || "")) + (isSold ? '<span class="tag sale">Agotado</span>' : "") + (off ? '<span class="tag sale">-' + off + "%</span>" : "") +
-      '<img src="' + getProductImgUrl(p) + '" alt="" loading="lazy"></a><div class="bd"><span class="k">' + p.sub + '</span><h3><a href="producto.html?id=' + p.id + '">' + p.referenceName + '</a></h3><p class="variant-preview">' + (function(vars) {
+      '<img src="' + getProductImgUrl(p) + '" alt="" loading="lazy"></a><div class="bd"><span class="k">' + p.sub + '</span><h3><a href="' + targetUrl + '">' + displayName + '</a></h3><p class="variant-preview">' + (function(vars) {
         var sizes = vars.map(function(v){ return v.size; }).filter(function(v,i,a){ return a.indexOf(v) === i; });
         var grinds = vars.map(function(v){ return presentation(v); }).filter(Boolean).filter(function(v,i,a){ return a.indexOf(v) === i; });
         return sizes.join(" y ") + (grinds.length ? " · " + grinds.join(" o ") : "");
@@ -562,14 +574,12 @@
             '<div id="pd-roast-container">' + roastProfile(p) + '</div>' +
             '<dl class="product-facts">' +
               '<div><dt>Formato</dt><dd id="pd-fact-size">' + p.size + '</dd></div>' +
-              '<div><dt>Origen o sabor</dt><dd>' + p.sub + '</dd></div>' +
               (p.grind ? '<div><dt>Presentación</dt><dd id="pd-fact-grind">' + presentation(p) + '</dd></div>' : '') +
             '</dl>' +
             seals +
             '<details class="acc" open><summary>Perfil y descripción</summary><div class="c"><p>' + p.desc + '</p></div></details>' +
             '<details class="acc"><summary>Cómo prepararlo</summary><div class="c"><p>' + p.prep + '</p></div></details>' +
             '<details class="acc"><summary>Envíos</summary><div class="c"><p>' + window.SHIPPING_NOTE + '</p></div></details>' +
-            '<p class="notice">Fuente: catálogo minorista del cliente, ficha de la página ' + p.sourcePage + ' y precios de la página 11. IVA incluido. La imagen del PDF ilustra el producto y puede mostrar otro formato.</p>' +
           '</div>' +
         '</div>';
 
@@ -636,13 +646,13 @@
         $("#variant-summary").textContent = p.size + " · " + presentation(p) + " · " + money(p.price);
         renderBuyArea(p);
       });
-            /* Lógica de "Saber Más" (oculto por defecto, visible por café) */
+            /* Lógica de "Saber Más" (oculto por defecto, visible por café; reservado para el blog en orígenes de especialidad) */
       var stories = window.COFFEE_STORIES || {};
       var storyKey = p.reference;
       if (!stories[storyKey] && p.cat === "tradicion") storyKey = p.id.indexOf("higo") > -1 ? "cafe-de-higos" : "cafe-de-trigo";
       var story = stories[storyKey];
 
-      if (story) {
+      if (story && !isOrigin) {
         var storyHTML = '<div class="saber-mas-wrap" style="margin-top:2.5rem">' +
           '<div id="box-story" class="box-saber-mas" style="display:block;">' +
             '<span class="badge-tag cobrizo">' + story.kicker + '</span>' +

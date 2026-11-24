@@ -122,9 +122,58 @@ window.CATEGORIES = {
 };
 
 const ORIGINS = [
-  { id: "guatemala", name: "Guatemala", price: 14500, img: "catalogo-guatemala.png", short: "Notas florales, chocolate amargo, caramelo dulce y ciruela roja. Cuerpo cremoso.", desc: "Tueste medio. Proceso lavado. Bourbon y Catuai, sobre 1.500 msnm; 85 puntos SCA.", prep: "Espresso: dulce, de cuerpo intenso. Filtrados: resaltan notas frutales y florales.", methods: ["grano", "prensa", "italiana"], notes: ["100% arábica", "Tueste medio"], sourcePage: 4 },
-  { id: "bolivia", name: "Bolivia", price: 12000, img: "catalogo-bolivia.png", short: "Limón dulce, cacao dulce, caramelo suave y notas mieladas. Cuerpo redondo.", desc: "Caranavi, Los Yungas, La Paz. Tueste medio suave. Lavado con fermentación de 24 horas. Caturra y Castillo, sobre 1.450 msnm; 84 puntos SCA.", prep: "Espresso: suave, de cuerpo equilibrado. Filtrados: resaltan notas frutales y mieladas.", methods: ["grano", "prensa", "italiana"], notes: ["100% arábica", "Tueste medio suave"], sourcePage: 5 },
-  { id: "colombia", name: "Colombia", price: 13000, img: "catalogo-colombia.png", short: "Aroma intenso, miel de caña, caramelo dulce y cacao intenso. Cuerpo redondo.", desc: "Tueste medio intenso. Lavado y secado en patio. Varietal Castillo, sobre 1.600 msnm; 85 puntos SCA.", prep: "Espresso: intenso, con gran cuerpo. Cafeteras automáticas: ideal para uso diario.", methods: ["grano", "italiana", "practico"], notes: ["100% arábica", "Tueste medio intenso"], sourcePage: 6 }
+  {
+    id: "guatemala",
+    name: "Guatemala",
+    price: 13500,
+    img: "catalogo-guatemala.png",
+    short: "Azúcar morena, cacao cremoso, chocolate amargo y ciruela. Acidez delicada y cuerpo limpio.",
+    desc: "Sierra Madre, Guatemala. Proceso lavado. Bourbon y Catuaí, sobre 1.500 msnm; 85 puntos SCA.",
+    prep: "Ideal en prensa francesa o métodos de filtrado.",
+    methods: ["grano", "prensa", "filtrado"],
+    notes: ["Bourbon y Catuaí", "1.500 msnm", "Lavado", "85 SCA"],
+    roast: { label: "Medio", tone: "medio" },
+    sourcePage: 4
+  },
+  {
+    id: "bolivia",
+    name: "Bolivia",
+    price: 12000,
+    img: "catalogo-bolivia.png",
+    short: "Caramelo y miel, acidez de limón dulce y cuerpo redondo.",
+    desc: "Caranavi, Los Yungas, La Paz. Lavado con fermentación de 24 horas. Castillo y Caturra, sobre 1.450 msnm; 84 puntos SCA.",
+    prep: "Ideal para espresso y cafetera italiana (moka).",
+    methods: ["grano", "italiana", "espresso"],
+    notes: ["Castillo y Caturra", "Caramelo y miel", "1.450 msnm", "84 SCA"],
+    roast: { label: "Medio suave", tone: "suave" },
+    sourcePage: 5
+  },
+  {
+    id: "colombia",
+    name: "Colombia",
+    price: 13000,
+    img: "catalogo-colombia.png",
+    short: "Caramelo y miel de caña. Acidez balanceada y cuerpo medio envolvente.",
+    desc: "Cordillera Central, sobre 1.600 msnm. Varietal Castillo, proceso lavado; 85 puntos SCA.",
+    prep: "Ideal en prensa francesa o métodos de filtrado.",
+    methods: ["grano", "prensa", "filtrado"],
+    notes: ["Castillo", "Caramelo y miel de caña", "1.600 msnm", "85 SCA"],
+    roast: { label: "Medio intenso", tone: "intenso" },
+    sourcePage: 6
+  },
+  {
+    id: "colombia-huila",
+    name: "Colombia Huila",
+    price: 13000,
+    img: "catalogo-colombia.png",
+    short: "Caña de azúcar, chocolate de leche y mandarina. Acidez brillante (media-alta) y cuerpo redondo.",
+    desc: "Huila, Colombia. Blend de Caturra y Colombia, 1.700–1.800 msnm, proceso lavado; 86 puntos SCA.",
+    prep: "Ideal en prensa francesa o métodos de filtrado.",
+    methods: ["grano", "prensa", "filtrado"],
+    notes: ["Blend Caturra y Colombia", "1.700–1.800 msnm", "Lavado", "86 SCA"],
+    roast: { label: "Medio claro", tone: "suave" },
+    sourcePage: 6
+  }
 ];
 
 const COMPLEMENTS = [
@@ -160,13 +209,16 @@ const ASSEMBLAGES = [
 
 window.PRODUCTS = ORIGINS.flatMap(function (origin) {
   return ["grano", "molido"].map(function (grind) {
-    var presentation = grind === "grano" ? "Grano entero" : "Molienda media";
+    var presentation = grind === "grano" ? "Grano entero" : "Molido";
+    var roastTone = origin.roast ? origin.roast.tone : (origin.id === "bolivia" ? "suave" : origin.id === "colombia" ? "intenso" : "medio");
+    var roastLabel = origin.roast ? origin.roast.label : (origin.id === "bolivia" ? "Medio suave" : origin.id === "colombia" ? "Medio intenso" : "Medio");
+    var refName = origin.id === "colombia-huila" ? "Microlote Colombia · Huila (86 SCA)" : (origin.id === "guatemala" ? "Café de Especialidad Guatemala (85 SCA)" : (origin.id === "bolivia" ? "Café de Especialidad Bolivia Caranavi (84 SCA)" : "Café de Especialidad Colombia (85 SCA)"));
     return {
       id: "origen-" + origin.id + "-" + grind, reference: "origen-" + origin.id,
-      referenceName: "Café de Origen " + origin.name,
-      roast: { label: origin.id === "bolivia" ? "Medio suave" : origin.id === "colombia" ? "Medio intenso" : "Medio", tone: origin.id === "bolivia" ? "suave" : origin.id === "colombia" ? "intenso" : "medio" },
+      referenceName: refName,
+      roast: { label: roastLabel, tone: roastTone },
       cat: "especialidad", collection: "origen",
-      name: "Café de Origen " + origin.name + " · " + presentation, sub: origin.name,
+      name: (origin.id === "colombia-huila" ? "Microlote Colombia · Huila" : "Café de Especialidad " + origin.name) + " · " + presentation, sub: origin.name,
       size: "250 g", grind: grind, price: origin.price, img: origin.img,
       short: origin.short, notes: origin.notes.concat(presentation), desc: origin.desc,
       prep: origin.prep, sourcePage: origin.sourcePage,

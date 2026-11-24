@@ -234,7 +234,10 @@ function cafe_alegra_child_render_propuesta() {
 				$canonical_id  = $slug;
 				$canonical_ref = $slug;
 
-				if ( false !== strpos( $lower_name, 'guatemala' ) ) {
+				if ( false !== strpos( $lower_name, 'huila' ) || false !== strpos( $lower_name, 'microlote' ) ) {
+					$canonical_id  = 'origen-colombia-huila-grano';
+					$canonical_ref = 'origen-colombia-huila';
+				} elseif ( false !== strpos( $lower_name, 'guatemala' ) ) {
 					$canonical_id  = 'origen-guatemala-grano';
 					$canonical_ref = 'origen-guatemala';
 				} elseif ( false !== strpos( $lower_name, 'bolivia' ) ) {
@@ -271,7 +274,7 @@ function cafe_alegra_child_render_propuesta() {
 				$roast = null;
 				if ( ! empty( $roast_attr ) ) {
 					$r_clean = strtolower( trim( $roast_attr ) );
-					if ( false !== strpos( $r_clean, 'suave' ) ) {
+					if ( false !== strpos( $r_clean, 'suave' ) || false !== strpos( $r_clean, 'claro' ) ) {
 						$roast = array( 'label' => 'Medio suave', 'tone' => 'suave' );
 					} elseif ( false !== strpos( $r_clean, 'intenso' ) || false !== strpos( $r_clean, 'fuerte' ) ) {
 						$roast = array( 'label' => 'Medio intenso', 'tone' => 'intenso' );
@@ -279,7 +282,9 @@ function cafe_alegra_child_render_propuesta() {
 						$roast = array( 'label' => ucfirst( $roast_attr ), 'tone' => 'medio' );
 					}
 				} else {
-					if ( false !== strpos( $lower_name, 'bolivia' ) ) {
+					if ( false !== strpos( $lower_name, 'huila' ) || false !== strpos( $lower_name, 'microlote' ) ) {
+						$roast = array( 'label' => 'Medio claro', 'tone' => 'suave' );
+					} elseif ( false !== strpos( $lower_name, 'bolivia' ) ) {
 						$roast = array( 'label' => 'Medio suave', 'tone' => 'suave' );
 					} elseif ( false !== strpos( $lower_name, 'colombia' ) ) {
 						$roast = array( 'label' => 'Medio intenso', 'tone' => 'intenso' );
@@ -294,12 +299,14 @@ function cafe_alegra_child_render_propuesta() {
 					$notes_parts = array_map( 'trim', preg_split( '/[|,;]+/', $notes_attr ) );
 					$notes = array_values( array_filter( $notes_parts ) );
 				} else {
-					if ( false !== strpos( $lower_name, 'guatemala' ) ) {
-						$notes = array( 'Bourbon & Catuai', '1.500 msnm', 'Lavado' );
+					if ( false !== strpos( $lower_name, 'huila' ) || false !== strpos( $lower_name, 'microlote' ) ) {
+						$notes = array( 'Blend Caturra y Colombia', '1.700–1.800 msnm', 'Lavado' );
+					} elseif ( false !== strpos( $lower_name, 'guatemala' ) ) {
+						$notes = array( 'Bourbon y Catuaí', '1.500 msnm', 'Lavado' );
 					} elseif ( false !== strpos( $lower_name, 'bolivia' ) ) {
-						$notes = array( 'Caturra & Castillo', '1.450 msnm', 'Lavado' );
+						$notes = array( 'Castillo y Caturra', 'Caramelo y miel', '1.450 msnm' );
 					} elseif ( false !== strpos( $lower_name, 'colombia' ) ) {
-						$notes = array( 'Castillo', '1.600 msnm', 'Lavado' );
+						$notes = array( 'Castillo', 'Caramelo y miel de caña', '1.600 msnm' );
 					} elseif ( false !== strpos( $lower_name, 'avellana' ) ) {
 						$notes = array( 'Avellana tostada', 'Caramelo dulce', 'Cuerpo cremoso' );
 					} elseif ( false !== strpos( $lower_name, 'nuez' ) ) {
@@ -318,7 +325,18 @@ function cafe_alegra_child_render_propuesta() {
 				// 3. Formato, Molienda y Preparación
 				$format_val = $prod->get_attribute( 'formato' ) ?: ( $prod->get_attribute( 'pa_formato' ) ?: '250 g' );
 				$grind_val  = $prod->get_attribute( 'molienda' ) ?: ( $prod->get_attribute( 'pa_molienda' ) ?: ( false !== strpos( $lower_name, 'molido' ) ? 'molido' : 'grano' ) );
-				$prep_val   = $prod->get_attribute( 'preparacion' ) ?: ( $prod->get_attribute( 'pa_preparacion' ) ?: 'Ideal en cafetera moka, prensa francesa o filtrado.' );
+				$default_prep = 'Ideal en prensa francesa o métodos de filtrado.';
+				if ( false !== strpos( $lower_name, 'bolivia' ) || false !== strpos( $lower_name, 'moka' ) ) {
+					$default_prep = 'Ideal para espresso y cafetera italiana (moka).';
+				}
+				$prep_val   = $prod->get_attribute( 'preparacion' ) ?: ( $prod->get_attribute( 'pa_preparacion' ) ?: $default_prep );
+
+				$default_price = 13000;
+				if ( false !== strpos( $lower_name, 'guatemala' ) ) {
+					$default_price = 13500;
+				} elseif ( false !== strpos( $lower_name, 'bolivia' ) ) {
+					$default_price = 12000;
+				}
 
 				$wc_products_data[] = array(
 					'id'            => $canonical_id,
@@ -332,7 +350,7 @@ function cafe_alegra_child_render_propuesta() {
 					'sub'           => $name,
 					'size'          => $format_val,
 					'grind'         => $grind_val,
-					'price'         => $curr_price ?: ( $reg_price ?: 14000 ),
+					'price'         => $curr_price ?: ( $reg_price ?: $default_price ),
 					'was'           => $sale_price ? $reg_price : 0,
 					'img'           => $img_url,
 					'short'         => $short,
