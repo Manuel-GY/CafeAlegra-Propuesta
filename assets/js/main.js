@@ -787,8 +787,8 @@
     // Tarjeta para Cafés de Origen Único y Complementos
     var isSold = (window.SOLDOUT || []).indexOf(p.reference) > -1 || (window.SOLDOUT || []).indexOf(p.id) > -1;
     var actionBtn = isSold
-      ? '<a class="btn ghost sm soldout-card-btn" href="' + targetUrl + '" aria-label="Ver producto agotado: ' + displayName + '">Ver producto (Agotado)</a>'
-      : '<a class="btn ghost sm" href="' + targetUrl + '" aria-label="Elegir presentación: ' + displayName + '">Elegir presentación</a>';
+      ? '<a class="btn ghost sm soldout-card-btn block" href="' + targetUrl + '" aria-label="Ver producto agotado: ' + displayName + '">Ver producto (Agotado)</a>'
+      : '<a class="btn ghost sm block" href="' + targetUrl + '" aria-label="Elegir presentación: ' + displayName + '">Elegir presentación</a>';
 
     return '<article class="prod reveal"><a class="ph" href="' + targetUrl + '" tabindex="-1" aria-hidden="true">' +
       (p.notes[0] === "Sin cafeína" ? '<span class="tag">Sin cafeína</span>' : (scaTag || "")) + (isSold ? '<span class="tag sale">Agotado</span>' : "") + (off ? '<span class="tag sale">-' + off + "%</span>" : "") +

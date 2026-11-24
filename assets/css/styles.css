@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
+
 /* Café Alegra · Propuesta de rediseño · Sistema de diseño */
 :root{
   --espresso:#1b120c; --roast:#2c1c12; --mocha:#4a2f1e; --crema:#f7f1e8; --lino:#efe6d8; --blanco:#fffdf9;
@@ -17,14 +19,14 @@
   --rojo-huila:#bf1818;       /* Rojo Especialidad */
 }
 *,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:hidden}
-body{margin:0;font-family:var(--sans);font-weight:400;font-size:1rem;line-height:1.7;color:var(--tinta);background:var(--crema);-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:hidden;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+body{margin:0;font-family:var(--sans);font-weight:400;font-size:1rem;line-height:1.72;color:var(--tinta);background:var(--crema);-webkit-font-smoothing:antialiased}
 img,svg{max-width:100%;display:block}
 img{height:auto}
 a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.25em}
-h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.1;margin:0 0 .6em;letter-spacing:-.005em}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.15;margin:0 0 .6em;letter-spacing:-.01em;text-wrap:balance}
 h1{font-size:clamp(2.6rem,7vw,5.2rem)} h2{font-size:clamp(2rem,4.5vw,3.2rem)} h3{font-size:1.5rem} h4{font-size:1.2rem}
-p{margin:0 0 1.1em}
+p{margin:0 0 1.25em;text-wrap:pretty}
 em{font-style:italic;color:var(--oro-hondo)}
 ul{padding:0;margin:0;list-style:none}
 :focus-visible{outline:2px solid var(--oro-hondo);outline-offset:3px;border-radius:2px}
@@ -258,7 +260,7 @@ ul{padding:0;margin:0;list-style:none}
 .cat:hover img{transform:scale(1.03)}
 .cat:hover .go,.cat:focus-visible .go{opacity:1;transform:none}
 @media(hover:none){.cat .go{opacity:1;transform:none}}
-.prod{display:flex;flex-direction:column;min-width:0;background:var(--blanco);color:var(--tinta);border:1px solid transparent;transition:box-shadow .4s var(--ease),transform .4s var(--ease),border-color .4s}
+.prod{display:flex;flex-direction:column;min-width:0;background:var(--blanco);color:var(--tinta);border:1px solid transparent;border-radius:4px;transition:box-shadow .4s var(--ease),transform .4s var(--ease),border-color .4s;height:100%}
 .prod:hover{box-shadow:var(--sombra);transform:translateY(-4px);border-color:var(--linea)}
 .prod .ph {
   position: relative;
@@ -287,14 +289,14 @@ ul{padding:0;margin:0;list-style:none}
 }
 .tag{position:absolute;top:.8rem;left:.8rem;background:var(--espresso);color:var(--crema);font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;padding:.35rem .6rem;z-index:2}
 .tag.sale{left:auto;right:.8rem;background:var(--oro-hondo)}
-.prod .bd{padding:1.2rem 1.2rem 1.4rem;min-width:0;display:flex;flex-direction:column;gap:.35rem;flex:1}
+.prod .bd{padding:1.2rem 1.2rem 1.4rem;min-width:0;display:flex;flex-direction:column;gap:.35rem;flex:1 1 auto}
 .prod .k{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--oro-hondo)}
-.prod h3{font-size:1.3rem;margin:0;line-height:1.2}
-.prod h3 a{text-decoration:none}.prod h3 a:hover{color:var(--oro-hondo)}
-.prod .sm{font-size:.88rem;color:var(--suave);margin:0}
-.price{display:flex;align-items:baseline;gap:.6rem;margin-top:auto;padding-top:.6rem;font-family:var(--serif);font-size:1.45rem;font-weight:600}
+.prod h3{font-size:1.3rem;margin:0;line-height:1.25;text-wrap:balance}
+.prod h3 a{text-decoration:none;transition:color .2s ease}.prod h3 a:hover{color:var(--oro-hondo)}
+.prod .sm{font-size:.88rem;line-height:1.55;color:var(--suave);margin:0 0 .5rem;text-wrap:pretty}
+.price{display:flex;align-items:baseline;gap:.6rem;margin-top:auto;padding-top:.8rem;font-family:var(--serif);font-size:1.45rem;font-weight:600}
 .price del{font:400 .95rem var(--sans);color:var(--suave)}
-.prod .btn{margin-top:.9rem}
+.prod .btn{margin-top:.75rem}
 .empty{grid-column:1/-1;text-align:center;color:var(--suave);padding:3rem 0}
 
 /* Filtros */
@@ -1571,34 +1573,45 @@ body[data-nav="inicio"] :is(#main,#main [id]){scroll-margin-top:6rem}
 /* Especificaciones técnicas de café de especialidad y pestañas de origen */
 .specs-table {
   width: 100%;
-  border-collapse: collapse;
-  margin: 1.2rem 0 1.6rem;
-  font-size: 0.95rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1.4rem 0 1.8rem;
+  font-size: 0.94rem;
+  background: var(--blanco);
+  border: 1px solid var(--linea);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(42, 29, 20, 0.03);
 }
 .specs-table th, .specs-table td {
-  padding: 0.6rem 0.75rem;
+  padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--linea);
   text-align: left;
 }
+.specs-table tr:last-child th, .specs-table tr:last-child td {
+  border-bottom: 0;
+}
 .specs-table th {
   font-family: var(--sans);
-  font-size: 0.75rem;
+  font-size: 0.76rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--suave);
   width: 38%;
   font-weight: 500;
+  background: rgba(247, 241, 232, 0.5);
 }
 .specs-table td {
   font-weight: 500;
   color: var(--espresso);
 }
 .sensory-desc {
-  font-size: 1.05rem;
-  line-height: 1.7;
+  font-size: 1.08rem;
+  line-height: 1.72;
   color: var(--espresso);
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.3rem;
   font-weight: 400;
+  text-wrap: pretty;
 }
 .origin-tabs-nav {
   display: flex;
@@ -1654,32 +1667,34 @@ body[data-nav="inicio"] :is(#main,#main [id]){scroll-margin-top:6rem}
 .sensory-pills-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.55rem;
-  margin: 1.1rem 0;
+  gap: 0.65rem;
+  margin: 1.25rem 0;
 }
 .sensory-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  background: #fbf7f0;
-  border: 1px solid #e5d7c3;
+  gap: 0.5rem;
+  background: var(--blanco);
+  border: 1px solid #dfd1bd;
   border-radius: 999px;
-  padding: 0.35rem 0.85rem;
-  font-size: 0.85rem;
+  padding: 0.45rem 1rem;
+  font-size: 0.88rem;
   font-weight: 500;
   color: var(--espresso);
+  box-shadow: 0 1px 4px rgba(42, 29, 20, 0.04);
 }
 .sensory-pill svg, .sensory-pill .i {
-  width: 0.95rem;
-  height: 0.95rem;
+  width: 1rem;
+  height: 1rem;
   color: var(--oro-hondo);
 }
 .inspiration-box {
-  margin: 1.25rem 0 1.5rem;
-  padding: 1.1rem 1.35rem;
+  margin: 1.35rem 0 1.65rem;
+  padding: 1.3rem 1.6rem;
   border-left: 4px solid var(--box-accent, var(--cobrizo));
   background: var(--box-bg, rgba(155, 85, 43, 0.07));
-  border-radius: 0 6px 6px 0;
+  border-radius: 0 8px 8px 0;
+  box-shadow: 0 2px 8px rgba(42, 29, 20, 0.03);
 }
 .inspiration-box.nuez {
   --box-accent: #9B552B;
@@ -1695,28 +1710,31 @@ body[data-nav="inicio"] :is(#main,#main [id]){scroll-margin-top:6rem}
 }
 .inspiration-title {
   display: block;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   color: var(--box-accent);
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.45rem;
 }
 .inspiration-text {
-  font-size: 0.96rem;
-  line-height: 1.55;
+  font-size: 1.02rem;
+  line-height: 1.68;
+  font-style: italic;
   color: var(--espresso);
   margin: 0;
+  text-wrap: pretty;
 }
 .prep-callout {
-  margin: 1rem 0 1.25rem;
-  padding: 0.85rem 1.1rem;
-  background: #f6efe4;
-  border-left: 3px solid var(--oro-hondo);
-  border-radius: 0 4px 4px 0;
-  font-size: 0.92rem;
+  margin: 1.15rem 0 1.4rem;
+  padding: 1rem 1.3rem;
+  background: #f7f0e5;
+  border-left: 3.5px solid var(--oro-hondo);
+  border-radius: 0 6px 6px 0;
+  font-size: 0.95rem;
   color: var(--espresso);
-  line-height: 1.5;
+  line-height: 1.6;
+  text-wrap: pretty;
 }
 .praline-nav-destinations {
   display: grid;
