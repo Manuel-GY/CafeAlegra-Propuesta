@@ -532,6 +532,21 @@
   var pd = $("#product-detail");
   if (pd) {
     var pid = new URLSearchParams(location.search).get("id"), p = find(pid);
+    if (p && p.collection === "origen") {
+      if (p.reference === "origen-colombia") {
+        location.replace("origen-colombia.html");
+        return;
+      } else if (p.reference === "origen-colombia-huila") {
+        location.replace("origen-colombia.html#microlotes");
+        return;
+      } else if (p.reference === "origen-guatemala") {
+        location.replace("origen-guatemala.html");
+        return;
+      } else if (p.reference === "origen-bolivia") {
+        location.replace("origen-bolivia.html");
+        return;
+      }
+    }
     if (!p) {
       document.title = "Producto no encontrado · Café Alegra";
       pd.innerHTML = '<div class="cart-empty"><h1 style="font-size:2.4rem">No encontramos ese producto</h1><p>Puede que el enlace haya cambiado. Explora nuestra tienda.</p><a class="btn" href="tienda.html">Ver la tienda</a></div>';

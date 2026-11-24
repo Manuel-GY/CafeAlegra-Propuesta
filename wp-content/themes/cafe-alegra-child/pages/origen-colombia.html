@@ -266,6 +266,11 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   });
 
+  if (location.hash === "#microlotes" || location.search.indexOf("huila") > -1) {
+    var btnMicro = document.getElementById("tab-btn-microlotes");
+    if (btnMicro) btnMicro.click();
+  }
+
   // Cantidad y compra Especialidad
   var espQty = 1;
   var espOutput = document.getElementById("esp-qty");
