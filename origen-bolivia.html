@@ -159,8 +159,10 @@ document.addEventListener("DOMContentLoaded", function() {
     btnAddBol.addEventListener("click", function() {
       var sel = document.querySelector('input[name="bolivia-variant"]:checked');
       var pid = sel ? sel.value : "origen-bolivia-grano";
-      if (window.Cart && Cart.add(pid, bolQty)) {
-        if (window.toast) toast("Añadido: Café de Especialidad Bolivia (" + (pid.indexOf("grano") > -1 ? "Grano entero" : "Molido") + ') <a href="carrito.html">Ver carrito</a>');
+      var cart = window.Cart || window.CACart;
+      var showToast = window.toast || window.caToast;
+      if (cart && cart.add(pid, bolQty)) {
+        if (showToast) showToast("Añadido: Café de Especialidad Bolivia (" + (pid.indexOf("grano") > -1 ? "Grano entero" : "Molido") + ') <a href="carrito.html">Ver carrito</a>');
       }
     });
   }

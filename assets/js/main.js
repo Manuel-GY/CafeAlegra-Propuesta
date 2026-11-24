@@ -283,6 +283,7 @@
       };
     }
   };
+  window.Cart = Cart;
   window.CACart = Cart;
 
   /* ==========================================================================
@@ -398,6 +399,7 @@
     clearTimeout(toastT);
     toastT = setTimeout(function () { toastEl.classList.remove("on"); }, 3800);
   }
+  window.toast = toast;
   window.caToast = toast;
 
   /* ==========================================================================

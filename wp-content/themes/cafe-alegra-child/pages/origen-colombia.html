@@ -285,8 +285,10 @@ document.addEventListener("DOMContentLoaded", function() {
     btnAddEsp.addEventListener("click", function() {
       var sel = document.querySelector('input[name="colombia-esp-variant"]:checked');
       var pid = sel ? sel.value : "origen-colombia-grano";
-      if (window.Cart && Cart.add(pid, espQty)) {
-        if (window.toast) toast("Añadido: Café de Especialidad Colombia (" + (pid.indexOf("grano") > -1 ? "Grano entero" : "Molido") + ') <a href="carrito.html">Ver carrito</a>');
+      var cart = window.Cart || window.CACart;
+      var showToast = window.toast || window.caToast;
+      if (cart && cart.add(pid, espQty)) {
+        if (showToast) showToast("Añadido: Café de Especialidad Colombia (" + (pid.indexOf("grano") > -1 ? "Grano entero" : "Molido") + ') <a href="carrito.html">Ver carrito</a>');
       }
     });
   }
@@ -305,8 +307,10 @@ document.addEventListener("DOMContentLoaded", function() {
     btnAddMicro.addEventListener("click", function() {
       var sel = document.querySelector('input[name="colombia-micro-variant"]:checked');
       var pid = sel ? sel.value : "origen-colombia-huila-grano";
-      if (window.Cart && Cart.add(pid, microQty)) {
-        if (window.toast) toast("Añadido: Microlote Colombia Huila (' + (pid.indexOf("grano") > -1 ? "Grano entero" : "Molido") + ') <a href="carrito.html">Ver carrito</a>');
+      var cart = window.Cart || window.CACart;
+      var showToast = window.toast || window.caToast;
+      if (cart && cart.add(pid, microQty)) {
+        if (showToast) showToast("Añadido: Microlote Colombia Huila (" + (pid.indexOf("grano") > -1 ? "Grano entero" : "Molido") + ') <a href="carrito.html">Ver carrito</a>');
       }
     });
   }

@@ -251,9 +251,11 @@ document.addEventListener("DOMContentLoaded", function () {
   if (btnAdd) {
     btnAdd.addEventListener("click", function () {
       var productId = "praline-avellana-" + currentFormat;
-      if (window.Cart && Cart.add(productId, qty)) {
-        if (window.caToast) {
-          caToast("Añadido: Ensamble Praliné Avellana Chilena & Caramelo (" + currentFormat + " g) <a href=\"carrito.html\">Ver carrito</a>");
+      var cart = window.Cart || window.CACart;
+      var showToast = window.toast || window.caToast;
+      if (cart && cart.add(productId, qty)) {
+        if (showToast) {
+          showToast("Añadido: Ensamble Praliné Avellana Chilena & Caramelo (" + currentFormat + " g) <a href=\"carrito.html\">Ver carrito</a>");
         }
       }
     });

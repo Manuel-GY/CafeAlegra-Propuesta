@@ -159,8 +159,10 @@ document.addEventListener("DOMContentLoaded", function() {
     btnAddGua.addEventListener("click", function() {
       var sel = document.querySelector('input[name="guatemala-variant"]:checked');
       var pid = sel ? sel.value : "origen-guatemala-grano";
-      if (window.Cart && Cart.add(pid, guaQty)) {
-        if (window.toast) toast("Añadido: Café de Especialidad Guatemala (" + (pid.indexOf("grano") > -1 ? "Grano entero" : "Molido") + ') <a href="carrito.html">Ver carrito</a>');
+      var cart = window.Cart || window.CACart;
+      var showToast = window.toast || window.caToast;
+      if (cart && cart.add(pid, guaQty)) {
+        if (showToast) showToast("Añadido: Café de Especialidad Guatemala (" + (pid.indexOf("grano") > -1 ? "Grano entero" : "Molido") + ') <a href="carrito.html">Ver carrito</a>');
       }
     });
   }
