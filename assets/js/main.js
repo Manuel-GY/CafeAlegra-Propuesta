@@ -1,4 +1,4 @@
-/* Café Alegra · Propuesta · main.js (sin dependencias) */
+﻿/* Café Alegra · Propuesta · main.js (sin dependencias) */
 (function () {
   "use strict";
   document.documentElement.classList.add("js");
@@ -44,7 +44,7 @@
   }
   var pendingCatalogPages = ["packs.html", "set-descubrimiento.html"];
   if (pendingCatalogPages.indexOf(location.pathname.split("/").pop()) !== -1) {
-    $("#main").innerHTML = '<section class="section"><div class="wrap"><h1>Catálogo pendiente</h1><p class="lead">Esta línea no aparece en el catálogo minorista enviado. No se ofrecen productos, precios ni promociones sin respaldo del cliente.</p><a class="btn" href="tienda.html">Ver productos del catálogo actualizado</a></div></section>';
+    $("#main").innerHTML = '<section class="section"><div class="wrap"><h1>Catálogo pendiente</h1><p class="lead">Esta línea de productos se encuentra en preparación para la próxima temporada de cosecha.</p><a class="btn" href="tienda.html">Ver productos del catálogo actualizado</a></div></section>';
   }
 
   /* ---------- Iconos ---------- */
@@ -161,7 +161,7 @@
     ftr.outerHTML =
       '<footer class="site-footer"><div class="wrap"><div class="fgrid"><div>' + logo(true) +
       '<p style="margin-top:1.4rem;max-width:34ch">Tostaduría artesanal de Rancagua. Café de especialidad y cafés de tradición chilena.</p>' +
-      '<div class="social" role="group" aria-label="Redes sociales pendientes de confirmar"><span class="social-pending">' + ic("instagram") + ' Instagram</span><span class="social-pending">' + ic("facebook") + ' Facebook</span></div><p class="sm">Enlaces a redes sociales próximamente.</p></div>' +
+      '<div class="social" role="group" aria-label="Redes sociales"><a href="https://www.instagram.com/cafealegrachile/" target="_blank" rel="noopener" class="social-link" style="display:inline-flex;align-items:center;gap:6px;color:inherit;text-decoration:none;margin-right:12px;">' + ic("instagram") + ' Instagram</a><a href="https://www.facebook.com/cafealegrachile/" target="_blank" rel="noopener" class="social-link" style="display:inline-flex;align-items:center;gap:6px;color:inherit;text-decoration:none;">' + ic("facebook") + ' Facebook</a></div></div>' +
       '<div><h4>Nuestra Tienda</h4><ul><li><a href="cafe-de-especialidad.html">Café de especialidad</a></li><li><a href="cafe-de-especialidad.html#sabores-de-autor">Praliné / Sabores de Autor</a></li><li><a href="cafes-de-tradicion-chilena.html">Cafés de Nuestra Tradición</a></li><li><a href="complementos.html">Complementos cafeteros</a></li></ul></div>' +
       '<div><h4>Café Alegra</h4><ul><li><a href="index.html">Nuestra Casa de Cafés</a></li><li><a href="cafe-para-tu-negocio.html">Café para tu negocio</a></li><li><a href="cobertura.html">Cobertura y envíos</a></li><li><a href="brand-guide.html">Guía de marca</a></li></ul></div>' +
       '<div><h4>Ayuda</h4><ul><li><a href="contacto.html">Atención al cliente</a></li><li><a href="seguimiento.html">Seguimiento de pedidos</a></li><li><a href="privacidad.html">Política de privacidad</a></li><li><a href="terminos.html">Términos y condiciones</a></li><li><a href="https://wa.me/56977942117" target="_blank" rel="noopener">WhatsApp +56 9 7794 2117</a></li></ul></div></div>' +
@@ -503,7 +503,7 @@
       // Agrupar después de filtrar y ordenar conserva el enlace a una variante coincidente.
       var grouped = references(list);
       if (sortBy === "desc") grouped.sort(function (a, b) { return b.price - a.price; });
-      g.innerHTML = grouped.map(function (p) { return card(p, list.filter(function (x) { return x.reference === p.reference; })); }).join("") || '<p class="empty">No hay productos del catálogo minorista en esta selección.</p>';
+      g.innerHTML = grouped.map(function (p) { return card(p, list.filter(function (x) { return x.reference === p.reference; })); }).join("") || '<p class="empty">No hay productos disponibles en esta selección.</p>';
       if (cnt) cnt.textContent = grouped.length + (grouped.length === 1 ? " referencia" : " referencias");
       observe(g);
       if (bar) $$("[data-f]", bar).forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.f === active ? "true" : "false"); });
@@ -759,7 +759,7 @@
         e.preventDefault();
         var v = $("#cp-in").value.trim().toUpperCase(), m = $("[data-cmsg]");
         m.classList.add("show");
-        if (!window.COUPON.pct) { m.textContent = "El catálogo minorista no incluye cupones ni descuentos."; m.className = "msg show notice"; }
+        if (!window.COUPON.pct) { m.textContent = "Este código de cupón no es válido o ha expirado."; m.className = "msg show notice"; }
         else if (v === window.COUPON.code) { store.set("ca_coupon", v); document.dispatchEvent(new CustomEvent("cart:change")); }
         else { m.textContent = "Ese cupón no es válido. Prueba con " + window.COUPON.code + "."; m.className = "msg show notice"; }
       });

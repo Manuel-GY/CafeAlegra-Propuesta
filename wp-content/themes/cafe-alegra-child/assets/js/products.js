@@ -115,7 +115,7 @@ window.COFFEE_STORIES = {
   }
 };
 
-/* Fuente: catálogo minorista del cliente, páginas 4-11. Precios en CLP, IVA incluido. */
+/* Catálogo oficial Café Alegra · Precios en CLP, IVA incluido. */
 window.CATEGORIES = {
   especialidad: { name: "Cafés de origen", page: "cafe-de-especialidad.html#origenes", blurb: "Guatemala, Bolivia y Colombia" },
   autor: { name: "Colección Praliné", page: "cafe-de-especialidad.html#sabores-de-autor", blurb: "Nuez, avellana chilena y pistacho" },
