@@ -115,6 +115,9 @@ function cafe_alegra_child_resolve_propuesta_slug() {
 		'politica-de-privacidad'     => 'privacidad',
 		'terminos-y-condiciones'     => 'terminos',
 		'blog-cafe-de-trigo'         => 'articulo-cafe-de-trigo',
+		'praline-nuez'               => 'praline-nuez',
+		'praline-avellana'           => 'praline-avellana',
+		'praline-pistacho'           => 'praline-pistacho',
 	);
 	if ( isset( $aliases[ $slug ] ) && file_exists( $pages_dir . $aliases[ $slug ] . '.html' ) ) {
 		return $aliases[ $slug ];
@@ -308,11 +311,11 @@ function cafe_alegra_child_render_propuesta() {
 					} elseif ( false !== strpos( $lower_name, 'colombia' ) ) {
 						$notes = array( 'Castillo', 'Caramelo y miel de caña', '1.600 msnm' );
 					} elseif ( false !== strpos( $lower_name, 'avellana' ) ) {
-						$notes = array( 'Avellana tostada', 'Caramelo dulce', 'Cuerpo cremoso' );
+						$notes = array( 'Acidez equilibrada', 'Sabor intenso', 'Cuerpo ligero' );
 					} elseif ( false !== strpos( $lower_name, 'nuez' ) ) {
 						$notes = array( 'Nuez tostada', 'Caramelo dulce', 'Cuerpo sedoso' );
 					} elseif ( false !== strpos( $lower_name, 'pistacho' ) ) {
-						$notes = array( 'Pistacho tostado', 'Caramelo dulce', 'Amaretto gourmet' );
+						$notes = array( 'Pistacho tostado', 'Caramelo dulce', 'Notas de amaretto' );
 					} elseif ( false !== strpos( $lower_name, 'higo' ) ) {
 						$notes = array( 'Sin cafeína', '100% natural', 'VI Región' );
 					} elseif ( false !== strpos( $lower_name, 'trigo' ) ) {
@@ -328,6 +331,8 @@ function cafe_alegra_child_render_propuesta() {
 				$default_prep = 'Ideal en prensa francesa o métodos de filtrado.';
 				if ( false !== strpos( $lower_name, 'bolivia' ) || false !== strpos( $lower_name, 'moka' ) ) {
 					$default_prep = 'Ideal para espresso y cafetera italiana (moka).';
+				} elseif ( 'autor' === $cat ) {
+					$default_prep = 'Molienda media, ideal para prensa francesa y máquinas automáticas compatibles con café molido.';
 				}
 				$prep_val   = $prod->get_attribute( 'preparacion' ) ?: ( $prod->get_attribute( 'pa_preparacion' ) ?: $default_prep );
 
@@ -336,7 +341,14 @@ function cafe_alegra_child_render_propuesta() {
 					$default_price = 13500;
 				} elseif ( false !== strpos( $lower_name, 'bolivia' ) ) {
 					$default_price = 12000;
+				} elseif ( 'autor' === $cat ) {
+					$default_price = 14000;
 				}
+
+				$clean_desc = $prod->get_description() ?: $short;
+				$clean_desc = preg_replace( '/\s*Color de etiqueta.*?(#[0-9a-fA-F]{3,6}|\))/i', '', $clean_desc );
+				$clean_desc = preg_replace( '/\s*Fuente:\s*cat[áa]logo.*?\./i', '', $clean_desc );
+				$clean_desc = preg_replace( '/\s*Base de caf[ée] de Guatemala.*?(SCA|\.)/i', '', $clean_desc );
 
 				$wc_products_data[] = array(
 					'id'            => $canonical_id,
@@ -355,7 +367,7 @@ function cafe_alegra_child_render_propuesta() {
 					'img'           => $img_url,
 					'short'         => $short,
 					'notes'         => $notes,
-					'desc'          => wpautop( $prod->get_description() ?: $short ),
+					'desc'          => wpautop( $clean_desc ),
 					'prep'          => $prep_val,
 					'sourcePage'    => 1,
 				);
@@ -423,9 +435,9 @@ function cafe_alegra_subcat_nav_shortcode() {
     <div class="subcat-bar">
       <div class="wrap">
         <nav class="subcat-nav" aria-label="Navegación de subcategorías">
-          <a href="#origenes" class="subcat-link is-active">☕ Cafés de Origen Único</a>
-          <a href="#sabores-de-autor" class="subcat-link">🌰 Colección Praliné · Autor</a>
-          <a href="#calidad-especialidad" class="subcat-link">✓ ¿Qué es Especialidad?</a>
+          <a href="cafe-de-especialidad.html#origenes" class="subcat-link is-active">☕ Cafés de Origen Único</a>
+          <a href="cafe-de-especialidad.html#sabores-de-autor" class="subcat-link">🌰 Colección Praliné · Autor</a>
+          <a href="cafe-de-especialidad.html#calidad-especialidad" class="subcat-link">✓ ¿Qué es Especialidad?</a>
         </nav>
       </div>
     </div>
@@ -463,10 +475,9 @@ function cafe_alegra_praline_palette_shortcode() {
     ob_start();
     ?>
     <div class="palette-row">
-      <span class="badge-tag cobrizo">Nuez & Caramelo #9B552B</span>
-      <span class="badge-tag pistacho">Pistacho & Amaretto #507B2E</span>
-      <span class="badge-tag avellana">Avellana Chilena #9C182F</span>
-      <span class="badge-tag cardamomo">Cardamomo #C0CA80</span>
+      <span class="badge-tag cobrizo">Nuez & Caramelo</span>
+      <span class="badge-tag avellana">Avellana Chilena & Caramelo</span>
+      <span class="badge-tag pistacho">Pistacho & Caramelo · notas de amaretto</span>
     </div>
     <?php
     return ob_get_clean();
@@ -500,7 +511,7 @@ function cafe_alegra_casa_cafes_shortcode( $atts = array() ) {
           <article class="origin-card origin-praline">
             <span class="origin-kicker"><?php esc_html_e( 'Sabores de Autor', 'cafe-alegra-child' ); ?></span>
             <h3><?php esc_html_e( 'Colección Praliné', 'cafe-alegra-child' ); ?></h3>
-            <p><?php esc_html_e( 'Una línea pionera con identidad propia: ensambles de café arábica infusionados con avellanas chilenas tostadas, nuez, caramelo dulce y cardamomo aromático.', 'cafe-alegra-child' ); ?></p>
+            <p><?php esc_html_e( 'Una línea pionera con identidad propia: ensambles de café arábica combinados con frutos secos reales cuidadosamente tostados y molidos: avellana chilena, nuez y pistacho con notas de amaretto.', 'cafe-alegra-child' ); ?></p>
           </article>
         </div>
       </div>

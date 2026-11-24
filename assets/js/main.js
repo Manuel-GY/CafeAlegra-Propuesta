@@ -447,12 +447,25 @@
     if (p.reference === "origen-colombia" || p.reference === "origen-colombia-huila") targetUrl = "origen-colombia.html";
     else if (p.reference === "origen-guatemala") targetUrl = "origen-guatemala.html";
     else if (p.reference === "origen-bolivia") targetUrl = "origen-bolivia.html";
+    else if (p.collection === "autor") targetUrl = "praline-" + p.reference.replace("praline-", "") + ".html";
 
     var displayName = p.referenceName;
     if (p.collection === "origen") {
       if (p.reference === "origen-guatemala") displayName = "Café de Especialidad Guatemala";
       else if (p.reference === "origen-bolivia") displayName = "Café de Especialidad Bolivia";
       else if (p.reference === "origen-colombia") displayName = "Café de Especialidad Colombia";
+    }
+
+    if (p.collection === "autor") {
+      var amarettoSub = p.reference === "praline-pistacho" ? '<span class="praline-card-sub">con notas de amaretto</span>' : '';
+      return '<article class="prod reveal"><a class="ph" href="' + targetUrl + '" tabindex="-1" aria-hidden="true">' +
+        '<span class="tag">Frutos secos reales</span>' +
+        '<img src="' + getProductImgUrl(p) + '" alt="' + p.name + '" loading="lazy"></a><div class="bd">' +
+        '<span class="k">Ensamble de Autor</span><h3><a href="' + targetUrl + '">' + displayName + '</a>' + amarettoSub + '</h3>' +
+        '<p class="sm">' + p.short + '</p>' +
+        '<div style="margin-top:auto;padding-top:1.1rem">' +
+          '<a class="btn ghost sm block" href="' + targetUrl + '">Ver ficha y formatos →</a>' +
+        '</div></div></article>';
     }
 
     var isSold = (window.SOLDOUT || []).indexOf(p.reference) > -1 || (window.SOLDOUT || []).indexOf(p.id) > -1;
@@ -546,6 +559,12 @@
         location.replace("origen-bolivia.html");
         return;
       }
+    } else if (p && p.collection === "autor") {
+      var blendSlug = p.reference.replace("praline-", "");
+      var targetPraline = "praline-" + blendSlug + ".html";
+      if (p.size === "100 g") targetPraline += "#formato-100";
+      location.replace(targetPraline);
+      return;
     }
     if (!p) {
       document.title = "Producto no encontrado · Café Alegra";
@@ -880,4 +899,46 @@
     var d = new FormData(f), t = "Hola, soy " + d.get("n") + ". Busco: " + d.get("q") + "." + (d.get("m") ? " " + d.get("m") : "");
     window.open("https://wa.me/" + NUM + "?text=" + encodeURIComponent(t), "_blank", "noopener");
   });
+})();
+
+/* Manejador seguro de scroll y navegación para pestañas de colección (compatible con <base href>) */
+(function () {
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest("a");
+    if (!link) return;
+    var href = link.getAttribute("href");
+    if (!href) return;
+    var isSpecPage = location.pathname.indexOf("cafe-de-especialidad") > -1;
+    var isHashOnly = href.startsWith("#");
+    var isSpecHash = href.indexOf("cafe-de-especialidad.html#") > -1;
+
+    if ((isSpecPage && (isHashOnly || isSpecHash)) || (href.startsWith("#") && !isSpecPage)) {
+      var hash = href.split("#")[1];
+      if (hash) {
+        var targetEl = document.getElementById(hash);
+        if (targetEl) {
+          e.preventDefault();
+          history.pushState(null, "", "#" + hash);
+          targetEl.scrollIntoView({ behavior: "smooth" });
+          document.querySelectorAll(".subcat-link").forEach(function (l) {
+            var lhref = l.getAttribute("href") || "";
+            l.classList.toggle("is-active", lhref.indexOf("#" + hash) > -1);
+          });
+        }
+      }
+    }
+  });
+
+  if (location.pathname.indexOf("cafe-de-especialidad") > -1 && location.hash) {
+    setTimeout(function () {
+      var initialEl = document.getElementById(location.hash.substring(1));
+      if (initialEl) {
+        initialEl.scrollIntoView({ behavior: "smooth" });
+        document.querySelectorAll(".subcat-link").forEach(function (l) {
+          var lhref = l.getAttribute("href") || "";
+          l.classList.toggle("is-active", lhref.indexOf(location.hash) > -1);
+        });
+      }
+    }, 150);
+  }
 })();

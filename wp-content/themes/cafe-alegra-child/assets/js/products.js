@@ -45,45 +45,46 @@ window.COFFEE_STORIES = {
   },
   "praline-avellana": {
     title: "Historia de Autor · Avellana Chilena & Caramelo",
-    kicker: "Línea Praliné · Sabores de Autor",
-    lead: "El encuentro entre la excelencia del grano arábica y la avellana tostada del sur de Chile.",
-    body: "Diseñado en la tostaduría de Rancagua, este ensamble pionero une una base de café de especialidad de Guatemala (85 SCA sobre 1.500 msnm) con avellanas chilenas seleccionadas y tostadas a punto exacto. El caramelo dulce funde los ingredientes en una textura sedosa y profunda, con un retrogusto rústico y memorable.",
+    kicker: "Historia de Autor · Tostaduría en Rancagua",
+    lead: "El carácter rústico, auténtico y noble del bosque chileno.",
+    body: "Desde los bosques de Chile llega el carácter de la avellana chilena: auténtica, rústica y llena de fuerza. En Café Alegra trabajamos avellanas chilenas reales, cuidadosamente tostadas y molidas, para crear un ensamble que invita a concentrarse y avanzar con decisión. Avellana Chilena & Caramelo acompaña esos instantes en que hace falta claridad, firmeza y confianza para elegir el próximo camino.",
     facts: [
-      { k: "Concepto", v: "Ensamble de Autor con identidad chilena" },
-      { k: "Base de Café", v: "Guatemala Lavado 85 SCA sobre 1.500 msnm" },
-      { k: "Fruto Seco", v: "Avellana chilena tostada artesanalmente" },
-      { k: "Color de Etiqueta", v: "#9C182F (Rojo Borgoña)" },
-      { k: "Preparación ideal", v: "Prensa francesa o Moka italiana" }
+      { k: "Concepto", v: "Ensamble de Autor con avellanas chilenas reales" },
+      { k: "Variedad", v: "100% arábica tostado y molido en Rancagua" },
+      { k: "Formatos", v: "100 g ($7.000) y 250 g ($14.000)" },
+      { k: "Molienda", v: "Media, para prensa francesa y cafeteras automáticas" },
+      { k: "Tueste", v: "Medio-medio artesanal" }
     ],
-    articleUrl: "articulo-que-es-cafe-de-especialidad.html"
+    articleUrl: "praline-avellana.html"
   },
   "praline-nuez": {
-    title: "Historia de Autor · Nuez & Caramelo",
-    kicker: "Línea Praliné · Sabores de Autor",
-    lead: "La calidez de la nuez del valle de O'Higgins con café de especialidad.",
-    body: "La VI Región es reconocida por sus generosos nogales. En Café Alegra tostamos suavemente las nueces para extraer sus aceites aromáticos naturales y fundirlos con el caramelo y el café arábica. El resultado es un café equilibrado, con textura sedosa, aroma limpio y una elegancia que resalta en preparaciones filtradas o prensa.",
+    title: "Historia de Autor · «La calidez del encuentro»",
+    kicker: "Historia de Autor · Tostaduría en Rancagua",
+    lead: "Un café elegante y acogedor para compartir, escuchar y disfrutar sin prisa.",
+    body: "Nuez & Caramelo nace de esos momentos en que el tiempo parece detenerse: una conversación que se prolonga, la compañía de quienes queremos, un libro abierto o la música de fondo. En Café Alegra trabajamos nueces reales, cuidadosamente preparadas y molidas, para crear junto al café de especialidad y el caramelo un ensamble cálido, elegante y acogedor. Un café para compartir, escuchar y disfrutar sin prisa.",
     facts: [
-      { k: "Concepto", v: "Ensamble de Autor con frutos del valle central" },
-      { k: "Base de Café", v: "Guatemala Lavado 85 SCA sobre 1.500 msnm" },
-      { k: "Ingrediente", v: "Nuez seleccionada y tostada" },
-      { k: "Color de Etiqueta", v: "#9B552B (Cobrizo / Terracota)" },
-      { k: "Perfil", v: "Aroma suave, cuerpo sedoso y final redondo" }
+      { k: "Concepto", v: "Ensamble de Autor con nueces reales" },
+      { k: "Variedad", v: "100% arábica tostado y molido en Rancagua" },
+      { k: "Formatos", v: "100 g ($7.000) y 250 g ($14.000)" },
+      { k: "Molienda", v: "Media, para prensa francesa y cafeteras automáticas" },
+      { k: "Tueste", v: "Medio-medio artesanal" }
     ],
-    articleUrl: "articulo-que-es-cafe-de-especialidad.html"
+    articleUrl: "praline-nuez.html"
   },
   "praline-pistacho": {
-    title: "Historia de Autor · Pistacho, Amaretto & Caramelo",
-    kicker: "Línea Praliné · Sabores de Autor",
-    lead: "Una creación sensorial exótica y festiva para ocasiones especiales.",
-    body: "Una de las recetas más distintivas de la colección Praliné: pistachos tostados combinados con el dulzor envolvente del caramelo y un toque de amaretto gourmet. Cada taza despliega una complejidad aromática sorprendente sin ocultar la nobleza del grano arábica.",
+    title: "Historia de Autor · «La alegría de compartir»",
+    kicker: "Historia de Autor · Tostaduría en Rancagua",
+    lead: "Un ensamble brillante, alegre y expresivo con delicadas notas de amaretto.",
+    body: "Hay cafés que acompañan el silencio y otros que despiertan conversaciones. Pistacho & Caramelo nace para compartir la alegría de estar juntos. En Café Alegra seleccionamos y trabajamos pistachos reales, que incorporamos artesanalmente al café de especialidad junto al caramelo. Sus delicadas notas de amaretto completan una creación brillante, alegre y expresiva. Un ensamble pensado para las reuniones entre amigos, las celebraciones espontáneas y esos momentos sencillos que se transforman en recuerdos especiales.",
     facts: [
-      { k: "Concepto", v: "Ensamble Gourmet de Autor" },
-      { k: "Base de Café", v: "Guatemala Lavado 85 SCA sobre 1.500 msnm" },
-      { k: "Ingredientes", v: "Pistacho tostado, amaretto y caramelo" },
-      { k: "Color de Etiqueta", v: "#507B2E (Verde Pistacho vivo)" },
-      { k: "Perfil", v: "Sabor intenso, final largo y envolvente" }
+      { k: "Concepto", v: "Ensamble de Autor con pistachos reales" },
+      { k: "Variedad", v: "100% arábica tostado y molido en Rancagua" },
+      { k: "Notas aromáticas", v: "Caramelo y notas de amaretto (sin alcohol)" },
+      { k: "Formatos", v: "100 g ($7.000) y 250 g ($14.000)" },
+      { k: "Molienda", v: "Media, para prensa francesa y cafeteras automáticas" },
+      { k: "Tueste", v: "Medio-medio artesanal" }
     ],
-    articleUrl: "articulo-que-es-cafe-de-especialidad.html"
+    articleUrl: "praline-pistacho.html"
   },
   "cafe-de-higos": {
     title: "Historia Campesina · El Café de Higos",
@@ -117,7 +118,7 @@ window.COFFEE_STORIES = {
 /* Fuente: catálogo minorista del cliente, páginas 4-11. Precios en CLP, IVA incluido. */
 window.CATEGORIES = {
   especialidad: { name: "Cafés de origen", page: "cafe-de-especialidad.html#origenes", blurb: "Guatemala, Bolivia y Colombia" },
-  autor: { name: "Ensambles Praliné", page: "cafe-de-especialidad.html#sabores-de-autor", blurb: "Avellana, nuez y pistacho" },
+  autor: { name: "Colección Praliné", page: "cafe-de-especialidad.html#sabores-de-autor", blurb: "Nuez, avellana chilena y pistacho" },
   complementos: { name: "Complementos cafeteros", page: "complementos.html", blurb: "Prensas, teteras y cafeteras" }
 };
 
@@ -202,9 +203,52 @@ const COMPLEMENTS = [
 ];
 
 const ASSEMBLAGES = [
-  { id: "avellana", name: "Avellana & Caramelo", img: "catalogo-avellana.png", short: "Avellana tostada, caramelo dulce, perfil intenso y final rústico. Cuerpo cremoso.", desc: "La avellana chilena se une al dulzor del caramelo para crear una taza cálida y llena de personalidad.", prep: "Prensa francesa: cremoso y aromático. Moka italiana: profundo y persistente. Espresso: cremoso.", flavor: "nueces", methods: ["prensa", "italiana"], sourcePage: 8 },
-  { id: "nuez", name: "Nuez & Caramelo", img: "catalogo-nuez.png", short: "Nuez tostada, caramelo dulce, aroma suave y final redondo. Cuerpo sedoso.", desc: "Los aceites naturales de la nuez aportan una textura sedosa y un aroma suave.", prep: "Prensa francesa: textura sedosa y redonda. Espresso suave: equilibrio y elegancia. Filtrados: aroma limpio y delicado.", flavor: "nueces", methods: ["prensa", "italiana"], sourcePage: 9 },
-  { id: "pistacho", name: "Pistacho, Amaretto & Caramelo", img: "catalogo-pistacho.png", short: "Pistacho tostado, caramelo dulce, amaretto gourmet y final exótico. Sabor intenso.", desc: "Una combinación donde el amaretto y el caramelo potencian el toque gourmet del pistacho.", prep: "Filtrados: aromas más complejos. Prensa francesa: final largo y envolvente. Espresso: intensidad gourmet.", flavor: "exotico", methods: ["prensa", "italiana"], sourcePage: 10 }
+  {
+    id: "nuez",
+    name: "Nuez & Caramelo",
+    fullName: "Ensamble Praliné Nuez & Caramelo",
+    img: "catalogo-nuez.png",
+    short: "Notas de nuez tostada y caramelo, con un cuerpo redondo y sedoso.",
+    desc: "Nuez & Caramelo nace de esos momentos en que el tiempo parece detenerse. En Café Alegra trabajamos nueces reales, cuidadosamente preparadas y molidas, para crear junto al café de especialidad y el caramelo un ensamble cálido, elegante y acogedor.",
+    prep: "Molienda media, ideal para prensa francesa y máquinas automáticas compatibles con café molido.",
+    roast: { label: "Tueste: medio-medio", tone: "medio" },
+    sensoryNotes: ["Nuez tostada", "Caramelo dulce", "Cuerpo sedoso"],
+    inspirationTitle: "La calidez del encuentro",
+    inspirationText: "Un café elegante y acogedor, para conversaciones sin prisa, un buen libro, escuchar música o disfrutar de quienes queremos.",
+    flavor: "nueces",
+    methods: ["prensa", "filtrado"]
+  },
+  {
+    id: "avellana",
+    name: "Avellana Chilena & Caramelo",
+    fullName: "Ensamble Praliné Avellana Chilena & Caramelo",
+    img: "catalogo-avellana.png",
+    short: "Notas de avellana chilena tostada y caramelo, con acidez equilibrada, sabor intenso y cuerpo ligero. Un café de carácter rústico, fuerte y decidido.",
+    desc: "Desde los bosques de Chile llega el carácter de la avellana chilena: auténtica, rústica y llena de fuerza. En Café Alegra trabajamos avellanas chilenas reales, cuidadosamente tostadas y molidas, para crear un ensamble que invita a concentrarse y avanzar con decisión.",
+    prep: "Molienda media, ideal para prensa francesa y máquinas automáticas compatibles con café molido.",
+    roast: { label: "Tueste: medio-medio", tone: "medio" },
+    sensoryNotes: ["Acidez equilibrada", "Sabor intenso", "Cuerpo ligero"],
+    inspirationTitle: "El carácter de decidir",
+    inspirationText: "Un café inspirado en la fuerza del bosque chileno y la nobleza de la avellana. Ideal para momentos de concentración, nuevos proyectos y decisiones importantes.",
+    flavor: "nueces",
+    methods: ["prensa", "filtrado"]
+  },
+  {
+    id: "pistacho",
+    name: "Pistacho & Caramelo",
+    subtitle: "con notas de amaretto",
+    fullName: "Ensamble Praliné Pistacho & Caramelo",
+    img: "catalogo-pistacho.png",
+    short: "Notas de pistacho tostado y caramelo, con delicados matices de amaretto. Un ensamble expresivo y envolvente, de personalidad alegre y luminosa.",
+    desc: "Hay cafés que acompañan el silencio y otros que despiertan conversaciones. En Café Alegra seleccionamos y trabajamos pistachos reales, que incorporamos artesanalmente al café de especialidad junto al caramelo y delicadas notas de amaretto.",
+    prep: "Molienda media, ideal para prensa francesa y máquinas automáticas compatibles con café molido.",
+    roast: { label: "Tueste: medio-medio", tone: "medio" },
+    sensoryNotes: ["Pistacho tostado", "Caramelo dulce", "Notas de amaretto"],
+    inspirationTitle: "La alegría de compartir",
+    inspirationText: "Un café brillante y alegre, para reuniones de amigos, celebraciones y momentos que se disfrutan en buena compañía.",
+    flavor: "exotico",
+    methods: ["prensa", "filtrado"]
+  }
 ];
 
 window.PRODUCTS = ORIGINS.flatMap(function (origin) {
@@ -229,20 +273,24 @@ window.PRODUCTS = ORIGINS.flatMap(function (origin) {
   return [100, 250].map(function (weight) {
     return {
       id: "praline-" + blend.id + "-" + weight, reference: "praline-" + blend.id,
-      referenceName: "Ensamble Praliné " + blend.name, cat: "autor", collection: "autor",
-      name: "Ensamble Praliné " + blend.name, sub: blend.name, size: weight + " g",
+      referenceName: blend.fullName, cat: "autor", collection: "autor",
+      name: blend.fullName, sub: blend.name, size: weight + " g",
       grind: "molido", price: weight === 100 ? 7000 : 14000, img: blend.img,
-      short: blend.short, notes: ["100% arábica", "Molido", "Base de Guatemala"],
-      desc: blend.desc + " Base de café de Guatemala, proceso lavado, sobre 1.500 msnm; 85 puntos SCA.",
-      prep: blend.prep, sourcePage: blend.sourcePage,
+      short: blend.short, notes: ["100% arábica", "Molido (" + weight + " g)", "Frutos secos reales"],
+      desc: blend.desc,
+      prep: blend.prep,
+      roast: blend.roast,
+      sensoryNotes: blend.sensoryNotes,
+      inspirationTitle: blend.inspirationTitle,
+      inspirationText: blend.inspirationText,
       q: { caf: 1, sabor: blend.flavor, met: blend.methods, regalo: 0 }
     };
   });
 })).concat(COMPLEMENTS);
 window.SHIPPING_NOTE = "Despachos a todo Chile mediante Blue Express. Las tarifas de envío se calculan según región y comuna en el checkout. No aplica despacho gratuito.";
 window.FREE_SHIP = null;
-// Demostración del estado "Agotado": en el sitio real se activa desde WooCommerce.
-window.SOLDOUT = ["praline-pistacho"];
+// Todos los productos disponibles
+window.SOLDOUT = [];
 window.COUPON = { code: "MIPRIMERCAFE", pct: 0 };
 window.money = n => "$" + Math.round(n).toLocaleString("es-CL");
 window.findProduct = id => window.PRODUCTS.find(p => p.id === id);
