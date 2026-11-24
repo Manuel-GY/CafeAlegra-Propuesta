@@ -1779,3 +1779,157 @@ body[data-nav="inicio"] :is(#main,#main [id]){scroll-margin-top:6rem}
   font-size: 0.82rem;
   color: var(--suave);
 }
+
+/* ==========================================================================
+   Checkout en Modo de Prueba: Blue Express y Webpay Plus (Sandbox)
+   ========================================================================== */
+.checkout-box {
+  background: var(--blanco);
+  border: 1px solid var(--linea);
+  border-radius: 6px;
+  padding: 1.4rem 1.6rem;
+  margin-top: 1.5rem;
+}
+.checkout-box-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 1.1rem;
+  flex-wrap: wrap;
+}
+.checkout-box-title h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-family: var(--serif);
+  color: var(--espresso);
+}
+.test-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.65rem;
+  border-radius: 4px;
+}
+.test-badge.blue {
+  background: #e8f0fe;
+  color: #1967d2;
+  border: 1px solid #c2d7fb;
+}
+.test-badge.green {
+  background: #e6f4ea;
+  color: #137333;
+  border: 1px solid #ceead6;
+}
+.test-badge.amber {
+  background: #fef7e0;
+  color: #b06000;
+  border: 1px solid #f9e19d;
+}
+.shipping-calc-grid {
+  display: grid;
+  gap: 0.9rem;
+}
+@media(min-width:640px){
+  .shipping-calc-grid {
+    grid-template-columns: 1.2fr 1fr;
+  }
+}
+.shipping-rate-result {
+  margin-top: 1rem;
+  padding: 0.9rem 1.1rem;
+  background: #fbf7f0;
+  border: 1px solid #dfd1bd;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.92rem;
+}
+.shipping-rate-result strong {
+  color: var(--espresso);
+  font-size: 1.05rem;
+}
+.payment-methods-grid {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 0.8rem;
+}
+.payment-method-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.1rem;
+  border: 1.5px solid var(--oro-hondo);
+  background: #fffdf9;
+  border-radius: 4px;
+}
+.payment-method-card span {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--espresso);
+}
+.payment-icons-row {
+  display: flex;
+  gap: 0.45rem;
+  font-size: 0.72rem;
+  color: var(--suave);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.webpay-modal-sim {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+}
+.webpay-modal-sim .spinner {
+  width: 44px;
+  height: 44px;
+  border: 3px solid rgba(185, 138, 62, 0.2);
+  border-top-color: var(--oro-hondo);
+  border-radius: 50%;
+  animation: ca-spin 0.8s linear infinite;
+  margin: 0 auto 1.5rem;
+}
+@keyframes ca-spin {
+  to { transform: rotate(360deg); }
+}
+.voucher-receipt {
+  background: var(--blanco);
+  border: 1px solid #dfd1bd;
+  border-radius: 6px;
+  padding: 1.8rem;
+  max-width: 600px;
+  margin: 1.5rem auto 0;
+  text-align: left;
+  box-shadow: 0 4px 14px rgba(42, 29, 20, 0.05);
+}
+.voucher-receipt table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2rem 0;
+  font-size: 0.92rem;
+}
+.voucher-receipt th, .voucher-receipt td {
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid var(--linea);
+}
+.voucher-receipt th {
+  color: var(--suave);
+  font-weight: 400;
+  width: 45%;
+}
+.voucher-receipt td {
+  color: var(--espresso);
+  font-weight: 600;
+  text-align: right;
+}

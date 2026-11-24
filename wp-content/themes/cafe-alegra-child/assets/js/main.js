@@ -1081,22 +1081,141 @@
   }
 
   /* ==========================================================================
-   * 14. PÁGINA COMPLETA DE CARRITO Y PAGO (Checkout Flow)
+   * 14. PÁGINA COMPLETA DE CARRITO Y PAGO (Checkout Flow en Modo de Prueba)
    * ==========================================================================
+   * Simula el cálculo de despacho con Blue Express por región de Chile y la
+   * pasarela Webpay Plus de Transbank en modo sandbox (sin cobro real),
+   * permitiendo probar el flujo de compra completo de forma segura.
    */
   var cp = $("#cart-page");
   if (cp) {
+    var CHILE_REGIONS = [
+      { id: "ohiggins", name: "Región de O'Higgins (Rancagua y comunas)", cost: 3200, time: "1 a 2 días hábiles" },
+      { id: "rm", name: "Región Metropolitana de Santiago", cost: 3800, time: "1 a 2 días hábiles" },
+      { id: "valparaiso", name: "Región de Valparaíso", cost: 4200, time: "2 a 3 días hábiles" },
+      { id: "maule", name: "Región del Maule", cost: 4200, time: "2 a 3 días hábiles" },
+      { id: "biobio", name: "Región del Biobío", cost: 4500, time: "2 a 3 días hábiles" },
+      { id: "nuble", name: "Región de Ñuble", cost: 4500, time: "2 a 3 días hábiles" },
+      { id: "araucania", name: "Región de La Araucanía", cost: 4800, time: "2 a 4 días hábiles" },
+      { id: "los-rios", name: "Región de Los Ríos", cost: 4800, time: "2 a 4 días hábiles" },
+      { id: "los-lagos", name: "Región de Los Lagos", cost: 5200, time: "3 a 5 días hábiles" },
+      { id: "coquimbo", name: "Región de Coquimbo", cost: 4500, time: "2 a 3 días hábiles" },
+      { id: "atacama", name: "Región de Atacama", cost: 5200, time: "3 a 5 días hábiles" },
+      { id: "antofagasta", name: "Región de Antofagasta", cost: 5500, time: "3 a 5 días hábiles" },
+      { id: "tarapaca", name: "Región de Tarapacá", cost: 5800, time: "3 a 5 días hábiles" },
+      { id: "arica", name: "Región de Arica y Parinacota", cost: 6200, time: "4 a 6 días hábiles" },
+      { id: "aysen", name: "Región de Aysén", cost: 6500, time: "4 a 7 días hábiles" },
+      { id: "magallanes", name: "Región de Magallanes", cost: 6800, time: "4 a 7 días hábiles" }
+    ];
+
+    var selectedRegionId = store.get("ca_test_region", "ohiggins");
+
     var renderCart = function () {
       var items = Cart.items(), t = Cart.totals();
       if (!items.length && !cp.dataset.done) {
         cp.innerHTML = '<div class="cart-empty"><h2>Tu carrito está vacío</h2><p>Aún no has agregado productos a tu pedido. ¡Es un buen momento para hacer un pedido!</p><a class="btn" href="tienda.html">Explorar productos</a></div>';
         return;
       }
-      cp.innerHTML = '<div class="cart-wrap"><div>' + shipBar(t) + items.map(function (i) { return lineHTML(i); }).join("") + '<p style="margin-top:1.5rem"><a class="link" href="tienda.html">Seguir comprando</a></p></div>' +
-        '<aside class="sum" aria-label="Resumen del pedido"><h2 style="font-size:1.6rem">Resumen</h2><form class="coupon" data-coupon><label class="sr-only" for="cp-in">Código de cupón</label><input id="cp-in" placeholder="Código de cupón" autocomplete="off" value="' + (Cart.coupon() || "") + '"><button class="btn sm ghost" type="submit">Aplicar</button></form><p class="msg" data-cmsg role="status"></p>' +
-        '<dl><div class="r"><dt>Subtotal</dt><dd style="margin:0">' + money(t.sub) + "</dd></div>" + (t.disc ? '<div class="r"><dt>Cupón ' + window.COUPON.code + " (-" + window.COUPON.pct + '%)</dt><dd style="margin:0">-' + money(t.disc) + "</dd></div>" : "") +
-        '<div class="r"><dt>Envío</dt><dd style="margin:0">' + "Se calcula al pagar" + '</dd></div><div class="r t"><dt>Total</dt><dd style="margin:0">' + money(t.net) + '</dd></div></dl><button class="btn block" type="button" data-checkout>Finalizar compra</button><p style="font-size:.8rem;color:var(--suave);margin:1rem 0 0">' + ic("lock") + ' Pago 100% seguro con Webpay Plus y Transbank.</p></aside></div>';
 
+      var currentRegion = CHILE_REGIONS.find(function (r) { return r.id === selectedRegionId; }) || CHILE_REGIONS[0];
+      var shipCost = currentRegion.cost;
+      var grandTotal = Math.max(0, t.net + shipCost);
+
+      var regionOptionsHTML = CHILE_REGIONS.map(function (reg) {
+        return '<option value="' + reg.id + '"' + (reg.id === currentRegion.id ? ' selected' : '') + '>' + reg.name + ' (' + money(reg.cost) + ')</option>';
+      }).join("");
+
+      cp.innerHTML =
+        '<div class="cart-wrap">' +
+          '<div>' +
+            items.map(function (i) { return lineHTML(i); }).join("") +
+            '<p style="margin-top:1.5rem"><a class="link" href="tienda.html">← Seguir comprando en la tienda</a></p>' +
+
+            // Bloque 1: Despacho Blue Express (Modo de prueba)
+            '<div class="checkout-box">' +
+              '<div class="checkout-box-title">' +
+                '<h3>🚚 Despacho a Domicilio · Blue Express</h3>' +
+                '<span class="test-badge blue">Modo de prueba</span>' +
+              '</div>' +
+              '<p style="font-size:.9rem;color:var(--suave);margin:0 0 1rem;line-height:1.5">' +
+                'Simulación de cálculo de despacho según tarifas oficiales de Blue Express. Las tarifas finales se cotizarán en línea al conectar la API.' +
+              '</p>' +
+              '<div class="shipping-calc-grid">' +
+                '<div>' +
+                  '<label for="ship-region-sel" style="font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;display:block;margin-bottom:.4rem">Región de entrega</label>' +
+                  '<select id="ship-region-sel" style="padding:.75rem .9rem;font:inherit;width:100%;border:1px solid var(--linea);border-radius:4px;background:var(--blanco);color:var(--espresso)">' +
+                    regionOptionsHTML +
+                  '</select>' +
+                '</div>' +
+                '<div>' +
+                  '<label for="ship-comuna-in" style="font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;display:block;margin-bottom:.4rem">Comuna</label>' +
+                  '<input id="ship-comuna-in" placeholder="Ej: Rancagua, Machalí, Santiago..." value="Rancagua" style="padding:.75rem .9rem;font:inherit;width:100%;border:1px solid var(--linea);border-radius:4px;background:var(--blanco);color:var(--espresso)">' +
+                '</div>' +
+              '</div>' +
+              '<div class="shipping-rate-result">' +
+                '<div>' +
+                  '<strong style="display:block;color:var(--espresso)">Blue Express · Entrega a domicilio</strong>' +
+                  '<small style="color:var(--suave)">Tiempo de entrega estimado: ' + currentRegion.time + '</small>' +
+                '</div>' +
+                '<strong>' + money(shipCost) + '</strong>' +
+              '</div>' +
+            '</div>' +
+
+            // Bloque 2: Pasarela de Pago Webpay Plus (Modo de prueba / Sandbox)
+            '<div class="checkout-box">' +
+              '<div class="checkout-box-title">' +
+                '<h3>💳 Medio de Pago · Webpay Plus Transbank</h3>' +
+                '<span class="test-badge green">Sandbox / Sin cobro real</span>' +
+              '</div>' +
+              '<p style="font-size:.9rem;color:var(--suave);margin:0 0 1rem;line-height:1.5">' +
+                'Ambiente de prueba habilitado. Puedes simular el proceso de pago y recibir el comprobante de prueba sin ningún cargo a tu cuenta bancaria.' +
+              '</p>' +
+              '<div class="payment-methods-grid">' +
+                '<div class="payment-method-card">' +
+                  '<span>' + ic("lock") + ' Webpay Plus (Crédito, Débito, Prepago)</span>' +
+                  '<div class="payment-icons-row">' +
+                    '<span>Redcompra</span> · <span>Visa</span> · <span>Mastercard</span>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+              '<small style="color:var(--suave);display:block;margin-top:.7rem">🔒 Conexión cifrada de prueba con protocolo seguro Transbank.</small>' +
+            '</div>' +
+          '</div>' +
+
+          // Columna Derecha: Resumen Financiero del Pedido
+          '<aside class="sum" aria-label="Resumen del pedido">' +
+            '<h2 style="font-size:1.6rem">Resumen</h2>' +
+            '<form class="coupon" data-coupon>' +
+              '<label class="sr-only" for="cp-in">Código de cupón</label>' +
+              '<input id="cp-in" placeholder="Código de cupón" autocomplete="off" value="' + (Cart.coupon() || "") + '">' +
+              '<button class="btn sm ghost" type="submit">Aplicar</button>' +
+            '</form>' +
+            '<p class="msg" data-cmsg role="status"></p>' +
+            '<dl>' +
+              '<div class="r"><dt>Subtotal</dt><dd style="margin:0">' + money(t.sub) + '</dd></div>' +
+              (t.disc ? '<div class="r"><dt>Cupón ' + window.COUPON.code + ' (-' + window.COUPON.pct + '%)</dt><dd style="margin:0">-' + money(t.disc) + '</dd></div>' : '') +
+              '<div class="r"><dt>Envío (Blue Express)</dt><dd style="margin:0">' + money(shipCost) + '</dd></div>' +
+              '<div class="r t"><dt>Total</dt><dd style="margin:0">' + money(grandTotal) + '</dd></div>' +
+            '</dl>' +
+            '<button class="btn block gold" type="button" data-checkout>Pagar con Webpay Plus (Prueba)</button>' +
+            '<div style="margin-top:1.1rem;padding-top:1rem;border-top:1px dashed var(--linea);font-size:.82rem;color:var(--suave);line-height:1.45">' +
+              '<span class="test-badge amber" style="margin-bottom:.4rem;display:inline-block">Modo de prueba activo</span><br>' +
+              'Flujo demostrativo. Podrás revisar el voucher generado y hacer seguimiento del pedido en línea.' +
+            '</div>' +
+          '</aside>' +
+        '</div>';
+
+      // Evento de cambio en el selector de región para recalcular envío
+      var regSelect = $("#ship-region-sel", cp);
+      if (regSelect) {
+        regSelect.addEventListener("change", function (e) {
+          selectedRegionId = e.target.value;
+          store.set("ca_test_region", selectedRegionId);
+          renderCart();
+        });
+      }
+
+      // Evento de cupón de descuento
       $("[data-coupon]").addEventListener("submit", function (e) {
         e.preventDefault();
         var v = $("#cp-in").value.trim().toUpperCase(), m = $("[data-cmsg]");
@@ -1113,11 +1232,66 @@
         }
       });
 
+      // Evento de simulación de pago seguro Webpay Plus
       $("[data-checkout]").addEventListener("click", function () {
-        var n = "CA-" + Math.floor(100000 + Math.random() * 900000), tot = Cart.totals();
-        cp.dataset.done = "1";
-        Cart.clear();
-        cp.innerHTML = '<div class="panel center" style="max-width:640px;margin:0 auto">' + ic("check", "") + '<h2 style="margin-top:1rem">¡Gracias por tu pedido!</h2><p>Hemos recibido tu pedido con éxito. Tu número de orden es el <strong>' + n + "</strong> por " + money(tot.net) + ".</p><p>Puedes seguir el estado de tu despacho en tiempo real con este número.</p><div class=\"acts\" style=\"justify-content:center\"><a class=\"btn\" href=\"seguimiento.html?n=" + n + '">Seguir mi pedido</a><a class="btn ghost" href="tienda.html">Volver a la tienda</a></div></div>';
+        var n = "CA-" + Math.floor(100000 + Math.random() * 900000);
+        var comunaVal = ($("#ship-comuna-in") && $("#ship-comuna-in").value.trim()) || "Rancagua";
+        var finalTot = grandTotal;
+        var regName = currentRegion.name;
+
+        // Pantalla intermedia de conexión simulada con Webpay Plus
+        cp.innerHTML =
+          '<div class="webpay-modal-sim" style="max-width:540px;margin:2rem auto">' +
+            '<div class="spinner"></div>' +
+            '<span class="test-badge green" style="margin-bottom:.8rem">Sandbox Transbank</span>' +
+            '<h2 style="font-size:2rem;margin:.4rem 0">Conectando de forma segura con Webpay Plus...</h2>' +
+            '<p style="color:var(--suave);line-height:1.6">Procesando simulación de pago en ambiente de pruebas (Sin cobro real a tu tarjeta).</p>' +
+          '</div>';
+
+        setTimeout(function () {
+          cp.dataset.done = "1";
+          Cart.clear();
+
+          var now = new Date();
+          var dateStr = now.toLocaleDateString("es-CL") + " " + now.toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit" });
+
+          cp.innerHTML =
+            '<div class="panel center" style="max-width:680px;margin:0 auto">' +
+              '<div style="display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;background:#e6f4ea;color:#137333;margin-bottom:1rem">' +
+                '<svg class="i" style="width:32px;height:32px"><use href="#i-check"/></svg>' +
+              '</div>' +
+              '<span class="test-badge green" style="margin-bottom:.6rem;display:inline-block">Pago de prueba aprobado</span>' +
+              '<h2 style="font-size:clamp(1.8rem,4vw,2.3rem);margin:0 0 .5rem">¡Gracias por tu pedido de prueba!</h2>' +
+              '<p style="color:var(--suave);max-width:55ch;margin:0 auto 1.5rem;line-height:1.6">' +
+                'Hemos recibido tu pedido de prueba con éxito. Tu número de orden es el <strong>' + n + '</strong>.' +
+              '</p>' +
+              '<div class="voucher-receipt">' +
+                '<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--linea);padding-bottom:.8rem;margin-bottom:.8rem">' +
+                  '<strong>Comprobante Webpay Plus (Simulación)</strong>' +
+                  '<span style="font-size:.8rem;color:var(--suave)">Café Alegra</span>' +
+                '</div>' +
+                '<table>' +
+                  '<tbody>' +
+                    '<tr><th>Número de orden</th><td>' + n + '</td></tr>' +
+                    '<tr><th>Código de autorización</th><td>AUT-' + Math.floor(100000 + Math.random() * 900000) + '</td></tr>' +
+                    '<tr><th>Fecha y hora</th><td>' + dateStr + '</td></tr>' +
+                    '<tr><th>Medio de pago</th><td>Webpay Plus (Débito/Crédito)</td></tr>' +
+                    '<tr><th>Operador de despacho</th><td>Blue Express (Entrega a domicilio)</td></tr>' +
+                    '<tr><th>Destino de entrega</th><td>' + escapeHTML(comunaVal) + ', ' + regName + '</td></tr>' +
+                    '<tr><th>Total pagado</th><td style="color:var(--oro-hondo);font-size:1.15rem">' + money(finalTot) + '</td></tr>' +
+                    '<tr><th>Estado de la transacción</th><td style="color:#137333">Aprobada (Prueba / Sandbox)</td></tr>' +
+                  '</tbody>' +
+                '</table>' +
+                '<small style="display:block;color:var(--suave);font-size:.78rem;text-align:center;margin-top:.8rem">' +
+                  '* Este comprobante corresponde a un ambiente de simulación. No se ha efectuado ningún cobro real.' +
+                '</small>' +
+              '</div>' +
+              '<div class="acts" style="justify-content:center;margin-top:2rem;flex-wrap:wrap;gap:1rem">' +
+                '<a class="btn gold" href="seguimiento.html?n=' + n + '">Seguir mi pedido con Blue Express →</a>' +
+                '<a class="btn ghost" href="tienda.html">Volver a la tienda</a>' +
+              '</div>' +
+            '</div>';
+        }, 1200);
       });
     };
     document.addEventListener("cart:change", renderCart);
