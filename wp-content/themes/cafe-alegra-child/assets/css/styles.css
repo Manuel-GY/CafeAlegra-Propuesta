@@ -732,7 +732,7 @@ body[data-nav="inicio"] :is(#main,#main [id]){scroll-margin-top:6rem}
 .cat.cat-tradicion{border-top:4px solid var(--avellana-rojo);background:radial-gradient(ellipse at 80% 40%,#fffaf7,#f8eeef)}
 .cat.cat-complementos{border-top:4px solid var(--pistacho);background:radial-gradient(ellipse at 80% 40%,#fbfdf7,#eef4e8)}
 
-.badge-tag{display:inline-block;font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;padding:.3rem .6rem;border-radius:2px;font-weight:600;margin-bottom:.5rem}
+.badge-tag{display:inline-flex;align-items:center;gap:.4rem;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;padding:.35rem .85rem;border-radius:999px;font-weight:600;margin-bottom:.5rem;transition:all .25s ease}
 .badge-tag.cobrizo{background:rgba(155,85,43,.12);color:var(--cobrizo)}
 .badge-tag.pistacho{background:rgba(80,123,46,.14);color:var(--pistacho)}
 .badge-tag.avellana{background:rgba(156,24,47,.12);color:var(--avellana-rojo)}
@@ -1646,15 +1646,20 @@ body[data-nav="inicio"] :is(#main,#main [id]){scroll-margin-top:6rem}
   display: block;
 }
 
-/* ---------- Colección Praliné: Notas Sensoriales, Inspiración y Destinos ---------- */
+/* ---------- Textos Editoriales y Kickers Estilizados ---------- */
+.sec-kicker,
 .praline-identity-kicker {
   text-align: center;
-  font-size: 1.15rem;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.25rem;
   font-weight: 500;
   color: var(--cobrizo);
-  margin: 0.8rem auto 0.6rem;
-  max-width: 50ch;
+  margin: 0.9rem auto 0.7rem;
+  max-width: 54ch;
   letter-spacing: 0.01em;
+  line-height: 1.35;
+  text-wrap: balance;
 }
 .praline-card-sub {
   display: block;

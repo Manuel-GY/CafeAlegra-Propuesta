@@ -788,11 +788,12 @@
     var isSold = (window.SOLDOUT || []).indexOf(p.reference) > -1 || (window.SOLDOUT || []).indexOf(p.id) > -1;
     var actionBtn = isSold
       ? '<a class="btn ghost sm soldout-card-btn block" href="' + targetUrl + '" aria-label="Ver producto agotado: ' + displayName + '">Ver producto (Agotado)</a>'
-      : '<a class="btn ghost sm block" href="' + targetUrl + '" aria-label="Elegir presentación: ' + displayName + '">Elegir presentación</a>';
+      : '<a class="btn ghost sm block" href="' + targetUrl + '" aria-label="Ver ficha y formatos: ' + displayName + '">Ver ficha y formatos →</a>';
 
+    var originSub = p.collection === "origen" ? "Origen Único · " + p.sub : p.sub;
     return '<article class="prod reveal"><a class="ph" href="' + targetUrl + '" tabindex="-1" aria-hidden="true">' +
       (p.notes[0] === "Sin cafeína" ? '<span class="tag">Sin cafeína</span>' : (scaTag || "")) + (isSold ? '<span class="tag sale">Agotado</span>' : "") + (off ? '<span class="tag sale">-' + off + "%</span>" : "") +
-      '<img src="' + getProductImgUrl(p) + '" alt="" loading="lazy"></a><div class="bd"><span class="k">' + p.sub + '</span><h3><a href="' + targetUrl + '">' + displayName + '</a></h3><p class="variant-preview">' + (function(vars) {
+      '<img src="' + getProductImgUrl(p) + '" alt="" loading="lazy"></a><div class="bd"><span class="k">' + originSub + '</span><h3><a href="' + targetUrl + '">' + displayName + '</a></h3><p class="variant-preview">' + (function(vars) {
         var sizes = vars.map(function(v){ return v.size; }).filter(function(v,i,a){ return a.indexOf(v) === i; });
         var grinds = vars.map(function(v){ return presentation(v); }).filter(Boolean).filter(function(v,i,a){ return a.indexOf(v) === i; });
         return sizes.join(" y ") + (grinds.length ? " · " + grinds.join(" o ") : "");
